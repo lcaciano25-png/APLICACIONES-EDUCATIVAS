@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>🔢 Matemáticas Interactivas — Primaria 1° y 2°</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--ok:#22c55e;--err:#ef4444;--gold:#f59e0b;--dark:#1e293b;--shadow:0 4px 20px rgba(0,0,0,.15);
+  --m1:#f97316;--m2:#8b5cf6;--m3:#10b981;--m4:#ef4444;--m5:#0ea5e9;
+  --m6:#ec4899;--m7:#6366f1;--m8:#14b8a6;--m9:#f59e0b;}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#0a0020 0%,#0d1b45 50%,#001a2e 100%);
+  min-height:100vh;color:var(--dark);overflow-x:hidden}
+h1,h2,.logo,.num-lbl,.mod-emoji{font-family:'Fredoka One',sans-serif}
+.screen{display:none;min-height:100vh;padding:12px}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+/* ── NAV ── */
+.top-nav{width:100%;max-width:800px;display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 14px;background:rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:16px;border:1px solid rgba(255,255,255,.15)}
+.nav-btn{background:rgba(255,255,255,.15);border:none;border-radius:10px;padding:8px 14px;color:#fff;font-family:'Fredoka One',sans-serif;font-size:.9rem;cursor:pointer;transition:.2s}
+.nav-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+.nav-title{flex:1;text-align:center;font-family:'Fredoka One',sans-serif;font-size:1.1rem;color:#fff}
+.nav-stu{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border-radius:10px;padding:4px 10px;cursor:pointer}
+.nav-stu .av{font-size:1.4rem}.nav-stu .nm{font-size:.78rem;font-weight:800;color:#fff;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ── MENU ── */
+.menu-hero{text-align:center;margin-bottom:20px;padding:20px}
+.menu-hero h1{font-size:clamp(1.6rem,5vw,2.6rem);color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.4);line-height:1.1}
+.menu-hero p{color:rgba(255,255,255,.75);font-size:1rem;margin-top:6px}
+.xp-bar-wrap{width:100%;max-width:340px;margin:12px auto 0;background:rgba(255,255,255,.15);border-radius:20px;height:10px;overflow:hidden}
+.xp-bar{height:100%;background:linear-gradient(90deg,#f59e0b,#f97316);border-radius:20px;transition:width .5s ease}
+.level-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:30px;padding:4px 14px;color:#fff;font-weight:900;font-size:.9rem;margin-top:8px}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;width:100%;max-width:800px;padding:0 4px}
+.mod-card{background:linear-gradient(135deg,var(--mc),color-mix(in srgb,var(--mc) 70%,#fff));border-radius:20px;padding:18px 14px;text-align:center;cursor:pointer;transition:.25s;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.mod-card:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.mod-card:active{transform:scale(.97)}
+.mod-card .mod-emoji{font-size:2.4rem;display:block;margin-bottom:6px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.2))}
+.mod-card h3{font-family:'Fredoka One',sans-serif;font-size:1rem;color:#fff;line-height:1.2}
+.mod-card .mod-sub{font-size:.72rem;color:rgba(255,255,255,.8);margin-top:3px}
+.mod-card .mod-stars{font-size:.9rem;margin-top:6px}
+.mod-card .mod-prog{position:absolute;bottom:0;left:0;height:3px;background:rgba(255,255,255,.5);transition:width .4s}
+.coin-bar{display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.1);border-radius:30px;padding:6px 18px;margin-bottom:16px}
+.coin-bar span{color:#fff;font-weight:800;font-size:.9rem;display:flex;align-items:center;gap:4px}
+/* ── STUDENT PICKER ── */
+.sp-wrap{width:100%;max-width:700px}
+.sp-header{text-align:center;margin-bottom:20px}
+.sp-header h2{font-family:'Fredoka One',sans-serif;font-size:1.7rem;color:#fff}
+.sp-header p{color:rgba(255,255,255,.7);font-size:.9rem}
+.sp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.sp-btn{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:.2s;position:relative}
+.sp-btn:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
+.sp-btn .sp-av{font-size:2.2rem;display:block;margin-bottom:4px}
+.sp-btn .sp-nm{font-weight:800;color:#fff;font-size:.9rem}
+.sp-btn .sp-gr{font-size:.75rem;color:rgba(255,255,255,.65)}
+.sp-del{position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;font-size:1rem;opacity:0;transition:.2s;padding:2px}
+.sp-btn:hover .sp-del{opacity:.7}
+.sp-del:hover{opacity:1!important;background:#fee2e2;border-radius:6px}
+.add-stu-form{background:rgba(255,255,255,.1);border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,.2)}
+.add-stu-form h3{font-family:'Fredoka One',sans-serif;color:#fff;margin-bottom:14px;font-size:1.2rem}
+.form-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.form-inp{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.25);border-radius:12px;padding:10px 14px;color:#fff;font-family:'Nunito',sans-serif;font-size:.95rem;flex:1;min-width:120px}
+.form-inp::placeholder{color:rgba(255,255,255,.5)}
+.form-inp:focus{outline:none;border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.2)}
+.avatar-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.av-opt{font-size:1.8rem;cursor:pointer;padding:4px;border-radius:8px;border:2px solid transparent;transition:.2s}
+.av-opt:hover,.av-opt.sel{border-color:#f59e0b;background:rgba(245,158,11,.2)}
+/* ── MODULE DETAIL ── */
+.mod-detail{width:100%;max-width:700px}
+.mod-banner{border-radius:20px;padding:24px 20px;text-align:center;margin-bottom:20px}
+.mod-banner .mod-emoji{font-size:3rem;display:block;margin-bottom:8px}
+.mod-banner h2{font-family:'Fredoka One',sans-serif;font-size:1.8rem;color:#fff}
+.mod-banner p{color:rgba(255,255,255,.8);font-size:.9rem;margin-top:6px}
+.activities-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.act-card{background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);border-radius:18px;padding:16px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.act-card:hover{background:rgba(255,255,255,.22);transform:translateY(-3px);box-shadow:var(--shadow)}
+.act-card:active{transform:scale(.97)}
+.act-card.locked{opacity:.5;cursor:not-allowed}
+.act-card .act-num{font-family:'Fredoka One',sans-serif;font-size:.85rem;color:rgba(255,255,255,.6);margin-bottom:4px}
+.act-card .act-title{font-family:'Fredoka One',sans-serif;font-size:1.05rem;color:#fff;line-height:1.2}
+.act-card .act-desc{font-size:.78rem;color:rgba(255,255,255,.65);margin-top:4px}
+.act-card .act-score{margin-top:8px;display:flex;align-items:center;gap:6px}
+.act-card .act-grade{font-family:'Fredoka One',sans-serif;font-size:1.3rem;font-weight:900}
+.lock-icon{font-size:1.5rem;margin-bottom:6px}
+/* ── ACTIVITY PLAYER ── */
+.activity-wrap{width:100%;max-width:700px}
+.act-header{background:rgba(255,255,255,.1);border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.act-header .act-info{flex:1}
+.act-header .act-info h3{font-family:'Fredoka One',sans-serif;color:#fff;font-size:1.1rem}
+.act-header .act-info .prog-text{font-size:.78rem;color:rgba(255,255,255,.7);margin-top:2px}
+.prog-strip{width:100%;height:8px;background:rgba(255,255,255,.2);border-radius:10px;overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:10px;transition:width .4s}
+.score-chip{background:rgba(255,255,255,.15);border-radius:30px;padding:4px 12px;font-weight:900;color:#fff;font-size:.85rem;white-space:nowrap}
+/* ── PROBLEM AREA ── */
+.problem-box{background:#fff;border-radius:20px;padding:22px;width:100%;margin-bottom:16px;box-shadow:var(--shadow)}
+.prob-instruction{font-size:.95rem;font-weight:700;color:#475569;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.prob-instruction strong{color:var(--dark)}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:12px;background:#f8fafc;border-radius:14px;min-height:60px;cursor:default}
+.emoji-item{font-size:1.8rem;cursor:pointer;transition:.2s;padding:4px;border-radius:8px;border:2px solid transparent;user-select:none;line-height:1}
+.emoji-item.selected{background:#dbeafe;border-color:#3b82f6;transform:scale(1.1)}
+.emoji-item.crossed{opacity:.35;text-decoration:line-through;filter:grayscale(1);transform:scale(.9)}
+.emoji-item.highlighted{background:#dcfce7;border-color:#16a34a}
+.emoji-group{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.plus-sign{font-size:2rem;font-weight:900;color:#6366f1;padding:0 8px}
+.equals-sign{font-size:2rem;font-weight:900;color:#10b981;padding:0 8px}
+.answer-area{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.big-input{width:80px;height:56px;border:3px solid #e2e8f0;border-radius:14px;text-align:center;font-family:'Fredoka One',sans-serif;font-size:1.8rem;color:var(--dark);outline:none;transition:.2s;background:#fff}
+.big-input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+.big-input.ok{border-color:#22c55e;background:#f0fdf4}
+.big-input.err{border-color:#ef4444;background:#fef2f2;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.option-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}
+.opt-choice{min-width:64px;padding:12px 20px;border:3px solid #e2e8f0;border-radius:14px;background:#fff;font-family:'Fredoka One',sans-serif;font-size:1.5rem;cursor:pointer;transition:.2s;color:var(--dark)}
+.opt-choice:hover{border-color:#6366f1;background:#ede9fe;transform:translateY(-2px)}
+.opt-choice.correct{border-color:#22c55e;background:#dcfce7;color:#16a34a}
+.opt-choice.wrong{border-color:#ef4444;background:#fee2e2;color:#dc2626}
+.opt-choice.disabled{pointer-events:none}
+.number-display{font-family:'Fredoka One',sans-serif;font-size:4rem;text-align:center;color:#1e293b;padding:16px;background:linear-gradient(135deg,#ede9fe,#ddd6fe);border-radius:16px;margin-bottom:16px}
+/* ── TENS/UNITS ── */
+.tu-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.tu-box{text-align:center;background:#f8fafc;border-radius:14px;padding:14px 20px;border:2px solid #e2e8f0}
+.tu-label{font-size:.8rem;font-weight:800;color:#64748b;margin-bottom:8px}
+.tu-input{width:70px;height:56px;border:3px solid #e2e8f0;border-radius:12px;text-align:center;font-family:'Fredoka One',sans-serif;font-size:1.8rem;color:var(--dark);outline:none}
+.tu-input:focus{border-color:#8b5cf6}
+.blocks-display{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:12px;background:#f8fafc;border-radius:14px}
+.block-ten{display:flex;flex-direction:column;gap:2px;cursor:pointer;transition:.2s;border:2px solid transparent;border-radius:8px;padding:3px}
+.block-ten.sel{border-color:#8b5cf6;background:#ede9fe}
+.block-ten div{width:14px;height:14px;background:#8b5cf6;border-radius:3px}
+.block-one{width:18px;height:18px;background:#10b981;border-radius:4px;cursor:pointer;transition:.2s;border:2px solid transparent}
+.block-one.sel{border-color:#047857;background:#059669;transform:scale(1.2)}
+/* ── VERTICAL OPERATIONS ── */
+.vert-op{display:inline-block;background:#f8fafc;border-radius:16px;padding:16px 24px;font-family:'Fredoka One',sans-serif;text-align:right}
+.vert-num{font-size:2.2rem;display:block;color:#1e293b;letter-spacing:4px}
+.vert-op-sign{font-size:2rem;color:#6366f1;border-bottom:3px solid #1e293b;padding-bottom:6px;margin-bottom:6px;display:block;text-align:left}
+.vert-answer{font-size:2.2rem;display:flex;gap:6px;justify-content:flex-end;align-items:center;margin-top:4px}
+.carry-box{width:34px;height:34px;border:2px dashed #f59e0b;border-radius:8px;text-align:center;font-size:1.2rem;outline:none;font-family:'Fredoka One',sans-serif;background:#fefce8;color:#92400e}
+.vert-dig{width:44px;height:50px;border:3px solid #e2e8f0;border-radius:10px;text-align:center;font-size:1.8rem;font-family:'Fredoka One',sans-serif;outline:none;background:#fff;color:var(--dark)}
+.vert-dig:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.2)}
+.vert-dig.ok{border-color:#22c55e;background:#f0fdf4}
+.vert-dig.err{border-color:#ef4444;background:#fee2e2}
+/* ── COMPARE ── */
+.compare-row{display:flex;align-items:center;gap:16px;justify-content:center;flex-wrap:wrap;margin:14px 0}
+.cmp-num{font-family:'Fredoka One',sans-serif;font-size:3rem;color:#1e293b;background:#f1f5f9;border-radius:14px;padding:10px 22px;min-width:80px;text-align:center}
+.sign-opts{display:flex;gap:12px;justify-content:center}
+.sign-btn{width:60px;height:60px;border:3px solid #e2e8f0;border-radius:14px;background:#fff;font-family:'Fredoka One',sans-serif;font-size:2rem;cursor:pointer;transition:.2s;color:var(--dark)}
+.sign-btn:hover{border-color:#6366f1;background:#ede9fe;transform:scale(1.1)}
+.sign-btn.selected{border-color:#6366f1;background:#4f46e5;color:#fff}
+.sign-btn.correct{border-color:#22c55e;background:#16a34a;color:#fff}
+.sign-btn.wrong{border-color:#ef4444;background:#dc2626;color:#fff}
+/* ── MEMORY GAME ── */
+.memory-grid{display:grid;gap:10px;justify-content:center;margin:10px 0}
+.mem-card{width:70px;height:70px;border-radius:14px;cursor:pointer;perspective:600px;border:none;background:none;padding:0}
+.mem-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .4s}
+.mem-card.flipped .mem-inner,.mem-card.matched .mem-inner{transform:rotateY(180deg)}
+.mem-front,.mem-back{position:absolute;width:100%;height:100%;border-radius:14px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden}
+.mem-front{background:linear-gradient(135deg,#6366f1,#8b5cf6);font-size:2rem;color:#fff;font-family:'Fredoka One',sans-serif}
+.mem-back{background:#fff;transform:rotateY(180deg);font-size:2rem;border:3px solid #e2e8f0}
+.mem-card.matched .mem-back{border-color:#22c55e;background:#f0fdf4}
+/* ── SHAPES ── */
+.shapes-area{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:12px}
+.shape-item{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px;border-radius:14px;border:2px solid transparent;transition:.2s;background:#f8fafc}
+.shape-item:hover{border-color:#6366f1;background:#ede9fe}
+.shape-item.correct{border-color:#22c55e;background:#dcfce7}
+.shape-item.wrong{border-color:#ef4444;background:#fee2e2}
+.shape-item svg{transition:.2s}
+.shape-label{font-size:.8rem;font-weight:700;color:#475569}
+.drop-zone{border:3px dashed #e2e8f0;border-radius:16px;padding:16px;text-align:center;min-height:70px;transition:.2s;background:#f8fafc}
+.drop-zone.hover{border-color:#6366f1;background:#ede9fe}
+.drop-zone.filled{border-color:#22c55e;background:#dcfce7;border-style:solid}
+/* ── CLASSIFY ── */
+.classify-buckets{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:12px}
+.bucket{border:3px dashed #e2e8f0;border-radius:16px;padding:12px;text-align:center;min-height:80px;background:#f8fafc;transition:.2s}
+.bucket.active{border-color:#6366f1;background:#ede9fe}
+.bucket-label{font-family:'Fredoka One',sans-serif;font-size:1rem;color:#475569;margin-bottom:8px}
+.draggable{cursor:grab;padding:6px;border-radius:10px;border:2px solid #e2e8f0;background:#fff;transition:.2s;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;width:54px;height:54px}
+.draggable:active{cursor:grabbing;transform:scale(1.1);z-index:100}
+.drag-source{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:12px;background:#f8fafc;border-radius:14px;min-height:60px;margin-bottom:12px}
+/* ── TIMER CHALLENGE ── */
+.timer-display{font-family:'Fredoka One',sans-serif;font-size:3rem;color:#fff;text-align:center;margin-bottom:8px}
+.timer-ring{width:100px;height:100px;border-radius:50%;background:conic-gradient(#22c55e var(--prog,100%),rgba(255,255,255,.2) 0);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Fredoka One',sans-serif;font-size:1.6rem;color:#fff;font-weight:900;box-shadow:0 0 20px rgba(34,197,94,.4)}
+.quick-num{font-family:'Fredoka One',sans-serif;font-size:3.5rem;text-align:center;color:var(--dark);margin:12px 0}
+/* ── FEEDBACK ── */
+.feedback-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000;pointer-events:none}
+.feedback-overlay.show{display:flex}
+.fb-badge{background:#fff;border-radius:24px;padding:20px 32px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,.3);animation:fbPop .4s cubic-bezier(.34,1.56,.64,1)}
+@keyframes fbPop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
+.fb-icon{font-size:3.5rem;display:block}
+.fb-text{font-family:'Fredoka One',sans-serif;font-size:1.4rem;margin-top:6px}
+.fb-sub{font-size:.9rem;color:#64748b;margin-top:4px}
+/* ── RESULTS ── */
+.results-card{background:#fff;border-radius:24px;padding:28px;width:100%;max-width:480px;text-align:center;box-shadow:var(--shadow)}
+.results-card .big-emoji{font-size:4rem;display:block;margin-bottom:8px}
+.results-card h2{font-family:'Fredoka One',sans-serif;font-size:1.8rem;margin-bottom:6px}
+.results-card .grade-pill{display:inline-flex;flex-direction:column;align-items:center;background:var(--bg);border:3px solid var(--col);border-radius:20px;padding:12px 24px;margin:14px 0}
+.results-card .grade-num{font-family:'Fredoka One',sans-serif;font-size:3rem;font-weight:900;color:var(--col)}
+.results-card .grade-lbl{font-size:.8rem;font-weight:800;color:var(--col)}
+.results-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;text-align:center}
+.rs-item{background:#f8fafc;border-radius:12px;padding:10px}
+.rs-num{font-family:'Fredoka One',sans-serif;font-size:1.6rem;color:var(--dark)}
+.rs-lbl{font-size:.75rem;color:#64748b}
+.coin-reward{display:inline-flex;align-items:center;gap:6px;background:#fef3c7;border:2px solid #f59e0b;border-radius:30px;padding:6px 16px;font-weight:900;color:#92400e;font-size:1rem;margin:8px 0}
+.xp-reward{display:inline-flex;align-items:center;gap:6px;background:#ede9fe;border:2px solid #8b5cf6;border-radius:30px;padding:6px 16px;font-weight:900;color:#5b21b6;font-size:1rem;margin:0 0 8px 0}
+.btn-primary{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:14px;padding:14px 28px;font-family:'Fredoka One',sans-serif;font-size:1.1rem;cursor:pointer;transition:.2s;box-shadow:0 4px 14px rgba(99,102,241,.4)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(99,102,241,.5)}
+.btn-secondary{background:rgba(255,255,255,.15);color:#fff;border:2px solid rgba(255,255,255,.3);border-radius:14px;padding:12px 24px;font-family:'Fredoka One',sans-serif;font-size:1rem;cursor:pointer;transition:.2s}
+.btn-secondary:hover{background:rgba(255,255,255,.25)}
+/* ── PANEL ── */
+.panel-wrap{width:100%;max-width:800px}
+.panel-tabs{display:flex;gap:8px;margin-bottom:16px}
+.panel-tab{flex:1;background:rgba(255,255,255,.1);border:none;border-radius:12px;padding:10px;color:rgba(255,255,255,.7);font-family:'Fredoka One',sans-serif;font-size:.9rem;cursor:pointer;transition:.2s}
+.panel-tab.active{background:rgba(255,255,255,.25);color:#fff;font-weight:900}
+.panel-section{display:none}
+.panel-section.active{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.stat-card{background:rgba(255,255,255,.12);border-radius:14px;padding:12px;text-align:center}
+.stat-card .st-num{font-family:'Fredoka One',sans-serif;font-size:1.7rem;color:#fff}
+.stat-card .st-lbl{font-size:.72rem;color:rgba(255,255,255,.65)}
+.rank-list{background:rgba(255,255,255,.08);border-radius:16px;overflow:hidden}
+.rank-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.rank-row:last-child{border-bottom:none}
+.rank-pos{font-family:'Fredoka One',sans-serif;font-size:1.2rem;width:28px}
+.rank-av{font-size:1.6rem}
+.rank-info{flex:1}
+.rank-name{font-weight:800;color:#fff;font-size:.95rem}
+.rank-detail{font-size:.75rem;color:rgba(255,255,255,.6)}
+.rank-grade{text-align:right}
+.rank-grade .rg-num{font-family:'Fredoka One',sans-serif;font-size:1.5rem;font-weight:900}
+.rank-grade .rg-lbl{font-size:.68rem;color:rgba(255,255,255,.6);font-weight:800}
+.stu-card{background:rgba(255,255,255,.08);border-radius:18px;margin-bottom:12px;overflow:hidden}
+.stu-card-hdr{display:flex;align-items:center;gap:12px;padding:14px;cursor:pointer;transition:.2s}
+.stu-card-hdr:hover{background:rgba(255,255,255,.08)}
+.stu-av{font-size:2.2rem}
+.stu-info{flex:1}
+.stu-name{font-weight:900;color:#fff;font-size:1rem}
+.stu-detail{font-size:.75rem;color:rgba(255,255,255,.6)}
+.stu-grade-col{text-align:right}
+.stu-grade-big{font-family:'Fredoka One',sans-serif;font-size:1.8rem;font-weight:900}
+.stu-grade-lbl{font-size:.68rem;font-weight:800}
+.stu-card-body{display:none;padding:12px 16px;border-top:1px solid rgba(255,255,255,.08)}
+.stu-card-body.open{display:block}
+.mod-score-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:12px}
+.mod-score-item{background:rgba(255,255,255,.06);border-radius:12px;padding:10px;display:flex;align-items:center;gap:10px}
+.msi-icon{font-size:1.4rem}
+.msi-info{flex:1}
+.msi-name{font-weight:800;color:#fff;font-size:.8rem}
+.msi-acts{font-size:.7rem;color:rgba(255,255,255,.5)}
+.msi-grade{font-family:'Fredoka One',sans-serif;font-size:1.2rem;font-weight:900}
+.print-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.print-btn{border:none;border-radius:12px;padding:8px 16px;font-family:'Fredoka One',sans-serif;font-size:.82rem;cursor:pointer;color:#fff;transition:.2s;flex:1;min-width:100px}
+.print-btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.delete-stu-btn{background:#fee2e2;border:1.5px solid #fca5a5;border-radius:10px;padding:6px 12px;font-size:.78rem;font-weight:800;color:#dc2626;cursor:pointer;transition:.2s}
+.delete-stu-btn:hover{background:#fecaca}
+/* ── ACHIEVEMENT ── */
+.achievement-pop{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#f59e0b,#f97316);border-radius:16px;padding:12px 18px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);z-index:2000;transform:translateX(140%);transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.achievement-pop.show{transform:translateX(0)}
+.ach-icon{font-size:1.8rem}
+.ach-text{color:#fff}
+.ach-title{font-family:'Fredoka One',sans-serif;font-size:.9rem}
+.ach-desc{font-size:.75rem;opacity:.85}
+/* ── PRINT ── */
+.print-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;align-items:center;justify-content:center;padding:16px}
+.print-modal.open{display:flex}
+.print-inner{background:#fff;border-radius:20px;width:100%;max-width:600px;max-height:90vh;display:flex;flex-direction:column}
+.print-modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #e2e8f0}
+.print-modal-hdr h3{font-family:'Fredoka One',sans-serif;font-size:1.1rem;color:var(--dark)}
+.print-close{background:#f1f5f9;border:none;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:1rem}
+.print-preview{flex:1;overflow-y:auto;padding:16px}
+.print-actions{padding:14px 20px;border-top:1px solid #e2e8f0;display:flex;gap:10px}
+.btn-print-go{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border:none;border-radius:12px;padding:10px 24px;font-family:'Fredoka One',sans-serif;font-size:1rem;cursor:pointer;flex:1}
+/* ── CONFETTI ── */
+#confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+.conf-bit{position:absolute;width:8px;height:8px;border-radius:2px;animation:confFall 1.2s ease-in forwards}
+@keyframes confFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(540deg);opacity:0}}
+@media(max-width:480px){
+  .modules-grid{grid-template-columns:repeat(2,1fr)}
+  .activities-grid{grid-template-columns:1fr}
+  .memory-grid{grid-template-columns:repeat(4,70px)}
+}
+</style>
+  <!-- PWA: instalable en celular -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Matemáticas">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27512%27%20height%3D%27512%27%20viewBox%3D%270%200%20512%20512%27%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27128%27%20fill%3D%27%236366f1%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2754%25%27%20dominant-baseline%3D%27middle%27%20text-anchor%3D%27middle%27%20font-size%3D%27256%27%3E%F0%9F%94%A2%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Matem%C3%A1ticas%20Interactivas%22%2C%22short_name%22%3A%22Matem%C3%A1ticas%22%2C%22description%22%3A%22Matem%C3%A1ticas%20Primaria%201%C2%B0%20y%202%C2%B0%22%2C%22start_url%22%3A%22./matematicas_primaria.html%22%2C%22scope%22%3A%22./%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22background_color%22%3A%22%230a0020%22%2C%22theme_color%22%3A%22%236366f1%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A//www.w3.org/2000/svg%2527%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520rx%253D%2527128%2527%2520fill%253D%2527%25236366f1%2527/%253E%253Ctext%2520x%253D%252750%2525%2527%2520y%253D%252754%2525%2527%2520dominant-baseline%253D%2527middle%2527%2520text-anchor%253D%2527middle%2527%2520font-size%253D%2527256%2527%253E%25F0%259F%2594%25A2%253C/text%253E%253C/svg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image/svg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%2C%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A//www.w3.org/2000/svg%2527%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520rx%253D%2527128%2527%2520fill%253D%2527%25236366f1%2527/%253E%253Ctext%2520x%253D%252750%2525%2527%2520y%253D%252754%2525%2527%2520dominant-baseline%253D%2527middle%2527%2520text-anchor%253D%2527middle%2527%2520font-size%253D%2527256%2527%253E%25F0%259F%2594%25A2%253C/text%253E%253C/svg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image/svg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%2C%22categories%22%3A%5B%22education%22%5D%2C%22lang%22%3A%22es%22%7D">
+</head>
+<body>
+  <!-- PWA Banner & Modal -->
+  <div id="pwa-bar">
+    <span class="pwa-ico">🔢</span>
+    <div class="pwa-txt">
+      <div class="pwa-ttl">¡Instala esta app! 📲</div>
+      <div class="pwa-stl">Funciona sin internet · Como app nativa</div>
+    </div>
+    <button class="pwa-ibtn" onclick="pwaInstall()">⬇️ Instalar</button>
+    <button class="pwa-xbtn" onclick="pwaHide()">✕</button>
+  </div>
+  <button id="pwa-fab" title="Instalar en celular" onclick="pwaOpenGuide()">📲</button>
+  <div id="pwa-modal">
+    <div class="pwa-box">
+      <div class="pwa-hdr">
+        <span class="ph-ico">🔢</span>
+        <h2>Instalar en tu celular</h2>
+        <p>Matemáticas Interactivas</p>
+      </div>
+      <div class="pwa-bdy">
+        <div class="pwa-tabs">
+          <button class="pt on" onclick="pwaTab('android',this)">🤖 Android</button>
+          <button class="pt" onclick="pwaTab('ios',this)">🍎 iPhone</button>
+        </div>
+        <div class="ptc on" id="ptc-android">
+          <div class="ps"><div class="psn">1</div><div class="pst">Abre esta página en <b>Google Chrome</b></div></div>
+          <div class="ps"><div class="psn">2</div><div class="pst">Toca el menú <b>⋮</b> arriba a la derecha</div></div>
+          <div class="ps"><div class="psn">3</div><div class="pst">Toca <b>"Agregar a pantalla de inicio"</b></div></div>
+          <div class="ps"><div class="psn">4</div><div class="pst">Confirma tocando <b>"Instalar"</b> ✅</div></div>
+        </div>
+        <div class="ptc" id="ptc-ios">
+          <div class="ps"><div class="psn">1</div><div class="pst">Abre esta página en <b>Safari</b> (no Chrome)</div></div>
+          <div class="ps"><div class="psn">2</div><div class="pst">Toca el botón <b>⬆️ Compartir</b> en la barra inferior</div></div>
+          <div class="ps"><div class="psn">3</div><div class="pst">Toca <b>"Agregar a pantalla de inicio"</b></div></div>
+          <div class="ps"><div class="psn">4</div><div class="pst">Toca <b>"Agregar"</b> arriba a la derecha ✅</div></div>
+        </div>
+        <button class="pcb" onclick="pwaCloseGuide()">✅ ¡Entendido!</button>
+      </div>
+    </div>
+  </div>
+<div id="confetti-wrap"></div>
+<div id="feedback-overlay" class="feedback-overlay">
+  <div class="fb-badge">
+    <span class="fb-icon" id="fb-icon">🎉</span>
+    <div class="fb-text" id="fb-text">¡Excelente!</div>
+    <div class="fb-sub" id="fb-sub"></div>
+  </div>
+</div>
+<div class="achievement-pop" id="achievement-pop">
+  <div class="ach-icon" id="ach-icon">🎖️</div>
+  <div class="ach-text"><div class="ach-title" id="ach-title"></div><div class="ach-desc" id="ach-desc"></div></div>
+</div>
+<!-- PRINT MODAL -->
+<div class="print-modal" id="print-modal">
+  <div class="print-inner">
+    <div class="print-modal-hdr">
+      <h3 id="print-modal-title">📊 Informe</h3>
+      <button class="print-close" onclick="closePrint()">✕</button>
+    </div>
+    <div class="print-preview" id="print-preview"></div>
+    <div class="print-actions">
+      <button class="btn-print-go" onclick="doPrint()">🖨️ Imprimir / Guardar PDF</button>
+      <button onclick="closePrint()" style="background:#f1f5f9;border:none;border-radius:12px;padding:10px 16px;cursor:pointer">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ s-student ══ -->
+<div class="screen" id="s-student">
+  <div class="top-nav" style="max-width:700px">
+    <span style="font-family:'Fredoka One',sans-serif;color:#fff;font-size:1.1rem">🔢 Matemáticas Interactivas</span>
+  </div>
+  <div class="sp-wrap">
+    <div class="sp-header"><h2>👋 ¿Quién va a jugar?</h2><p>Selecciona tu nombre o agrega uno nuevo</p></div>
+    <div class="sp-grid" id="stu-grid"></div>
+    <div class="add-stu-form" id="add-form">
+      <h3>➕ Nuevo Estudiante</h3>
+      <div class="avatar-pick" id="avatar-opts"></div>
+      <div class="form-row">
+        <input class="form-inp" id="inp-name" placeholder="Nombre del alumno" maxlength="30">
+        <select class="form-inp" id="inp-grade" style="flex:0 0 120px">
+          <option value="1° Primaria">1° Primaria</option>
+          <option value="2° Primaria">2° Primaria</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="addStudent()" style="width:100%">Agregar ➕</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ s-menu ══ -->
+<div class="screen" id="s-menu">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="goStudentPicker()">👤</button>
+    <span class="nav-title">🔢 Matemáticas Interactivas</span>
+    <div class="nav-stu" id="nav-stu-info" onclick="goStudentPicker()"></div>
+    <button class="nav-btn" onclick="goPanel()">📊</button>
+  </div>
+  <div class="coin-bar">
+    <span id="menu-coins">🪙 0</span>
+    <span id="menu-xp">⚡ 0 XP</span>
+    <span id="menu-level" class="level-badge">Nivel 1</span>
+  </div>
+  <div style="width:100%;max-width:340px;margin-bottom:16px">
+    <div class="xp-bar-wrap"><div class="xp-bar" id="xp-bar-fill" style="width:0%"></div></div>
+  </div>
+  <div class="menu-hero">
+    <h1>Aprende jugando,<br>contando y descubriendo</h1>
+    <p>Elige un módulo para comenzar tu aventura matemática 🚀</p>
+  </div>
+  <div class="modules-grid" id="modules-container"></div>
+</div>
+
+<!-- ══ s-module ══ -->
+<div class="screen" id="s-module">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="goMenu()">← Menú</button>
+    <span class="nav-title" id="mod-nav-title">Módulo</span>
+    <div class="nav-stu" id="nav-stu-mod" onclick="goStudentPicker()"></div>
+  </div>
+  <div class="mod-detail">
+    <div class="mod-banner" id="mod-banner">
+      <span class="mod-emoji" id="mod-banner-emoji">🔢</span>
+      <h2 id="mod-banner-title">Módulo</h2>
+      <p id="mod-banner-desc">Descripción</p>
+    </div>
+    <div class="activities-grid" id="mod-acts-grid"></div>
+    <div style="display:flex;gap:10px;margin-top:16px;justify-content:center">
+      <button class="btn-secondary" onclick="goMenu()">← Volver al Menú</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ s-activity ══ -->
+<div class="screen" id="s-activity">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="goModule(state.moduleId)">← Salir</button>
+    <span class="nav-title">
+      <span id="act-mod-emoji">🔢</span>
+      <span id="act-mod-name">Módulo</span>
+    </span>
+    <div class="score-chip" id="act-score-chip">✅ 0/0</div>
+  </div>
+  <div class="activity-wrap">
+    <div class="act-header">
+      <div class="act-info">
+        <h3 id="act-title">Actividad</h3>
+        <div class="prog-text" id="act-prog-text">Pregunta 1 de 8</div>
+        <div class="prog-strip"><div class="prog-fill" id="act-prog-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="problem-box" id="problem-area">
+      <!-- Activity rendered here -->
+    </div>
+  </div>
+</div>
+
+<!-- ══ s-results ══ -->
+<div class="screen" id="s-results">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="goMenu()">← Menú</button>
+    <span class="nav-title">¡Actividad completada!</span>
+  </div>
+  <div class="results-card">
+    <span class="big-emoji" id="res-emoji">🏆</span>
+    <h2 id="res-title">¡Excelente!</h2>
+    <div class="grade-pill" id="res-grade-pill">
+      <div class="grade-num" id="res-grade-num">5.0</div>
+      <div class="grade-lbl" id="res-grade-lbl">Superior 🏆</div>
+    </div>
+    <div class="results-stats">
+      <div class="rs-item"><div class="rs-num" id="res-correct">8</div><div class="rs-lbl">Correctas ✅</div></div>
+      <div class="rs-item"><div class="rs-num" id="res-total">8</div><div class="rs-lbl">Total 📝</div></div>
+      <div class="rs-item"><div class="rs-num" id="res-pct">100%</div><div class="rs-lbl">Porcentaje</div></div>
+      <div class="rs-item"><div class="rs-num" id="res-stars">⭐⭐⭐</div><div class="rs-lbl">Estrellas</div></div>
+    </div>
+    <div class="coin-reward" id="res-coins">🪙 +50</div>
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%;margin-top:8px">
+      <button class="btn-primary" onclick="startActivity(state.moduleId,state.actId,state.actType)">🔄 Reintentar</button>
+      <button class="btn-secondary" onclick="goModule(state.moduleId)">📋 Ver módulo</button>
+      <button class="btn-secondary" onclick="goMenu()">🏠 Menú principal</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ s-panel ══ -->
+<div class="screen" id="s-panel">
+  <div class="top-nav">
+    <button class="nav-btn" onclick="goMenu()">← Menú</button>
+    <span class="nav-title">📊 Panel de Evaluaciones</span>
+  </div>
+  <div class="panel-wrap">
+    <div class="panel-tabs">
+      <button class="panel-tab active" id="tab-summary" onclick="switchTab('summary')">Resumen</button>
+      <button class="panel-tab" id="tab-detail" onclick="switchTab('detail')">Por Estudiante</button>
+    </div>
+    <div class="panel-section active" id="panel-summary"></div>
+    <div class="panel-section" id="panel-detail"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONFIGURATION
+// ═══════════════════════════════════════════
+const APP_KEY = 'matematicas_v1_students';
+const AVATARS = ['🐯','🦁','🐸','🐧','🦊','🐻','🐮','🐷','🦋','🐬','🦄','🐙'];
+const EMOJIS_CONTEO = {manzanas:'🍎',mariposas:'🦋',peces:'🐟',flores:'🌸',estrellas:'⭐',pelotas:'⚽',frutas:'🍇',coches:'🚗',lapices:'✏️',globos:'🎈'};
+
+const MODULES = {
+  m1:{id:'m1',title:'Conteo 1-25',emoji:'🔢',color:'var(--m1)',desc:'Cuenta objetos hasta 25',activities:[
+    {id:'a1',title:'Selecciona la Cantidad',desc:'Toca exactamente los objetos indicados',type:'selectCount'},
+    {id:'a2',title:'Cuenta y Escribe',desc:'Cuenta los objetos y escribe el número',type:'countWrite'},
+    {id:'a3',title:'Secuencia Numérica',desc:'Completa los números que faltan',type:'fillSequence'},
+    {id:'a4',title:'Número y Cantidad',desc:'Une el número con la cantidad correcta',type:'matchNumber'},
+  ]},
+  m2:{id:'m2',title:'Decenas y Unidades',emoji:'🧮',color:'var(--m2)',desc:'Trabajamos con el 10 y el 100',activities:[
+    {id:'a1',title:'¿Cuántas Decenas?',desc:'Identifica decenas y unidades',type:'tensUnits'},
+    {id:'a2',title:'Bloques de 10',desc:'Cuenta los bloques base diez',type:'countBlocks'},
+    {id:'a3',title:'Construye el Número',desc:'Arma el número con bloques',type:'buildNumber'},
+    {id:'a4',title:'Tabla del 100',desc:'Completa la cuadrícula de números',type:'hundred'},
+  ]},
+  m3:{id:'m3',title:'Sumas Interactivas',emoji:'➕',color:'var(--m3)',desc:'Aprende a sumar de manera divertida',activities:[
+    {id:'a1',title:'Suma con Dibujos',desc:'Cuenta los objetos y suma',type:'addPictures'},
+    {id:'a2',title:'¿Cuánto Falta?',desc:'Encuentra el sumando que falta',type:'addMissing'},
+    {id:'a3',title:'Suma Vertical',desc:'Resuelve la suma paso a paso',type:'vertAdd'},
+    {id:'a4',title:'Problema de Suma',desc:'Lee y resuelve el problema',type:'addProblem'},
+  ]},
+  m4:{id:'m4',title:'Restas Interactivas',emoji:'➖',color:'var(--m4)',desc:'Aprende a restar con objetos',activities:[
+    {id:'a1',title:'Tacha los Objetos',desc:'Elimina los objetos que se van',type:'crossOut'},
+    {id:'a2',title:'¿Cuántos Quedan?',desc:'Resta y encuentra el resultado',type:'subMissing'},
+    {id:'a3',title:'Resta Vertical',desc:'Resuelve la resta paso a paso',type:'vertSub'},
+    {id:'a4',title:'Problema de Resta',desc:'Lee y resuelve el problema',type:'subProblem'},
+  ]},
+  m5:{id:'m5',title:'Figuras Geométricas',emoji:'🔷',color:'var(--m5)',desc:'Reconoce y clasifica figuras',activities:[
+    {id:'a1',title:'¿Qué Figura Es?',desc:'Observa y selecciona la figura',type:'shapeMatch'},
+    {id:'a2',title:'Memoria Geométrica',desc:'Encuentra las parejas de figuras',type:'memoryGame'},
+    {id:'a3',title:'Clasifica Figuras',desc:'Agrupa las figuras por tipo',type:'classifyShapes'},
+    {id:'a4',title:'Figura y Objeto Real',desc:'Une la figura con su objeto real',type:'shapesToReal'},
+  ]},
+  m6:{id:'m6',title:'Problemas Matemáticos',emoji:'📝',color:'var(--m6)',desc:'Resuelve problemas de la vida real',activities:[
+    {id:'a1',title:'Problemas de Suma',desc:'Lee y suma para resolver',type:'wordAdd'},
+    {id:'a2',title:'Problemas de Resta',desc:'Lee y resta para resolver',type:'wordSub'},
+    {id:'a3',title:'¿Sumo o Resto?',desc:'Elige la operación correcta',type:'chooseOp'},
+    {id:'a4',title:'Problema Ilustrado',desc:'Usa los dibujos para resolver',type:'illustProb'},
+  ]},
+  m7:{id:'m7',title:'Multiplicación',emoji:'✖️',color:'var(--m7)',desc:'Aprende las tablas de multiplicar',activities:[
+    {id:'a1',title:'Tablas Básicas',desc:'Practica las tablas del 1 al 5',type:'timesTable'},
+    {id:'a2',title:'2 Cifras × 1 Cifra',desc:'Multiplicación con llevadas',type:'vertMult2'},
+    {id:'a3',title:'3 Cifras × 1 Cifra',desc:'Multiplicación avanzada',type:'vertMult3'},
+    {id:'a4',title:'Problema de Multiplicar',desc:'Resuelve el problema',type:'multProblem'},
+  ]},
+  m8:{id:'m8',title:'Mayor, Menor, Igual',emoji:'⚖️',color:'var(--m8)',desc:'Compara números y cantidades',activities:[
+    {id:'a1',title:'Arrastra el Signo',desc:'Coloca > < = entre los números',type:'dragSign'},
+    {id:'a2',title:'Compara Grupos',desc:'¿Qué grupo tiene más?',type:'compareGroups'},
+    {id:'a3',title:'Compara Números',desc:'Elige el signo correcto',type:'compareNums'},
+    {id:'a4',title:'Problema de Comparación',desc:'Lee y compara',type:'compareProblem'},
+  ]},
+  m9:{id:'m9',title:'Retos Matemáticos',emoji:'🏆',color:'var(--m9)',desc:'Pon a prueba todo lo aprendido',activities:[
+    {id:'a1',title:'Contra el Reloj',desc:'¡Responde lo más rápido que puedas!',type:'timerChallenge'},
+    {id:'a2',title:'10 Preguntas Rápidas',desc:'Responde las 10 preguntas seguidas',type:'quickFire'},
+    {id:'a3',title:'Desafío de Precisión',desc:'Mantén tu racha de aciertos',type:'precisionChallenge'},
+    {id:'a4',title:'Nivel Experto',desc:'Los problemas más difíciles',type:'expertLevel'},
+  ]},
+};
+const MODULE_ORDER = ['m1','m2','m3','m4','m5','m6','m7','m8','m9'];
+
+// ═══════════════════════════════════════════
+// DATABASE
+// ═══════════════════════════════════════════
+const DB = {
+  load(){try{return JSON.parse(localStorage.getItem(APP_KEY)||'[]');}catch{return[];}},
+  save(d){localStorage.setItem(APP_KEY,JSON.stringify(d));},
+  add(name,grade,avatar){
+    const all=this.load();
+    const stu={id:Date.now()+'',name,grade,avatar,createdAt:new Date().toLocaleDateString('es-CO'),scores:{},coins:0,xp:0,level:1,achievements:[]};
+    all.push(stu);this.save(all);return stu;
+  },
+  del(id){this.save(this.load().filter(s=>s.id!==id));},
+  updateScore(stuId,moduleId,actId,score,total){
+    const all=this.load();const stu=all.find(s=>s.id===stuId);if(!stu)return;
+    if(!stu.scores)stu.scores={};
+    const key=`${moduleId}_${actId}`;
+    const pct=total>0?Math.round(score/total*100):0;
+    const stars=pct>=90?3:pct>=70?2:pct>=50?1:0;
+    const ex=stu.scores[key];
+    if(!ex||pct>ex.pct){
+      stu.scores[key]={score,total,pct,stars,date:new Date().toLocaleDateString('es-CO'),grade:(Math.round(pct/100*50)/10).toFixed(1)};
+    }
+    // coins & XP
+    const earned=Math.round(pct/10)*5+stars*10;
+    stu.coins=(stu.coins||0)+earned;
+    stu.xp=(stu.xp||0)+Math.round(pct/10)*10+50;
+    stu.level=xpToLevel(stu.xp);
+    this.save(all);return{earned,stars};
+  },
+  getStudent(id){return this.load().find(s=>s.id===id);}
+};
+
+function xpToLevel(xp){
+  const thresholds=[0,100,250,500,1000,2000,4000,7000,10000];
+  for(let i=thresholds.length-1;i>=0;i--){if(xp>=thresholds[i])return i+1;}return 1;
+}
+function pctToGrade(p){return Math.round(p/100*50)/10;}
+function gradeColor(g){if(g>=4.6)return'#059669';if(g>=4.0)return'#2563eb';if(g>=3.0)return'#d97706';if(g>0)return'#dc2626';return'#94a3b8';}
+function gradeLabel(g){if(g>=4.6)return{txt:'Superior 🏆',col:'#059669',bg:'#d1fae5'};if(g>=4.0)return{txt:'Alto ⭐',col:'#2563eb',bg:'#dbeafe'};if(g>=3.0)return{txt:'Básico 📚',col:'#d97706',bg:'#fef3c7'};if(g>0)return{txt:'Bajo 📝',col:'#dc2626',bg:'#fee2e2'};return{txt:'Sin nota ⏳',col:'#64748b',bg:'#f1f5f9'};}
+
+function modulePct(stu,mid){
+  const mod=MODULES[mid];if(!mod)return 0;
+  const recs=mod.activities.map(a=>((stu.scores||{})[`${mid}_${a.id}`])).filter(Boolean);
+  if(!recs.length)return 0;
+  return Math.round(recs.reduce((s,r)=>s+r.pct,0)/recs.length);
+}
+function overallPct(stu){
+  const pcts=MODULE_ORDER.map(m=>modulePct(stu,m)).filter(p=>p>0);
+  if(!pcts.length)return 0;
+  return Math.round(pcts.reduce((s,p)=>s+p,0)/pcts.length);
+}
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const state={stu:null,moduleId:null,actId:null,actType:null,score:0,total:0,answered:false,actData:null};
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function updateNav(){
+  const el=document.getElementById('nav-stu-info');
+  if(state.stu){el.innerHTML=`<span class="av">${state.stu.avatar}</span><span class="nm">${state.stu.name}</span>`;}
+  else{el.innerHTML='<span style="color:#fff;font-size:.82rem;font-weight:700">Elige alumno</span>';}
+}
+
+// ═══════════════════════════════════════════
+// STUDENT PICKER
+// ═══════════════════════════════════════════
+let selAvatar=AVATARS[0];
+function goStudentPicker(){showScreen('s-student');renderPicker();}
+function renderPicker(){
+  const all=DB.load();
+  document.getElementById('stu-grid').innerHTML=all.map(s=>`
+    <div class="sp-btn" onclick="selectStudent('${s.id}')">
+      <span class="sp-av">${s.avatar}</span>
+      <div class="sp-nm">${s.name}</div>
+      <div class="sp-gr">${s.grade}</div>
+      <button class="sp-del" onclick="event.stopPropagation();delStudentFromPicker('${s.id}','${s.name}')" title="Eliminar">🗑️</button>
+    </div>`).join('')+`<div class="sp-btn" style="border-style:dashed;cursor:pointer" onclick="document.getElementById('add-form').scrollIntoView({behavior:'smooth'})">
+      <span class="sp-av">➕</span><div class="sp-nm" style="color:rgba(255,255,255,.7)">Agregar</div></div>`;
+  selAvatar=AVATARS[0];
+  document.getElementById('avatar-opts').innerHTML=AVATARS.map(a=>`<span class="av-opt ${a===selAvatar?'sel':''}" onclick="selAvatar='${a}';document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')">${a}</span>`).join('');
+}
+function selectStudent(id){
+  state.stu=DB.getStudent(id);
+  if(!state.stu)return;
+  updateNav();
+  goMenu();
+}
+function delStudentFromPicker(id,name){
+  if(confirm(`¿Eliminar a ${name}?`)){DB.del(id);if(state.stu&&state.stu.id===id){state.stu=null;updateNav();}renderPicker();}
+}
+function addStudent(){
+  const name=document.getElementById('inp-name').value.trim();
+  const grade=document.getElementById('inp-grade').value;
+  if(!name){alert('Escribe el nombre del alumno');return;}
+  const s=DB.add(name,grade,selAvatar);
+  selectStudent(s.id);
+}
+
+// ═══════════════════════════════════════════
+// MAIN MENU
+// ═══════════════════════════════════════════
+function goMenu(){
+  if(!state.stu){goStudentPicker();return;}
+  state.stu=DB.getStudent(state.stu.id)||state.stu;
+  updateNav();
+  renderMenu();
+  showScreen('s-menu');
+}
+function renderMenu(){
+  const stu=state.stu;
+  const lv=stu.level||1;
+  const xp=stu.xp||0;
+  const coins=stu.coins||0;
+  const xpNext=[100,250,500,1000,2000,4000,7000,10000,999999][Math.min(lv-1,8)];
+  const xpPrev=[0,100,250,500,1000,2000,4000,7000,10000][Math.min(lv-1,8)];
+  const xpProg=Math.min(100,Math.round((xp-xpPrev)/(xpNext-xpPrev)*100));
+  document.getElementById('menu-coins').textContent='🪙 '+coins;
+  document.getElementById('menu-xp').textContent='⚡ '+xp+' XP';
+  document.getElementById('menu-level').textContent='Nivel '+lv;
+  document.getElementById('xp-bar-fill').style.width=xpProg+'%';
+  document.getElementById('modules-container').innerHTML=MODULE_ORDER.map(mid=>{
+    const mod=MODULES[mid];
+    const pct=modulePct(stu,mid);
+    const done=mod.activities.filter(a=>(stu.scores||{})[`${mid}_${a.id}`]).length;
+    const g=pctToGrade(pct);
+    const gc=pct>0?gradeColor(g):'rgba(255,255,255,.4)';
+    const stars=(stu.scores?mod.activities.map(a=>(stu.scores[`${mid}_${a.id}`]?.stars||0)).reduce((s,v)=>s+v,0):0);
+    return `<div class="mod-card" style="--mc:${mod.color.replace('var(--','').replace(')','')=='m1'?'#f97316':mod.color.replace('var(--','').replace(')','')=='m2'?'#8b5cf6':mod.color.replace('var(--','').replace(')','')=='m3'?'#10b981':mod.color.replace('var(--','').replace(')','')=='m4'?'#ef4444':mod.color.replace('var(--','').replace(')','')=='m5'?'#0ea5e9':mod.color.replace('var(--','').replace(')','')=='m6'?'#ec4899':mod.color.replace('var(--','').replace(')','')=='m7'?'#6366f1':mod.color.replace('var(--','').replace(')','')=='m8'?'#14b8a6':'#f59e0b'}" onclick="goModule('${mid}')">
+      <span class="mod-emoji">${mod.emoji}</span>
+      <h3>${mod.title}</h3>
+      <div class="mod-sub">${done}/4 actividades</div>
+      <div class="mod-stars">${stars>0?'⭐'.repeat(Math.min(stars,12)):''}</div>
+      ${pct>0?`<div style="margin-top:6px;font-family:'Fredoka One',sans-serif;font-size:1.2rem;color:${gc}">${g.toFixed(1)}</div>`:''}
+      <div class="mod-prog" style="width:${pct}%"></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════
+// MODULE VIEW
+// ═══════════════════════════════════════════
+const MOD_COLORS=['#f97316','#8b5cf6','#10b981','#ef4444','#0ea5e9','#ec4899','#6366f1','#14b8a6','#f59e0b'];
+function goModule(mid){
+  state.moduleId=mid;
+  const mod=MODULES[mid];
+  const col=MOD_COLORS[MODULE_ORDER.indexOf(mid)];
+  const stu=state.stu;
+  document.getElementById('mod-banner').style.background=`linear-gradient(135deg,${col},${col}cc)`;
+  document.getElementById('mod-banner-emoji').textContent=mod.emoji;
+  document.getElementById('mod-banner-title').textContent=mod.title;
+  document.getElementById('mod-banner-desc').textContent=mod.desc;
+  document.getElementById('mod-acts-grid').innerHTML=mod.activities.map((act,i)=>{
+    const key=`${mid}_${act.id}`;
+    const rec=(stu.scores||{})[key];
+    const locked=i>0&&!((stu.scores||{})[`${mid}_a${i}`]);// unlock after prev
+    const g=rec?parseFloat(rec.grade):null;
+    const gc=g?gradeColor(g):'#94a3b8';
+    return `<div class="act-card ${locked?'locked':''}" onclick="${locked?'':'startActivity(\''+mid+'\',\''+act.id+'\',\''+act.type+'\')'}">
+      <div class="act-num">Actividad ${i+1}</div>
+      <div class="act-title">${act.title}</div>
+      <div class="act-desc">${act.desc}</div>
+      <div class="act-score">
+        ${rec?`<span style="font-family:'Fredoka One',sans-serif;font-size:1.3rem;color:${gc}">${rec.grade}/5</span>
+        <span style="font-size:.8rem;color:rgba(255,255,255,.6)">(${rec.pct}%)</span>
+        <span>${'⭐'.repeat(rec.stars||0)}</span>`:'<span style="color:rgba(255,255,255,.4);font-size:.8rem">Sin completar</span>'}
+      </div>
+      ${locked?'<div style="position:absolute;top:12px;right:12px;font-size:1.2rem">🔒</div>':''}
+    </div>`;
+  }).join('');
+  showScreen('s-module');
+}
+
+// ═══════════════════════════════════════════
+// ACTIVITY ENGINE
+// ═══════════════════════════════════════════
+let actProblems=[], actIdx=0, actScore=0, actTotal=8;
+let timerInterval=null, timerVal=60;
+
+function startActivity(mid,aid,type){
+  state.moduleId=mid; state.actId=aid; state.actType=type;
+  state.score=0; state.total=0; state.answered=false;
+  actIdx=0; actScore=0;
+  actProblems=generateProblems(type,8);
+  actTotal=actProblems.length;
+  document.getElementById('act-mod-emoji').textContent=MODULES[mid].emoji;
+  document.getElementById('act-mod-name').textContent=MODULES[mid].title;
+  document.getElementById('act-title').textContent=MODULES[mid].activities.find(a=>a.id===aid).title;
+  showScreen('s-activity');
+  renderProblem();
+}
+
+function generateProblems(type,n){
+  const probs=[];
+  for(let i=0;i<n;i++) probs.push(genProblem(type,i));
+  return probs;
+}
+
+function R(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=R(0,i);[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+const EMOJI_POOL=['🍎','🌸','⭐','🐟','🦋','🎈','✏️','🚗','🍇','🐮','🌟','🍊','🐶','🌻','🎯'];
+const SHAPE_DATA={
+  circle:{name:'Círculo',svg:'<circle cx="35" cy="35" r="32" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 70 70'},
+  square:{name:'Cuadrado',svg:'<rect x="3" y="3" width="64" height="64" rx="4" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 70 70'},
+  triangle:{name:'Triángulo',svg:'<polygon points="35,4 68,66 2,66" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 70 70'},
+  rectangle:{name:'Rectángulo',svg:'<rect x="3" y="15" width="74" height="40" rx="4" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 80 70'},
+  star:{name:'Estrella',svg:'<polygon points="35,2 41,24 65,24 46,38 53,62 35,48 17,62 24,38 5,24 29,24" fill="{c}" stroke="{s}" stroke-width="2"/>',vb:'0 0 70 70'},
+  diamond:{name:'Rombo',svg:'<polygon points="35,3 67,35 35,67 3,35" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 70 70'},
+  oval:{name:'Óvalo',svg:'<ellipse cx="40" cy="35" rx="38" ry="25" fill="{c}" stroke="{s}" stroke-width="3"/>',vb:'0 0 80 70'},
+};
+const SHAPE_KEYS=Object.keys(SHAPE_DATA);
+const SHAPE_COLORS=['#ef4444','#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ec4899','#14b8a6'];
+
+function makeSVG(key,color,stroke){
+  const d=SHAPE_DATA[key];
+  return `<svg viewBox="${d.vb}" width="60" height="50" xmlns="http://www.w3.org/2000/svg">${d.svg.replace(/{c}/g,color).replace(/{s}/g,stroke||'#1e293b')}</svg>`;
+}
+
+function genProblem(type,idx){
+  const emoji=EMOJI_POOL[idx%EMOJI_POOL.length];
+  switch(type){
+    case 'selectCount':{const total=R(15,30),target=R(5,14);const opts=shuffle([target,R(1,14),R(15,30)].filter((v,i,a)=>a.indexOf(v)===i)).slice(0,3);if(!opts.includes(target)){opts[0]=target;}return{target,total,emoji,instruction:`Selecciona exactamente <strong>${target}</strong> ${emoji}`};}
+    case 'countWrite':{const n=R(5,25);return{n,emoji,instruction:`¿Cuántos <strong>${emoji}</strong> hay?`,answer:n};}
+    case 'fillSequence':{const start=R(1,20);const seq=[start,start+1,start+2,start+3,start+4];const blanks=[1,2,3].map(i=>R(0,4));const uniq=[...new Set(blanks)].slice(0,R(1,3));return{seq,blanks:uniq,answer:uniq.map(i=>seq[i])};}
+    case 'matchNumber':{const n=R(1,20);const emojis=['🍎','🌸','⭐','🐟','🦋'];const e=emojis[idx%emojis.length];const opts=[n,n+R(1,5),Math.max(1,n-R(1,4))].filter((v,i,a)=>a.indexOf(v)===i).slice(0,3);if(!opts.includes(n))opts[0]=n;return{n,emoji:e,opts:shuffle(opts)};}
+    case 'tensUnits':{const num=R(11,99);return{num,tens:Math.floor(num/10),units:num%10};}
+    case 'countBlocks':{const tens=R(1,9),ones=R(0,9);return{tens,ones,num:tens*10+ones};}
+    case 'buildNumber':{const num=R(11,99);return{num,tens:Math.floor(num/10),units:num%10};}
+    case 'hundred':{const missing=Array.from({length:R(4,7)},()=>R(1,100));return{missing:[...new Set(missing)]};}
+    case 'addPictures':{const a=R(1,12),b=R(1,12);const sum=a+b;const opts=shuffle([sum,sum+R(1,4),Math.max(1,sum-R(1,4))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3));if(!opts.includes(sum))opts[0]=sum;return{a,b,emoji,opts,answer:sum};}
+    case 'addMissing':{const a=R(1,15),b=R(1,15);return{a,sum:a+b,answer:b,instruction:`${a} + ___ = ${a+b}`};}
+    case 'vertAdd':{const a=R(10,99),b=R(10,99);return{a,b,answer:a+b};}
+    case 'addProblem':{const a=R(1,20),b=R(1,20);const names=['Ana','Carlos','María','Luis','Sofía'];const items=['manzanas','lápices','flores','pelotas','libros'];const n=names[idx%names.length],it=items[idx%items.length];const nm2=names[(idx+1)%names.length];return{text:`${n} tiene ${a} ${it} y ${nm2} le da ${b} más. ¿Cuántas ${it} tiene ${n} ahora?`,answer:a+b,opts:shuffle([a+b,a+b+R(1,5),Math.max(1,a+b-R(1,5))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3))};}
+    case 'crossOut':{const total=R(8,20),remove=R(2,total-1);return{total,remove,emoji,answer:total-remove,instruction:`Tacha ${remove} ${emoji} de los ${total}`};}
+    case 'subMissing':{const result=R(1,15),sub=R(1,15);return{total:result+sub,sub,answer:result,instruction:`${result+sub} - ${sub} = ___`};}
+    case 'vertSub':{const b=R(10,49),a=R(b,99);return{a,b,answer:a-b};}
+    case 'subProblem':{const total=R(10,30),gone=R(1,total-1);const items=['globos','galletas','carros','flores','estrellas'];const it=items[idx%items.length];const names=['Juan','Sara','Pedro','Lola','Tomás'];const n=names[idx%names.length];return{text:`${n} tenía ${total} ${it} y regaló ${gone}. ¿Cuántos ${it} le quedan?`,answer:total-gone,opts:shuffle([total-gone,total-gone+R(1,4),Math.max(1,total-gone-R(1,4))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3))};}
+    case 'shapeMatch':{const k=SHAPE_KEYS[idx%SHAPE_KEYS.length];const col=SHAPE_COLORS[idx%SHAPE_COLORS.length];const wrongs=shuffle(SHAPE_KEYS.filter(x=>x!==k)).slice(0,2);const opts=shuffle([k,...wrongs]);return{key:k,color:col,opts,correctName:SHAPE_DATA[k].name};}
+    case 'memoryGame':return genMemoryGame();
+    case 'classifyShapes':return genClassifyShapes(idx);
+    case 'shapesToReal':{const pairs=[{shape:'circle',real:'🌕 Luna',rn:'círculo'},{shape:'square',real:'📦 Caja',rn:'cuadrado'},{shape:'triangle',real:'🔺 Signo',rn:'triángulo'},{shape:'rectangle',real:'📱 Celular',rn:'rectángulo'},{shape:'star',real:'⭐ Estrella',rn:'estrella'},{shape:'oval',real:'🥚 Huevo',rn:'óvalo'},{shape:'diamond',real:'💎 Diamante',rn:'rombo'}];const p=pairs[idx%pairs.length];const wrongs=shuffle(pairs.filter(x=>x.shape!==p.shape)).slice(0,2);const opts=shuffle([p,...wrongs]);return{key:p.shape,correct:p,opts};}
+    case 'wordAdd':case 'wordSub':case 'chooseOp':case 'illustProb':{const a=R(1,20),b=R(1,20);const add=(type==='wordAdd'||type==='illustProb')||(type==='chooseOp'&&R(0,1));const ans=add?a+b:Math.abs(a-b);const names=['Ana','Carlos','Sofía','Pedro','Lola'];const items=['frutas','libros','pelotas','flores','lápices'];const n=names[idx%names.length],it=items[idx%items.length];const text=add?`${n} tiene ${a} ${it}. Le dan ${b} más. ¿Cuántos tiene?`:`${n} tiene ${a} ${it}. Regala ${b>a?a:b}. ¿Cuántos quedan?`;const realAns=add?a+b:a-(b>a?a:b);const opts=shuffle([realAns,realAns+R(1,5),Math.max(1,realAns-R(1,4))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3));return{a,b:b>a&&!add?a:b,add,emoji:EMOJI_POOL[idx%EMOJI_POOL.length],text,answer:realAns,opts,operation:add?'+':'-'};}
+    case 'timesTable':{const a=R(1,5),b=R(1,10);const ans=a*b;const opts=shuffle([ans,ans+R(1,5),Math.max(1,ans-R(1,4))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3));if(!opts.includes(ans))opts[0]=ans;return{a,b,answer:ans,opts};}
+    case 'vertMult2':{const a=R(11,99),b=R(2,9);return{a,b,answer:a*b,type:'2x1'};}
+    case 'vertMult3':{const a=R(101,999),b=R(2,9);return{a,b,answer:a*b,type:'3x1'};}
+    case 'multProblem':{const a=R(2,9),b=R(2,12);const items=['cajas','paquetes','filas','grupos','bolsas'];const it=items[idx%items.length];const sub=['naranjas','galletas','pelotas','lápices','flores'];const s=sub[idx%sub.length];const opts=shuffle([a*b,a*b+R(1,10),Math.max(1,a*b-R(1,8))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3));return{text:`Hay ${a} ${it} con ${b} ${s} cada uno. ¿Cuántos ${s} hay en total?`,answer:a*b,opts};}
+    case 'dragSign':case 'compareNums':{const a=R(1,99),b=R(1,99);const sign=a>b?'>':a<b?'<':'=';return{a,b,sign};}
+    case 'compareGroups':{const a=R(1,20),b=R(1,20);const sign=a>b?'>':a<b?'<':'=';return{a,b,sign,emoji:EMOJI_POOL[idx%EMOJI_POOL.length]};}
+    case 'compareProblem':{const a=R(1,50),b=R(1,50);const names=['Ana','Carlos'];const items=['puntos','estrellas','monedas'];const it=items[idx%items.length];const opts=['>','<','='];const sign=a>b?'>':a<b?'<':'=';return{text:`${names[0]} tiene ${a} ${it}. ${names[1]} tiene ${b} ${it}. ¿Cuál es el signo?`,answer:sign,opts};}
+    case 'timerChallenge':case 'quickFire':case 'precisionChallenge':case 'expertLevel':{
+      const ops=[{a:R(1,20),b:R(1,20),op:'+'},{a:R(2,9),b:R(2,9),op:'×'},{a:R(10,50),b:R(1,20),op:'-'}];
+      const o=ops[idx%3];const ans=o.op==='+'?o.a+o.b:o.op==='×'?o.a*o.b:o.a-o.b;
+      const opts=shuffle([ans,ans+R(1,8),Math.max(0,ans-R(1,6))].filter((v,i,ar)=>ar.indexOf(v)===i).slice(0,3));
+      if(!opts.includes(ans))opts[0]=ans;
+      return{a:o.a,b:o.b,op:o.op,answer:ans,opts};}
+    default:{const a=R(1,10),b=R(1,10);return{a,b,answer:a+b,opts:shuffle([a+b,a+b+2,a+b-2].filter(x=>x>=0))};}
+  }
+}
+
+function genMemoryGame(){
+  const keys=shuffle(SHAPE_KEYS).slice(0,4);
+  const cards=shuffle([...keys,...keys].map((k,i)=>({id:i,key:k,color:SHAPE_COLORS[SHAPE_KEYS.indexOf(k)],flipped:false,matched:false})));
+  return{cards,pairs:keys.length};
+}
+function genClassifyShapes(idx){
+  const cats=['Cuadriláteros','Triángulos','Figuras Curvas'];
+  const catMap={square:0,rectangle:0,diamond:0,triangle:1,circle:2,oval:2,star:1};
+  const items=shuffle(SHAPE_KEYS).slice(0,6);
+  return{cats,items,catMap,colors:items.map((_,i)=>SHAPE_COLORS[i])};
+}
+
+// ═══════════════════════════════════════════
+// PROBLEM RENDERER
+// ═══════════════════════════════════════════
+function renderProblem(){
+  if(actIdx>=actTotal){finishActivity();return;}
+  const p=actProblems[actIdx];
+  const prog=Math.round(actIdx/actTotal*100);
+  document.getElementById('act-prog-fill').style.width=prog+'%';
+  document.getElementById('act-prog-text').textContent=`Pregunta ${actIdx+1} de ${actTotal}`;
+  document.getElementById('act-score-chip').textContent=`✅ ${actScore}/${actIdx}`;
+  const area=document.getElementById('problem-area');
+  area.innerHTML=renderByType(state.actType,p);
+  // Special init
+  if(state.actType==='memoryGame')initMemory(p);
+  if(state.actType==='classifyShapes')initClassify(p);
+  if(['timerChallenge','precisionChallenge'].includes(state.actType)&&actIdx===0)startTimer();
+}
+
+function renderByType(type,p){
+  switch(type){
+    case 'selectCount':return renderSelectCount(p);
+    case 'countWrite':return renderCountWrite(p);
+    case 'fillSequence':return renderFillSequence(p);
+    case 'matchNumber':return renderMatchNumber(p);
+    case 'tensUnits':return renderTensUnits(p);
+    case 'countBlocks':return renderCountBlocks(p);
+    case 'buildNumber':return renderBuildNumber(p);
+    case 'hundred':return renderHundred(p);
+    case 'addPictures':return renderAddPictures(p);
+    case 'addMissing':return renderAddMissing(p);
+    case 'vertAdd':return renderVertOp(p,'+');
+    case 'addProblem':case 'subProblem':case 'multProblem':case 'wordAdd':case 'wordSub':case 'illustProb':case 'compareProblem':return renderWordProblem(p);
+    case 'crossOut':return renderCrossOut(p);
+    case 'subMissing':return renderSubMissing(p);
+    case 'vertSub':return renderVertOp(p,'-');
+    case 'shapeMatch':return renderShapeMatch(p);
+    case 'memoryGame':return renderMemoryGame(p);
+    case 'classifyShapes':return renderClassifyShapes(p);
+    case 'shapesToReal':return renderShapesToReal(p);
+    case 'dragSign':case 'compareNums':return renderCompareSign(p);
+    case 'compareGroups':return renderCompareGroups(p);
+    case 'timesTable':case 'timerChallenge':case 'quickFire':case 'precisionChallenge':case 'expertLevel':return renderTimesTable(p);
+    case 'vertMult2':case 'vertMult3':return renderVertMult(p);
+    case 'chooseOp':return renderChooseOp(p);
+    default:return renderTimesTable(p);
+  }
+}
+
+function renderSelectCount(p){
+  const all=Array.from({length:p.total},(_,i)=>`<span class="emoji-item" id="obj-${i}" onclick="toggleObj(${i},${p.target})">${p.emoji}</span>`);
+  return `<div class="prob-instruction">${p.instruction}</div>
+  <div class="emoji-grid" style="max-height:200px;overflow-y:auto">${all.join('')}</div>
+  <div class="answer-area">
+    <span id="sel-count" style="font-family:'Fredoka One',sans-serif;font-size:1.3rem;color:#6366f1">Seleccionados: 0 / ${p.target}</span>
+    <button class="btn-primary" onclick="checkSelectCount(${p.target})" style="padding:10px 20px;font-size:.95rem">Verificar ✓</button>
+  </div>`;
+}
+let selSet=new Set();
+function toggleObj(i,target){
+  if(state.answered)return;
+  const el=document.getElementById('obj-'+i);
+  if(selSet.has(i)){selSet.delete(i);el.classList.remove('selected');}
+  else{selSet.add(i);el.classList.add('selected');}
+  document.getElementById('sel-count').textContent=`Seleccionados: ${selSet.size} / ${target}`;
+}
+function checkSelectCount(target){
+  if(selSet.size===0)return;
+  const correct=selSet.size===target;
+  selSet.clear();
+  feedback(correct);
+  setTimeout(()=>nextProblem(),1400);
+}
+
+function renderCountWrite(p){
+  const items=Array.from({length:p.n},()=>`<span class="emoji-item" style="cursor:default">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">${p.instruction}</div>
+  <div class="emoji-grid">${items}</div>
+  <div class="answer-area" style="margin-top:16px">
+    <input class="big-input" id="count-inp" type="number" min="0" max="30" placeholder="?" onkeydown="if(event.key==='Enter')checkInput(${p.answer},'count-inp')" autofocus>
+    <button class="btn-primary" onclick="checkInput(${p.answer},'count-inp')" style="padding:12px 20px">→</button>
+  </div>`;
+}
+
+function renderFillSequence(p){
+  const seqHtml=p.seq.map((n,i)=>{
+    if(p.blanks.includes(i)){return `<input class="big-input seq-inp" id="seq-${i}" type="number" min="0" max="30" placeholder="?" style="width:60px;height:50px;font-size:1.6rem" data-ans="${n}" onkeydown="if(event.key==='Enter')checkSeq()">`;}
+    return `<span style="font-family:'Fredoka One',sans-serif;font-size:2.2rem;color:#1e293b;padding:4px 10px">${n}</span>`;
+  }).join('<span style="font-size:1.8rem;color:#94a3b8;padding:0 4px">›</span>');
+  return `<div class="prob-instruction">Completa la <strong>secuencia numérica</strong></div>
+  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;justify-content:center;padding:16px;background:#f8fafc;border-radius:14px;margin:12px 0">${seqHtml}</div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkSeq()" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+function checkSeq(){
+  let allOk=true;
+  document.querySelectorAll('.seq-inp').forEach(inp=>{
+    if(parseInt(inp.value)!==parseInt(inp.dataset.ans)){allOk=false;inp.classList.add('err');}
+    else inp.classList.add('ok');
+  });
+  feedback(allOk);
+  setTimeout(()=>nextProblem(),1400);
+}
+
+function renderMatchNumber(p){
+  const itemsHtml=Array.from({length:p.n},()=>`<span style="font-size:1.6rem">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">¿Qué número representa este grupo?</div>
+  <div class="emoji-grid" style="margin:12px 0">${itemsHtml}</div>
+  <div class="option-btns">${p.opts.map(o=>`<button class="opt-choice" onclick="selectOpt(this,${o},${p.n})">${o}</button>`).join('')}</div>`;
+}
+
+function renderTensUnits(p){
+  return `<div class="prob-instruction">¿Cuántas <strong>decenas</strong> y <strong>unidades</strong> tiene este número?</div>
+  <div class="number-display">${p.num}</div>
+  <div class="tu-row">
+    <div class="tu-box"><div class="tu-label">DECENAS</div><input class="tu-input" id="inp-tens" type="number" min="0" max="9" placeholder="?" onkeydown="if(event.key==='Enter')checkTU(${p.tens},${p.units})"></div>
+    <div style="font-family:'Fredoka One',sans-serif;font-size:2rem;color:#94a3b8;align-self:center">y</div>
+    <div class="tu-box"><div class="tu-label">UNIDADES</div><input class="tu-input" id="inp-units" type="number" min="0" max="9" placeholder="?" onkeydown="if(event.key==='Enter')checkTU(${p.tens},${p.units})"></div>
+  </div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkTU(${p.tens},${p.units})" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+function checkTU(tens,units){
+  const t=parseInt(document.getElementById('inp-tens').value);
+  const u=parseInt(document.getElementById('inp-units').value);
+  const ok=t===tens&&u===units;
+  document.getElementById('inp-tens').classList.add(t===tens?'ok':'err');
+  document.getElementById('inp-units').classList.add(u===units?'ok':'err');
+  feedback(ok);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderCountBlocks(p){
+  const tens=Array.from({length:p.tens},()=>`<div class="block-ten">${Array.from({length:10},()=>'<div></div>').join('')}</div>`).join('');
+  const ones=Array.from({length:p.ones},()=>'<div class="block-one"></div>').join('');
+  return `<div class="prob-instruction">¿Qué <strong>número</strong> forman estos bloques?</div>
+  <div class="blocks-display">${tens}${ones?`<div style="display:flex;flex-wrap:wrap;gap:3px">${ones}</div>`:''}</div>
+  <div style="margin:10px 0;text-align:center;color:#94a3b8;font-size:.85rem">${p.tens} barra(s) de 10 + ${p.ones} cubo(s)</div>
+  <div class="answer-area">
+    <input class="big-input" id="blocks-inp" type="number" min="0" max="99" placeholder="?" onkeydown="if(event.key==='Enter')checkInput(${p.num},'blocks-inp')">
+    <button class="btn-primary" onclick="checkInput(${p.num},'blocks-inp')" style="padding:12px 20px">→</button>
+  </div>`;
+}
+
+function renderBuildNumber(p){
+  return `<div class="prob-instruction">Construye el número <span style="font-family:'Fredoka One',sans-serif;font-size:1.4rem;color:#8b5cf6">${p.num}</span> usando bloques:</div>
+  <div class="tu-row">
+    <div class="tu-box"><div class="tu-label">¿Cuántas barras de 10?</div><input class="tu-input" id="b-tens" type="number" min="0" max="9" placeholder="?" onkeydown="if(event.key==='Enter')checkBuild(${p.tens},${p.units})"></div>
+    <div class="tu-box"><div class="tu-label">¿Cuántos cubos de 1?</div><input class="tu-input" id="b-units" type="number" min="0" max="9" placeholder="?" onkeydown="if(event.key==='Enter')checkBuild(${p.tens},${p.units})"></div>
+  </div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkBuild(${p.tens},${p.units})" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+function checkBuild(tens,units){
+  const t=parseInt(document.getElementById('b-tens').value);
+  const u=parseInt(document.getElementById('b-units').value);
+  const ok=t===tens&&u===units;
+  document.getElementById('b-tens').classList.add(t===tens?'ok':'err');
+  document.getElementById('b-units').classList.add(u===units?'ok':'err');
+  feedback(ok);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderHundred(p){
+  // Show a mini 100-grid with some missing
+  const rows=[];
+  for(let r=0;r<10;r++){
+    const cells=[];
+    for(let c=0;c<10;c++){
+      const n=r*10+c+1;
+      if(p.missing.includes(n)){
+        cells.push(`<td><input style="width:28px;height:28px;border:2px solid #8b5cf6;border-radius:6px;text-align:center;font-family:'Fredoka One';font-size:.9rem;outline:none" type="number" min="1" max="100" id="h${n}" data-ans="${n}" onkeydown="if(event.key==='Enter')checkHundred()"></td>`);
+      } else {
+        cells.push(`<td style="text-align:center;font-family:'Fredoka One';font-size:.85rem;color:#475569;padding:3px">${n}</td>`);
+      }
+    }
+    rows.push(`<tr>${cells.join('')}</tr>`);
+  }
+  return `<div class="prob-instruction">Completa los números que faltan en la <strong>Tabla del 100</strong></div>
+  <div style="overflow-x:auto;margin:10px 0"><table style="border-collapse:collapse;margin:0 auto">${rows.join('')}</table></div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkHundred()" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+function checkHundred(){
+  let allOk=true;
+  document.querySelectorAll('[id^="h"]').forEach(inp=>{
+    if(parseInt(inp.value)!==parseInt(inp.dataset.ans)){allOk=false;inp.style.borderColor='#ef4444';}
+    else inp.style.borderColor='#22c55e';
+  });
+  feedback(allOk);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderAddPictures(p){
+  const g1=Array.from({length:p.a},()=>`<span class="emoji-item" style="cursor:default">${p.emoji}</span>`).join('');
+  const g2=Array.from({length:p.b},()=>`<span class="emoji-item" style="cursor:default">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">¿Cuánto es <strong>${p.a} + ${p.b}</strong>?</div>
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;padding:12px;background:#f8fafc;border-radius:14px;margin:12px 0">
+    <div class="emoji-group">${g1}</div>
+    <div class="plus-sign">+</div>
+    <div class="emoji-group">${g2}</div>
+    <div class="equals-sign">=</div>
+    <span style="font-family:'Fredoka One',sans-serif;font-size:2.5rem;color:#6366f1">?</span>
+  </div>
+  <div class="option-btns">${p.opts.map(o=>`<button class="opt-choice" onclick="selectOpt(this,${o},${p.answer})">${o}</button>`).join('')}</div>`;
+}
+
+function renderAddMissing(p){
+  return `<div class="prob-instruction">Encuentra el número que <strong>falta</strong></div>
+  <div class="number-display" style="font-size:3rem">${p.instruction}</div>
+  <div class="answer-area">
+    <input class="big-input" id="miss-inp" type="number" min="0" max="30" placeholder="?" onkeydown="if(event.key==='Enter')checkInput(${p.answer},'miss-inp')">
+    <button class="btn-primary" onclick="checkInput(${p.answer},'miss-inp')" style="padding:12px 20px">→</button>
+  </div>`;
+}
+
+function renderVertOp(p,op){
+  const a=p.a.toString().split('').map(d=>`<div class="vert-dig" style="pointer-events:none;background:#f8fafc">${d}</div>`).join('');
+  const b=p.b.toString().split('').map(d=>`<div class="vert-dig" style="pointer-events:none;background:#f8fafc">${d}</div>`).join('');
+  const ans=p.answer.toString();
+  const ansInputs=ans.split('').map((_,i)=>`<input class="vert-dig" id="v${i}" type="number" min="0" max="9" maxlength="1" onkeydown="if(event.key==='Enter')checkVert(${JSON.stringify(ans.split('').map(Number))})" oninput="autoFocusNext(this,'v')">`).join('');
+  return `<div class="prob-instruction">Resuelve la <strong>${op==='+'?'suma':'resta'} vertical</strong></div>
+  <div style="text-align:center;margin:16px 0">
+    <div class="vert-op">
+      <div class="vert-answer">${a}</div>
+      <div class="vert-op-sign">${op}</div>
+      <div class="vert-answer">${b}</div>
+      <div class="vert-answer" style="border-top:3px solid #1e293b;padding-top:6px;margin-top:6px">${ansInputs}</div>
+    </div>
+  </div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkVert(${JSON.stringify(ans.split('').map(Number))})" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+function autoFocusNext(inp,prefix){
+  const id=inp.id;const num=parseInt(id.replace(prefix,''));
+  const next=document.getElementById(prefix+(num+1));
+  if(next&&inp.value.length>0)next.focus();
+}
+function checkVert(digits){
+  let ok=true;
+  digits.forEach((d,i)=>{
+    const inp=document.getElementById('v'+i);
+    if(!inp)return;
+    if(parseInt(inp.value)===d){inp.classList.add('ok');}
+    else{inp.classList.add('err');ok=false;}
+  });
+  feedback(ok);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderWordProblem(p){
+  return `<div class="prob-instruction">📖 Lee y resuelve</div>
+  <div style="background:#f0f4ff;border-radius:14px;padding:16px;margin:12px 0;font-size:1rem;font-weight:700;color:#1e293b;line-height:1.6;border-left:4px solid #6366f1">${p.text}</div>
+  <div class="option-btns">${p.opts.map(o=>`<button class="opt-choice" onclick="selectOpt(this,${o},${p.answer})">${o}</button>`).join('')}</div>`;
+}
+
+function renderCrossOut(p){
+  const items=Array.from({length:p.total},(_,i)=>`<span class="emoji-item" id="co-${i}" onclick="crossOutItem(${i},${p.remove},${p.answer})">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">${p.instruction} y luego tócalos. ¿Cuántos quedan?</div>
+  <div class="emoji-grid" id="cross-grid">${items}</div>
+  <div id="remaining-count" style="text-align:center;font-family:'Fredoka One',sans-serif;font-size:1.4rem;color:#6366f1;margin-top:10px">Tachados: 0 / ${p.remove}</div>`;
+}
+let crossedSet=new Set();
+function crossOutItem(i,remove,answer){
+  if(state.answered)return;
+  const el=document.getElementById('co-'+i);
+  if(crossedSet.has(i)){crossedSet.delete(i);el.classList.remove('crossed');}
+  else if(crossedSet.size<remove){crossedSet.add(i);el.classList.add('crossed');}
+  const cnt=crossedSet.size;
+  document.getElementById('remaining-count').textContent=`Tachados: ${cnt} / ${remove}`;
+  if(cnt===remove){
+    crossedSet.clear();
+    const ok=cnt===remove;// always ok if they tach exactly remove
+    feedback(true);// let's reward completing correctly
+    setTimeout(()=>nextProblem(),1400);
+  }
+}
+
+function renderSubMissing(p){
+  return `<div class="prob-instruction">Encuentra el resultado</div>
+  <div class="number-display" style="font-size:3rem">${p.instruction}</div>
+  <div class="answer-area">
+    <input class="big-input" id="sub-inp" type="number" min="0" max="99" placeholder="?" onkeydown="if(event.key==='Enter')checkInput(${p.answer},'sub-inp')">
+    <button class="btn-primary" onclick="checkInput(${p.answer},'sub-inp')" style="padding:12px 20px">→</button>
+  </div>`;
+}
+
+function renderShapeMatch(p){
+  const svg=makeSVG(p.key,p.color);
+  return `<div class="prob-instruction">¿Qué figura geométrica es esta?</div>
+  <div style="text-align:center;margin:16px 0">${svg}</div>
+  <div class="option-btns">${p.opts.map(k=>`<button class="opt-choice" onclick="selectOpt(this,'${k}','${p.key}')" style="font-size:1rem;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:90px;padding:10px">${makeSVG(k,SHAPE_COLORS[SHAPE_KEYS.indexOf(k)],'#e2e8f0')}<span>${SHAPE_DATA[k].name}</span></button>`).join('')}</div>`;
+}
+
+let memFlipped=[], memMatched=0, memMoves=0, memTotal=0, memCards=[];
+function renderMemoryGame(p){
+  memCards=p.cards; memFlipped=[]; memMatched=0; memMoves=0; memTotal=p.pairs;
+  const cols=Math.ceil(Math.sqrt(p.cards.length));
+  return `<div class="prob-instruction">Encuentra todas las <strong>parejas</strong> de figuras</div>
+  <div class="memory-grid" style="grid-template-columns:repeat(${cols},70px)">${p.cards.map((c,i)=>`<button class="mem-card" id="mc-${c.id}" onclick="flipCard(${c.id},'${c.key}','${c.color}')"><div class="mem-inner"><div class="mem-front">?</div><div class="mem-back">${makeSVG(c.key,c.color)}</div></div></button>`).join('')}</div>
+  <div id="mem-status" style="text-align:center;color:#64748b;font-size:.85rem;margin-top:8px">Pares encontrados: 0/${p.pairs}</div>`;
+}
+function initMemory(){}
+function flipCard(id,key,color){
+  if(state.answered)return;
+  const el=document.getElementById('mc-'+id);
+  if(el.classList.contains('flipped')||el.classList.contains('matched'))return;
+  if(memFlipped.length>=2)return;
+  el.classList.add('flipped');
+  memFlipped.push({id,key,color});
+  memMoves++;
+  if(memFlipped.length===2){
+    if(memFlipped[0].key===memFlipped[1].key){
+      memFlipped.forEach(c=>document.getElementById('mc-'+c.id).classList.replace('flipped','matched'));
+      memMatched++;
+      document.getElementById('mem-status').textContent=`Pares encontrados: ${memMatched}/${memTotal}`;
+      memFlipped=[];
+      if(memMatched===memTotal){feedback(true);setTimeout(()=>nextProblem(),1400);}
+    } else {
+      setTimeout(()=>{memFlipped.forEach(c=>document.getElementById('mc-'+c.id).classList.remove('flipped'));memFlipped=[];},900);
+    }
+  }
+}
+
+function renderClassifyShapes(p){
+  const items=p.items.map((k,i)=>`<div class="draggable" id="shape-${k}" draggable="true" ondragstart="dragShape('${k}','${p.catMap[k]}')">${makeSVG(k,p.colors[i])}</div>`).join('');
+  const buckets=p.cats.map((cat,ci)=>`<div class="bucket" id="bucket-${ci}" ondragover="event.preventDefault();this.classList.add('active')" ondragleave="this.classList.remove('active')" ondrop="dropShape(event,${ci},${JSON.stringify(p.catMap)})">
+    <div class="bucket-label">${cat}</div>
+    <div id="bucket-items-${ci}" style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:40px"></div>
+  </div>`).join('');
+  return `<div class="prob-instruction">Arrastra cada figura a su grupo correcto</div>
+  <div class="drag-source" id="shape-source">${items}</div>
+  <div class="classify-buckets">${buckets}</div>
+  <div class="answer-area" style="margin-top:12px"><button class="btn-primary" onclick="checkClassify(${JSON.stringify(p.catMap)})" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+let classifyPlacements={};
+function initClassify(){classifyPlacements={};}
+function dragShape(key,cat){window._dragKey=key;window._dragCat=cat;}
+function dropShape(ev,ci,catMap){
+  ev.preventDefault();
+  const k=window._dragKey;
+  if(!k)return;
+  document.getElementById('bucket-'+ci).classList.remove('active');
+  const el=document.getElementById('shape-'+k);
+  if(el)document.getElementById('bucket-items-'+ci).appendChild(el);
+  classifyPlacements[k]=ci;
+}
+function checkClassify(catMap){
+  let ok=true;
+  Object.entries(classifyPlacements).forEach(([k,ci])=>{if(catMap[k]!==ci)ok=false;});
+  if(Object.keys(classifyPlacements).length<3)ok=false;
+  feedback(ok);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderShapesToReal(p){
+  const svgMain=makeSVG(p.key,SHAPE_COLORS[SHAPE_KEYS.indexOf(p.key)]);
+  return `<div class="prob-instruction">¿Con qué objeto real se asocia esta figura?</div>
+  <div style="text-align:center;margin:16px 0">${svgMain}</div>
+  <div class="option-btns">${p.opts.map(o=>`<button class="opt-choice" onclick="selectOpt(this,'${o.shape}','${p.key}')" style="font-size:1.1rem;min-width:100px">${o.real}</button>`).join('')}</div>`;
+}
+
+function renderCompareSign(p){
+  const selected={val:null};
+  return `<div class="prob-instruction">Coloca el signo correcto entre los números</div>
+  <div class="compare-row">
+    <div class="cmp-num">${p.a}</div>
+    <div class="sign-opts">
+      ${['>', '<', '='].map(s=>`<button class="sign-btn" onclick="selectSign(this,'${s}','${p.sign}')">${s}</button>`).join('')}
+    </div>
+    <div class="cmp-num">${p.b}</div>
+  </div>`;
+}
+function selectSign(btn,val,correct){
+  if(state.answered)return;
+  document.querySelectorAll('.sign-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const ok=val===correct;
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok){document.querySelectorAll('.sign-btn').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});}
+  feedback(ok);setTimeout(()=>nextProblem(),1400);
+}
+
+function renderCompareGroups(p){
+  const g1=Array.from({length:Math.min(p.a,20)},()=>`<span style="font-size:1.4rem">${p.emoji}</span>`).join('');
+  const g2=Array.from({length:Math.min(p.b,20)},()=>`<span style="font-size:1.4rem">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">Compara los grupos y elige el signo</div>
+  <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:#f8fafc;border-radius:14px;padding:12px;margin:12px 0">
+    <div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center">${g1}<br><strong style="font-family:'Fredoka One';font-size:1.4rem;color:#6366f1">${p.a}</strong></div>
+    <div class="sign-opts" style="flex-direction:column">${['>', '<', '='].map(s=>`<button class="sign-btn" style="width:50px;height:50px" onclick="selectSign(this,'${s}','${p.sign}')">${s}</button>`).join('')}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:3px;justify-content:center">${g2}<br><strong style="font-family:'Fredoka One';font-size:1.4rem;color:#6366f1">${p.b}</strong></div>
+  </div>`;
+}
+
+function renderTimesTable(p){
+  return `<div class="prob-instruction">${p.op?`¿Cuánto es <strong>${p.a} ${p.op} ${p.b}</strong>?`:`¿Cuánto es <strong>${p.a} × ${p.b}</strong>?`}</div>
+  <div class="quick-num">${p.a} ${p.op||'×'} ${p.b} = ?</div>
+  <div class="option-btns">${p.opts.map(o=>`<button class="opt-choice" onclick="selectOpt(this,${o},${p.answer})">${o}</button>`).join('')}</div>`;
+}
+
+function renderVertMult(p){
+  const a=p.a.toString(),b=p.b.toString();
+  const ans=p.answer.toString();
+  const carries=ans.length>1?Array.from({length:ans.length-1},(_,i)=>`<input class="carry-box" id="carry-${i}" type="number" min="0" max="9" placeholder="" style="font-size:.85rem">`).join(''):'';
+  const ansInputs=ans.split('').map((_,i)=>`<input class="vert-dig" id="va${i}" type="number" min="0" max="9" onkeydown="if(event.key==='Enter')checkVert(${JSON.stringify(ans.split('').map(Number))})" oninput="autoFocusNext(this,'va')">`).join('');
+  return `<div class="prob-instruction">Resuelve la <strong>multiplicación</strong> paso a paso</div>
+  <div style="text-align:center;margin:12px 0">
+    ${carries?`<div style="display:flex;justify-content:flex-end;gap:4px;padding-right:4px;margin-bottom:4px;min-height:40px">${carries}</div>`:''}
+    <div class="vert-op">
+      <div class="vert-answer">${a.split('').map(d=>`<div class="vert-dig" style="pointer-events:none;background:#f8fafc">${d}</div>`).join('')}</div>
+      <div class="vert-op-sign">× ${b}</div>
+      <div class="vert-answer" style="border-top:3px solid #1e293b;padding-top:6px;margin-top:6px">${ansInputs}</div>
+    </div>
+  </div>
+  <div class="answer-area"><button class="btn-primary" onclick="checkVert(${JSON.stringify(ans.split('').map(Number))})" style="padding:12px 24px">Verificar ✓</button></div>`;
+}
+
+function renderChooseOp(p){
+  const items1=Array.from({length:Math.min(p.a,15)},()=>`<span style="font-size:1.5rem">${p.emoji}</span>`).join('');
+  return `<div class="prob-instruction">📖 Lee el problema y elige la operación</div>
+  <div style="background:#f0f4ff;border-radius:14px;padding:14px;margin:12px 0;font-size:1rem;font-weight:700;color:#1e293b;line-height:1.6;border-left:4px solid #6366f1">${p.text}</div>
+  <div class="option-btns">
+    <button class="opt-choice" style="font-size:2rem;min-width:80px" onclick="selectOpt(this,'+','${p.operation}')">+</button>
+    <button class="opt-choice" style="font-size:2rem;min-width:80px" onclick="selectOpt(this,'-','${p.operation}')">−</button>
+    <button class="opt-choice" style="font-size:2rem;min-width:80px" onclick="selectOpt(this,'×','${p.operation}')">×</button>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// ANSWER CHECKING
+// ═══════════════════════════════════════════
+function selectOpt(btn,val,correct){
+  if(state.answered)return;
+  state.answered=true;
+  document.querySelectorAll('.opt-choice').forEach(b=>b.classList.add('disabled'));
+  const ok=String(val)===String(correct);
+  btn.classList.add(ok?'correct':'wrong');
+  if(!ok){document.querySelectorAll('.opt-choice').forEach(b=>{if(String(b.textContent.trim())===String(correct))b.classList.add('correct');});}
+  feedback(ok);
+  setTimeout(()=>nextProblem(),1400);
+}
+
+function checkInput(correct,inputId){
+  if(state.answered)return;
+  const inp=document.getElementById(inputId);
+  const val=parseInt(inp.value);
+  const ok=val===correct;
+  inp.classList.add(ok?'ok':'err');
+  if(!ok){
+    setTimeout(()=>{if(inp)inp.value='';if(inp)inp.classList.remove('err');},800);
+    feedback(false);setTimeout(()=>nextProblem(),1400);
+    return;
+  }
+  feedback(true);setTimeout(()=>nextProblem(),1400);
+}
+
+function feedback(ok){
+  state.answered=true;
+  if(ok){actScore++;confetti();}
+  const overlay=document.getElementById('feedback-overlay');
+  document.getElementById('fb-icon').textContent=ok?'🎉':'😅';
+  document.getElementById('fb-text').textContent=ok?['¡Excelente!','¡Muy bien!','¡Correcto!','¡Genial!'][Math.floor(Math.random()*4)]:'¡Intenta de nuevo!';
+  document.getElementById('fb-sub').textContent=ok?'Sigue así 🌟':'La respuesta correcta ya está marcada';
+  overlay.classList.add('show');
+  setTimeout(()=>overlay.classList.remove('show'),1200);
+}
+
+function nextProblem(){
+  state.answered=false;
+  actIdx++;
+  selSet.clear();
+  crossedSet.clear();
+  renderProblem();
+}
+
+// ═══════════════════════════════════════════
+// TIMER CHALLENGE
+// ═══════════════════════════════════════════
+function startTimer(){
+  if(timerInterval)clearInterval(timerInterval);
+  timerVal=60;
+  const update=()=>{
+    timerVal--;
+    const ring=document.getElementById('timer-ring');
+    const txt=document.getElementById('timer-txt');
+    if(ring)ring.style.setProperty('--prog',Math.round(timerVal/60*100)+'%');
+    if(txt)txt.textContent=timerVal+'s';
+    if(timerVal<=0){clearInterval(timerInterval);finishActivity();}
+  };
+  timerInterval=setInterval(update,1000);
+}
+
+// ═══════════════════════════════════════════
+// FINISH ACTIVITY
+// ═══════════════════════════════════════════
+function finishActivity(){
+  if(timerInterval){clearInterval(timerInterval);timerInterval=null;}
+  const pct=actTotal>0?Math.round(actScore/actTotal*100):0;
+  const g=pctToGrade(pct);
+  const gl=gradeLabel(g);
+  const result=DB.updateScore(state.stu.id,state.moduleId,state.actId,actScore,actTotal);
+  state.stu=DB.getStudent(state.stu.id)||state.stu;
+
+  const big=pct>=90?'🏆':pct>=70?'⭐':pct>=50?'📚':'💪';
+  const msg=pct>=90?'¡Nivel Superior!':pct>=70?'¡Muy bien!':pct>=50?'¡Básico alcanzado!':'¡Sigue practicando!';
+  
+  document.getElementById('res-emoji').textContent=big;
+  document.getElementById('res-title').textContent=msg;
+  document.getElementById('res-grade-num').textContent=g.toFixed(1);
+  document.getElementById('res-grade-num').style.color=gl.col;
+  document.getElementById('res-grade-lbl').textContent=gl.txt;
+  document.getElementById('res-grade-pill').style.setProperty('--col',gl.col);
+  document.getElementById('res-grade-pill').style.setProperty('--bg',gl.bg);
+  document.getElementById('res-correct').textContent=actScore;
+  document.getElementById('res-total').textContent=actTotal;
+  document.getElementById('res-pct').textContent=pct+'%';
+  document.getElementById('res-stars').textContent='⭐'.repeat(result?.stars||0)||'—';
+  document.getElementById('res-coins').textContent=`🪙 +${result?.earned||0}`;
+
+  // Check achievements
+  const allScores=Object.keys(state.stu.scores||{}).length;
+  if(allScores===1)showAchievement('🎖️','¡Primera actividad!','Completaste tu primer ejercicio');
+  if(allScores===5)showAchievement('🔥','¡Racha de 5!','Completaste 5 actividades');
+  if(pct===100)showAchievement('💯','¡Perfecto!','¡100% de aciertos!');
+  if((state.stu.level||1)>=3)showAchievement('⚡','¡Subiste de nivel!','¡Nivel '+state.stu.level+'!');
+
+  showScreen('s-results');
+}
+
+function showAchievement(icon,title,desc){
+  const el=document.getElementById('achievement-pop');
+  document.getElementById('ach-icon').textContent=icon;
+  document.getElementById('ach-title').textContent=title;
+  document.getElementById('ach-desc').textContent=desc;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════════════
+// PANEL
+// ═══════════════════════════════════════════
+function goPanel(){
+  renderPanel();
+  showScreen('s-panel');
+}
+function switchTab(tab){
+  document.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+function renderPanel(){
+  const all=DB.load();
+  if(!all.length){
+    document.getElementById('panel-summary').innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:20px">No hay estudiantes registrados.</p>';
+    document.getElementById('panel-detail').innerHTML='';
+    return;
+  }
+  // Summary
+  const totalActs=all.reduce((s,st)=>s+Object.keys(st.scores||{}).length,0);
+  const avgGrade=all.length?all.reduce((s,st)=>s+overallPct(st),0)/all.length:0;
+  const lvls=all.map(s=>s.level||1);
+  document.getElementById('panel-summary').innerHTML=`
+    <div class="stat-grid">
+      <div class="stat-card"><div class="st-num">${all.length}</div><div class="st-lbl">Estudiantes</div></div>
+      <div class="stat-card"><div class="st-num">${totalActs}</div><div class="st-lbl">Actividades</div></div>
+      <div class="stat-card"><div class="st-num" style="color:${gradeColor(pctToGrade(avgGrade))}">${pctToGrade(avgGrade).toFixed(1)}</div><div class="st-lbl">Nota media</div></div>
+      <div class="stat-card"><div class="st-num">${Math.max(...lvls)}</div><div class="st-lbl">Nivel máx.</div></div>
+    </div>
+    <div class="rank-list">
+      ${all.sort((a,b)=>overallPct(b)-overallPct(a)).map((stu,i)=>{
+        const pct=overallPct(stu),g=pctToGrade(pct),gc=gradeColor(g),gl=gradeLabel(g);
+        const coins=stu.coins||0,xp=stu.xp||0,lv=stu.level||1;
+        const modBadges=MODULE_ORDER.map(m=>{const mp=modulePct(stu,m);if(mp===0)return'';const mg=pctToGrade(mp);const col=gradeColor(mg);return `<span style="font-size:.65rem;background:rgba(255,255,255,.1);color:${col};border-radius:4px;padding:1px 4px;font-weight:800">${MODULES[m].emoji} ${mg.toFixed(1)}</span>`;}).join('');
+        return `<div class="rank-row">
+          <div class="rank-pos">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+          <div class="rank-av">${stu.avatar}</div>
+          <div class="rank-info">
+            <div class="rank-name">${stu.name} <span style="font-size:.7rem;color:rgba(255,255,255,.5)">Nv.${lv} · 🪙${coins} · ⚡${xp}</span></div>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">${modBadges}</div>
+          </div>
+          <div class="rank-grade"><div class="rg-num" style="color:${gc}">${g.toFixed(1)}</div><div class="rg-lbl" style="color:${gc}">${gl.txt}</div></div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  // Detail
+  document.getElementById('panel-detail').innerHTML=all.map(stu=>{
+    const pct=overallPct(stu),g=pctToGrade(pct),gc=gradeColor(g),gl=gradeLabel(g);
+    const done=Object.keys(stu.scores||{}).length;
+    const modScores=MODULE_ORDER.map(m=>{
+      const mp=modulePct(stu,m),mg=pctToGrade(mp);
+      const mc=gradeColor(mg);
+      const actDone=MODULES[m].activities.filter(a=>(stu.scores||{})[`${m}_${a.id}`]).length;
+      return `<div class="mod-score-item"><div class="msi-icon">${MODULES[m].emoji}</div><div class="msi-info"><div class="msi-name">${MODULES[m].title}</div><div class="msi-acts">${actDone}/4 actos · ${mp}%</div></div><div class="msi-grade" style="color:${mc}">${mp>0?mg.toFixed(1):'—'}</div></div>`;
+    }).join('');
+    return `<div class="stu-card">
+      <div class="stu-card-hdr" onclick="toggleStuCard(this)">
+        <div class="stu-av">${stu.avatar}</div>
+        <div class="stu-info"><div class="stu-name">${stu.name}</div><div class="stu-detail">${stu.grade} · ${done}/36 · 🪙${stu.coins||0} · Nv.${stu.level||1}</div></div>
+        <div class="stu-grade-col"><div class="stu-grade-big" style="color:${gc}">${g.toFixed(1)}</div><div class="stu-grade-lbl" style="color:${gc}">${gl.txt}</div></div>
+        <span style="color:rgba(255,255,255,.4);margin-left:8px;font-size:1.2rem">›</span>
+      </div>
+      <div class="stu-card-body">
+        <div class="mod-score-grid">${modScores}</div>
+        <div class="print-btns">
+          <button class="print-btn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)" onclick="openPrint('${stu.id}','all')">📊 Informe Completo</button>
+          <button class="print-btn" style="background:linear-gradient(135deg,#10b981,#059669)" onclick="openPrint('${stu.id}','nums')">🔢 Números y Ops.</button>
+          <button class="print-btn" style="background:linear-gradient(135deg,#ec4899,#be185d)" onclick="openPrint('${stu.id}','geo')">🔷 Geometría y Más</button>
+        </div>
+        <div style="margin-top:8px"><button class="delete-stu-btn" onclick="delStudentPanel('${stu.id}','${stu.name}')">🗑️ Eliminar estudiante</button></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleStuCard(hdr){hdr.nextElementSibling.classList.toggle('open');}
+function delStudentPanel(id,name){if(confirm(`¿Eliminar a ${name}?`)){DB.del(id);if(state.stu?.id===id){state.stu=null;updateNav();}renderPanel();}}
+
+// ═══════════════════════════════════════════
+// PRINT / REPORT
+// ═══════════════════════════════════════════
+let printStuId=null,printSec=null;
+function openPrint(stuId,sec){
+  printStuId=stuId;printSec=sec;
+  const stu=DB.getStudent(stuId);if(!stu)return;
+  const titles={all:'📊 Informe Completo',nums:'🔢 Números y Operaciones',geo:'🔷 Geometría y Más'};
+  document.getElementById('print-modal-title').textContent=titles[sec]||'Informe';
+  document.getElementById('print-preview').innerHTML=buildReport(stu,sec,true);
+  document.getElementById('print-modal').classList.add('open');
+}
+function closePrint(){document.getElementById('print-modal').classList.remove('open');}
+function doPrint(){
+  const stu=DB.getStudent(printStuId);if(!stu)return;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:Arial,sans-serif;max-width:740px;margin:0 auto;padding:20px;font-size:12px} table{width:100%;border-collapse:collapse;margin-bottom:12px} td,th{border:1px solid #e2e8f0;padding:6px 8px} th{background:#f1f5f9;font-weight:800} .header{text-align:center;margin-bottom:16px} h1{font-size:18px;margin-bottom:4px} .grade-big{font-size:28px;font-weight:900;text-align:center;margin:8px 0} .sig-line{border-bottom:1px solid #000;width:200px;display:inline-block;margin:0 20px} @media print{button{display:none}} 
+/* ══ PWA INSTALL BANNER ══ */
+#pwa-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#6366f1,#6366f1ee);
+  color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:9999;
+  box-shadow:0 -3px 20px rgba(0,0,0,.3);transform:translateY(110%);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+#pwa-bar.show{transform:translateY(0)}
+.pwa-ico{font-size:1.8rem;flex-shrink:0}
+.pwa-txt{flex:1}
+.pwa-ttl{font-family:'Fredoka One',sans-serif;font-size:.95rem;font-weight:900}
+.pwa-stl{font-size:.75rem;opacity:.85}
+.pwa-ibtn{background:#fff;color:#6366f1;border:none;border-radius:25px;padding:8px 18px;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;cursor:pointer;font-weight:900;flex-shrink:0}
+.pwa-xbtn{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;opacity:.75;flex-shrink:0}
+#pwa-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;
+  align-items:center;justify-content:center;padding:20px}
+#pwa-modal.open{display:flex}
+.pwa-box{background:#fff;border-radius:22px;max-width:400px;width:100%;overflow:hidden;
+  box-shadow:0 10px 50px rgba(0,0,0,.5)}
+.pwa-hdr{background:linear-gradient(135deg,#6366f1,#6366f1bb);padding:22px 20px;text-align:center;color:#fff}
+.pwa-hdr .ph-ico{font-size:3rem;display:block;margin-bottom:8px}
+.pwa-hdr h2{font-family:'Fredoka One',sans-serif;font-size:1.4rem;margin-bottom:4px}
+.pwa-hdr p{font-size:.82rem;opacity:.9}
+.pwa-bdy{padding:20px}
+.pwa-tabs{display:flex;gap:0;margin-bottom:16px;border-radius:12px;overflow:hidden;border:2px solid #e2e8f0}
+.pt{flex:1;padding:10px;border:none;background:#f8fafc;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;color:#94a3b8;transition:.2s}
+.pt.on{background:#6366f1;color:#fff}
+.ptc{display:none}.ptc.on{display:block}
+.ps{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;
+  padding:10px;border-radius:10px;background:#f8fafc}
+.psn{min-width:26px;height:26px;border-radius:50%;background:#6366f1;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',sans-serif;font-size:.85rem;flex-shrink:0}
+.pst{font-size:.85rem;color:#334155;line-height:1.5}
+.pst b{color:#6366f1}
+.pcb{width:100%;padding:13px;background:#6366f1;color:#fff;border:none;border-radius:12px;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;cursor:pointer;margin-top:8px}
+#pwa-fab{display:none;position:fixed;bottom:80px;right:16px;width:52px;height:52px;
+  border-radius:50%;background:#6366f1;color:#fff;border:none;font-size:1.5rem;
+  cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:998;
+  align-items:center;justify-content:center;transition:.2s}
+#pwa-fab:hover{transform:scale(1.1)}
+#pwa-fab.show{display:flex}
+</style></head><body>${buildReport(stu,printSec,false)}
+  <script>
+  // ══ PWA ══
+  (function(){
+    let _pp=null;
+    window.addEventListener('beforeinstallprompt',e=>{
+      e.preventDefault();_pp=e;
+      setTimeout(()=>document.getElementById('pwa-bar').classList.add('show'),2500);
+    });
+    window.addEventListener('appinstalled',()=>{
+      document.getElementById('pwa-bar').classList.remove('show');_pp=null;
+    });
+    window.pwaInstall=function(){
+      if(_pp){_pp.prompt();_pp.userChoice.then(r=>{if(r.outcome==='accepted')pwaHide();_pp=null;});}
+      else pwaOpenGuide();
+    };
+    window.pwaHide=function(){document.getElementById('pwa-bar').classList.remove('show');};
+    window.pwaOpenGuide=function(){document.getElementById('pwa-modal').classList.add('open');};
+    window.pwaCloseGuide=function(){document.getElementById('pwa-modal').classList.remove('open');};
+    window.pwaTab=function(id,btn){
+      document.querySelectorAll('.pt').forEach(t=>t.classList.remove('on'));
+      document.querySelectorAll('.ptc').forEach(c=>c.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById('ptc-'+id).classList.add('on');
+    };
+    // Show FAB after 4s if not installed
+    setTimeout(()=>{
+      const standalone=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+      if(!standalone){
+        const fab=document.getElementById('pwa-fab');
+        if(fab)fab.classList.add('show');
+      }
+    },4000);
+    // Service Worker
+    if('serviceWorker' in navigator){
+      const code="\nconst CACHE='edu-v1';\nself.addEventListener('install',e=>{self.skipWaiting();});\nself.addEventListener('activate',e=>{e.waitUntil(clients.claim());});\nself.addEventListener('fetch',e=>{\n  if(e.request.method!=='GET')return;\n  e.respondWith(\n    caches.open(CACHE).then(cache=>\n      cache.match(e.request).then(cached=>{\n        const net=fetch(e.request).then(res=>{\n          if(res.ok)cache.put(e.request,res.clone());\n          return res;\n        }).catch(()=>cached);\n        return cached||net;\n      })\n    )\n  );\n});\n";
+      try{
+        const blob=new Blob([code],{type:'application/javascript'});
+        const url=URL.createObjectURL(blob);
+        navigator.serviceWorker.register(url).catch(()=>{
+          navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        });
+      }catch(e){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+    }
+  })();</script>
+</body></html>`;
+  const w=window.open('','_blank');w.document.write(html);w.document.close();w.print();
+}
+
+function buildReport(stu,sec,preview){
+  const pct=overallPct(stu),g=pctToGrade(pct);
+  const date=new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+  const modIds=sec==='nums'?['m1','m2','m3','m4','m7']:sec==='geo'?['m5','m6','m8','m9']:MODULE_ORDER;
+  const sTitle=sec==='nums'?'Números y Operaciones':sec==='geo'?'Geometría y Más':'Todas las Áreas';
+  
+  const moduleRows=modIds.map(mid=>{
+    const mod=MODULES[mid];
+    const mp=modulePct(stu,mid),mg=pctToGrade(mp),mc=gradeColor(mg),mgl=gradeLabel(mg);
+    const actRows=mod.activities.map(a=>{
+      const rec=(stu.scores||{})[`${mid}_${a.id}`];
+      return rec?`<tr><td>${mod.emoji} ${mod.title}</td><td>${a.title}</td><td style="text-align:center">${rec.score}/${rec.total}</td><td style="text-align:center">${rec.pct}%</td><td style="text-align:center;font-weight:900;color:${gradeColor(parseFloat(rec.grade))}">${rec.grade}</td><td style="text-align:center">${'⭐'.repeat(rec.stars||0)}</td><td style="text-align:center;color:#94a3b8;font-size:11px">${rec.date}</td></tr>`:
+      `<tr><td>${mod.emoji} ${mod.title}</td><td>${a.title}</td><td colspan="5" style="text-align:center;color:#94a3b8">— Pendiente —</td></tr>`;
+    }).join('');
+    return actRows;
+  }).join('');
+
+  // Per-module summary
+  const modSummary=modIds.map(mid=>{
+    const mod=MODULES[mid];const mp=modulePct(stu,mid);const mg=pctToGrade(mp);const mc=gradeColor(mg);
+    return `<tr><td>${mod.emoji} ${mod.title}</td><td style="text-align:center">${mp}%</td><td style="text-align:center;font-weight:900;color:${mc}">${mp>0?mg.toFixed(1):'—'}</td><td style="text-align:center">${mp>0?gradeLabel(mg).txt:'Sin intentos'}</td></tr>`;
+  }).join('');
+
+  const gc=gradeColor(g),gl=gradeLabel(g);
+
+  return `<div class="header">
+    <div style="font-size:2.5rem">🔢</div>
+    <h1>Informe de Evaluación — Matemáticas Interactivas Primaria 1° y 2°</h1>
+    <p>${sTitle} · Fecha: ${date}</p>
+  </div>
+  <table>
+    <tr><td><strong>Nombre:</strong> ${stu.avatar} ${stu.name}</td><td><strong>Grado:</strong> ${stu.grade}</td><td><strong>Nivel:</strong> ${stu.level||1}</td><td><strong>Monedas:</strong> 🪙 ${stu.coins||0}</td></tr>
+  </table>
+  <div class="grade-big" style="color:${gc}">${g.toFixed(1)} / 5.0 <span style="font-size:16px;color:${gc}">${gl.txt}</span></div>
+  ${sec==='all'?`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;text-align:center">
+    ${modIds.map(m=>{const mp=modulePct(stu,m);const mg=pctToGrade(mp);const mc=gradeColor(mg);return `<div style="border:1px solid #e2e8f0;border-radius:8px;padding:6px"><div>${MODULES[m].emoji} ${MODULES[m].title}</div><div style="font-weight:900;font-size:16px;color:${mc}">${mp>0?mg.toFixed(1):'—'}</div></div>`;}).join('')}
+    <div style="border:2px solid ${gc};border-radius:8px;padding:6px;background:${gl.bg};grid-column:1/-1"><div>📊 PROMEDIO PONDERADO</div><div style="font-weight:900;font-size:20px;color:${gc}">${g.toFixed(1)} / 5.0 (${pct}%)</div></div>
+  </div>`:''}
+  <h3 style="margin:10px 0 6px">Resumen por Módulo</h3>
+  <table><thead><tr><th>Módulo</th><th>Promedio</th><th>Nota /5</th><th>Desempeño</th></tr></thead><tbody>${modSummary}</tbody></table>
+  <h3 style="margin:10px 0 6px">Detalle por Actividad</h3>
+  <table><thead><tr><th>Módulo</th><th>Actividad</th><th>Puntos</th><th>%</th><th>Nota/5</th><th>⭐</th><th>Fecha</th></tr></thead><tbody>${moduleRows}</tbody></table>
+  <div style="margin-top:24px">
+    <p style="font-size:11px;color:#64748b">Observaciones del docente:</p>
+    <div style="border-bottom:1px solid #000;height:20px;margin-bottom:8px"></div>
+    <div style="border-bottom:1px solid #000;height:20px;margin-bottom:20px"></div>
+  </div>
+  <div style="display:flex;justify-content:space-around;margin-top:16px">
+    <div style="text-align:center"><div class="sig-line"></div><p>Firma Estudiante</p></div>
+    <div style="text-align:center"><div class="sig-line"></div><p>Firma Docente</p></div>
+    <div style="text-align:center"><div class="sig-line"></div><p>Sello / Fecha</p></div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════
+function confetti(){
+  const wrap=document.getElementById('confetti-wrap');
+  const COLORS=['#ef4444','#f59e0b','#22c55e','#3b82f6','#8b5cf6','#ec4899'];
+  for(let i=0;i<20;i++){
+    const d=document.createElement('div');
+    d.className='conf-bit';
+    d.style.cssText=`left:${Math.random()*100}%;top:-10px;background:${COLORS[Math.floor(Math.random()*COLORS.length)]};animation-delay:${Math.random()*.5}s;animation-duration:${.8+Math.random()*.6}s;width:${6+Math.random()*6}px;height:${6+Math.random()*6}px;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    wrap.appendChild(d);
+    setTimeout(()=>d.remove(),1500);
+  }
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+window.onload=()=>{
+  // Preload avatar options
+  document.getElementById('avatar-opts').innerHTML=AVATARS.map((a,i)=>`<span class="av-opt ${i===0?'sel':''}" onclick="selAvatar='${a}';document.querySelectorAll('.av-opt').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')">${a}</span>`).join('');
+  const students=DB.load();
+  if(students.length===1){selectStudent(students[0].id);}
+  else{goStudentPicker();}
+};
+
+</script>
+</body>
+</html>

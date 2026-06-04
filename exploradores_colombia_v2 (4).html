@@ -1,0 +1,2226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🗺️ ¡Exploradores de Colombia!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sp:#EF4444;--sil:#3B82F6;--dep:#dc2626;--cun:#16a34a;
+  --ok:#10b981;--err:#ef4444;--gold:#f59e0b;
+  --dark:#1a1a2e;--shadow:0 8px 32px rgba(0,0,0,.28);
+}
+body{
+  font-family:'Nunito',sans-serif;min-height:100vh;
+  background:linear-gradient(160deg,#0a1628 0%,#0d2137 50%,#071c0f 100%);
+  background-attachment:fixed;color:var(--dark);overflow-x:hidden;
+}
+/* ── STARS ── */
+.stars-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.star-dot{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite}
+@keyframes twinkle{0%,100%{opacity:.04;transform:scale(1)}50%{opacity:.14;transform:scale(1.3)}}
+/* ── LAYOUT ── */
+.app{max-width:940px;margin:0 auto;padding:20px;position:relative;z-index:1}
+/* ── SCREENS ── */
+.screen{display:none;animation:fadeIn .35s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+/* ── NAV ── */
+.nav-bar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.btn-back{
+  background:rgba(255,255,255,.15);border:none;color:#fff;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;
+  padding:9px 18px;border-radius:50px;cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  transition:background .2s,transform .15s;backdrop-filter:blur(8px);
+}
+.btn-back:hover{background:rgba(255,255,255,.28);transform:translateX(-3px)}
+.nav-title{color:#fff;font-family:'Fredoka One',sans-serif;font-size:1.15rem;opacity:.9}
+.nav-student{
+  margin-left:auto;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);
+  color:#fff;border-radius:50px;padding:6px 14px;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;
+  display:flex;align-items:center;gap:5px;cursor:pointer;
+  transition:background .2s;
+}
+.nav-student:hover{background:rgba(255,255,255,.22)}
+/* ── MAIN HEADER ── */
+.main-header{text-align:center;padding:34px 20px 22px}
+.main-header .logo{font-size:3.2rem;display:block;margin-bottom:6px;animation:bounce .85s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-11px)}}
+.main-header h1{font-family:'Fredoka One',sans-serif;font-size:2.4rem;color:#fff;text-shadow:0 4px 16px rgba(0,0,0,.4);line-height:1.1}
+.main-header p{color:rgba(255,255,255,.75);font-size:1.05rem;margin-top:7px;font-weight:700}
+/* ── SECTION CARDS ── */
+.sections-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:16px}
+@media(max-width:580px){.sections-grid{grid-template-columns:1fr}}
+.section-card{
+  background:#fff;border-radius:26px;padding:30px 20px;text-align:center;
+  cursor:pointer;border:none;box-shadow:var(--shadow);
+  transition:transform .2s,box-shadow .2s;
+}
+.section-card:hover{transform:translateY(-5px);box-shadow:0 14px 44px rgba(0,0,0,.32)}
+.section-card .sec-emoji{font-size:3rem;display:block;margin-bottom:10px}
+.section-card h2{font-family:'Fredoka One',sans-serif;font-size:1.55rem;margin-bottom:6px}
+.section-card p{font-size:.88rem;opacity:.65;font-weight:700}
+.section-card.dep h2{color:var(--dep)}.section-card.cun h2{color:var(--cun)}
+.section-card .badge{display:inline-block;margin-top:10px;font-family:'Fredoka One',sans-serif;font-size:.9rem;padding:5px 14px;border-radius:50px;color:#fff}
+.section-card.dep .badge{background:var(--dep)}.section-card.cun .badge{background:var(--cun)}
+/* ── PANEL BTN (menu bottom) ── */
+.menu-bottom{display:flex;gap:10px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.btn-panel,.btn-change-student{
+  padding:12px 22px;border-radius:50px;border:2px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;
+  transition:background .2s,transform .15s;backdrop-filter:blur(6px);
+  display:flex;align-items:center;gap:7px;
+}
+.btn-panel:hover,.btn-change-student:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
+/* ── SECTION HEADER ── */
+.section-header{
+  background:#fff;border-radius:22px;padding:22px 24px;margin-bottom:20px;
+  display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);
+}
+.section-header .sec-emoji-lg{font-size:2.8rem}
+.section-header h2{font-family:'Fredoka One',sans-serif;font-size:1.7rem}
+.section-header p{font-size:.88rem;opacity:.6;font-weight:700;margin-top:3px}
+.dep-theme h2{color:var(--dep)}.cun-theme h2{color:var(--cun)}
+/* ── GAME CARDS ── */
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:580px){.games-grid{grid-template-columns:1fr}}
+.game-card{
+  background:#fff;border-radius:20px;padding:24px 18px;text-align:center;
+  cursor:pointer;border:none;box-shadow:var(--shadow);
+  transition:transform .2s;border-top:5px solid var(--c,#ccc);
+}
+.game-card:hover{transform:translateY(-4px)}
+.game-card .g-emoji{font-size:2.5rem;display:block;margin-bottom:9px}
+.game-card h3{font-family:'Fredoka One',sans-serif;font-size:1.15rem;color:var(--c);margin-bottom:5px}
+.game-card p{font-size:.83rem;opacity:.6;font-weight:700;line-height:1.4}
+/* ── LEVELS ── */
+.levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.level-card{
+  background:#fff;border-radius:18px;padding:24px 18px;text-align:center;
+  cursor:pointer;border:none;box-shadow:var(--shadow);
+  transition:transform .2s;border-left:5px solid var(--lc,#ccc);
+}
+.level-card:hover{transform:translateY(-3px)}
+.level-card .lv-num{font-family:'Fredoka One',sans-serif;font-size:2.8rem;color:var(--lc);display:block;margin-bottom:5px}
+.level-card h3{font-family:'Fredoka One',sans-serif;font-size:1rem;color:var(--dark)}
+.level-card .lv-stars{font-size:1.3rem;margin-top:7px;letter-spacing:2px}
+.level-card p{font-size:.82rem;opacity:.55;font-weight:700;margin-top:3px}
+.level-card.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.9)}
+/* ── GAME HEADER (play) ── */
+.game-header-play{
+  background:#fff;border-radius:18px;padding:14px 20px;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow);flex-wrap:wrap;gap:8px;
+}
+.game-header-play .g-info{display:flex;align-items:center;gap:9px}
+.game-header-play .g-icon{font-size:1.7rem}
+.game-header-play .g-name{font-family:'Fredoka One',sans-serif;font-size:.95rem;color:var(--dark);line-height:1.2}
+.game-header-play .g-lvl{font-size:.75rem;opacity:.55;font-weight:700}
+.score-display{background:var(--gold);border-radius:50px;padding:7px 16px;font-family:'Fredoka One',sans-serif;font-size:1rem;color:#fff;display:flex;align-items:center;gap:5px}
+.student-chip{background:#e0e7ff;border-radius:50px;padding:6px 14px;font-family:'Fredoka One',sans-serif;font-size:.85rem;color:#dc2626;display:flex;align-items:center;gap:4px}
+/* ── PROGRESS ── */
+.progress-wrap{background:rgba(255,255,255,.15);border-radius:50px;height:11px;margin-bottom:14px;overflow:hidden}
+.progress-bar{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--gold),#ff9800);transition:width .5s ease}
+/* ── QUESTION BOX ── */
+.question-box{background:#fff;border-radius:22px;padding:26px 20px;margin-bottom:16px;box-shadow:var(--shadow);text-align:center}
+.q-instruction{font-family:'Fredoka One',sans-serif;font-size:1.05rem;color:rgba(0,0,0,.45);margin-bottom:14px}
+.q-word{font-family:'Fredoka One',sans-serif;font-size:2.6rem;color:var(--dark);letter-spacing:2px}
+.q-word-emoji{font-size:2.3rem;display:block;margin:7px 0}
+.q-syllables{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:10px}
+.syl-btn{font-family:'Fredoka One',sans-serif;font-size:1.5rem;padding:10px 18px;border-radius:12px;cursor:pointer;border:3px solid;transition:transform .15s;background:#fff}
+.syl-btn:hover{transform:scale(1.08)}
+.syl-btn.tonic{border-color:var(--gold);color:var(--gold)}.syl-btn.normal{border-color:#cbd5e1;color:#64748b}
+.highlight{background:linear-gradient(135deg,#ffecd2,#fcb69f);border-radius:7px;padding:3px 9px;display:inline-block;font-style:italic}
+/* ── OPTIONS ── */
+.options-grid{display:grid;gap:10px}
+.options-grid.two-col{grid-template-columns:1fr 1fr}
+.options-grid.four-col{grid-template-columns:1fr 1fr;gap:9px}
+.opt-btn{
+  padding:15px 14px;border-radius:16px;border:3px solid #e2e8f0;
+  background:#fff;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;
+  font-size:1rem;color:var(--dark);text-align:center;
+  transition:transform .14s,border-color .14s,background .14s;
+  box-shadow:0 3px 10px rgba(0,0,0,.07);line-height:1.4;
+}
+.opt-btn:hover{transform:translateY(-3px);border-color:var(--c,#94a3b8);background:#f8fafc}
+.opt-btn.correct{background:#d1fae5!important;border-color:var(--ok)!important;color:var(--ok)!important}
+.opt-btn.wrong{background:#fee2e2!important;border-color:var(--err)!important;color:var(--err)!important}
+.opt-btn.disabled{pointer-events:none}
+.opt-btn.big{font-family:'Fredoka One',sans-serif;font-size:1.3rem;padding:20px}
+/* ── TWO-PART SENTENCE ── */
+.sentence-parts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.part-btn{padding:16px 18px;border-radius:16px;border:3px solid;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:1.05rem;transition:transform .14s,box-shadow .14s;min-width:160px;text-align:center;flex:1;max-width:340px}
+.part-btn.part-a{border-color:#a78bfa;background:#f5f3ff;color:#7c3aed}
+.part-btn.part-b{border-color:#f472b6;background:#fdf2f8;color:#be185d}
+.part-btn:hover{transform:scale(1.03);box-shadow:0 5px 18px rgba(0,0,0,.13)}
+.part-btn.correct{background:#d1fae5!important;border-color:var(--ok)!important;color:var(--ok)!important}
+.part-btn.wrong{background:#fee2e2!important;border-color:var(--err)!important;color:var(--err)!important}
+.part-btn.disabled{pointer-events:none}
+/* ── FEEDBACK ── */
+.feedback-panel{border-radius:16px;padding:16px 18px;margin-top:14px;display:flex;align-items:center;gap:12px;font-weight:800;font-size:1rem;animation:slideUp .28s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.feedback-panel.ok{background:#d1fae5;border:2px solid var(--ok);color:#065f46}
+.feedback-panel.fail{background:#fee2e2;border:2px solid var(--err);color:#991b1b}
+.feedback-icon{font-size:1.9rem}
+.feedback-text{flex:1}
+.feedback-text .fb-title{font-family:'Fredoka One',sans-serif;font-size:1.25rem;display:block}
+.feedback-text .fb-rule{font-size:.87rem;margin-top:2px;opacity:.8}
+.btn-next{background:var(--dark);color:#fff;border:none;border-radius:50px;font-family:'Fredoka One',sans-serif;font-size:.95rem;padding:11px 22px;cursor:pointer;transition:transform .14s;white-space:nowrap}
+.btn-next:hover{transform:scale(1.05)}
+/* ── NUM BUTTONS ── */
+.num-options{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.num-btn{width:75px;height:75px;border-radius:18px;border:3px solid #e2e8f0;background:#fff;font-family:'Fredoka One',sans-serif;font-size:1.9rem;color:var(--dark);cursor:pointer;transition:transform .14s,border-color .14s}
+.num-btn:hover{transform:scale(1.1);border-color:var(--gold)}
+.num-btn.correct{background:#d1fae5;border-color:var(--ok);color:var(--ok)}
+.num-btn.wrong{background:#fee2e2;border-color:var(--err);color:var(--err)}
+.num-btn.disabled{pointer-events:none}
+/* ── TILDE ── */
+.word-no-tilde{font-family:'Fredoka One',sans-serif;font-size:2.6rem;color:var(--dark);letter-spacing:2px}
+.type-chip{display:inline-flex;align-items:center;gap:5px;font-family:'Fredoka One',sans-serif;font-size:.95rem;padding:7px 16px;border-radius:50px;color:#fff;margin:7px auto}
+/* ── RULE BOX ── */
+.rule-box{background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid var(--gold);border-radius:14px;padding:14px 18px;margin:14px 0;text-align:center}
+.rule-box .rule-title{font-family:'Fredoka One',sans-serif;font-size:1.05rem;color:#92400e;display:block;margin-bottom:5px}
+.rule-box p{font-size:.87rem;color:#78350f;font-weight:700;line-height:1.5}
+/* ── RESULTS ── */
+.results-card{background:#fff;border-radius:26px;padding:40px 28px;text-align:center;box-shadow:var(--shadow)}
+.results-card .trophy{font-size:4.5rem;display:block;animation:bounce .85s ease infinite alternate}
+.results-card h2{font-family:'Fredoka One',sans-serif;font-size:2rem;margin:14px 0 6px}
+.results-card .score-big{font-family:'Fredoka One',sans-serif;font-size:3.2rem;color:var(--gold);display:block;margin:6px 0}
+.results-stars{font-size:2.3rem;margin:8px 0;letter-spacing:5px}
+.results-msg{font-size:1rem;font-weight:700;opacity:.65;margin-bottom:24px}
+.results-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-retry,.btn-next-level,.btn-home,.btn-back-levels{
+  padding:13px 24px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;
+  transition:transform .14s,box-shadow .14s;box-shadow:0 4px 14px rgba(0,0,0,.14);
+}
+.btn-retry{background:#e2e8f0;color:#475569}
+.btn-next-level{background:linear-gradient(135deg,var(--sp),#dc2626);color:#fff}
+.btn-home{background:var(--dark);color:#fff}
+.btn-back-levels{background:#f1f5f9;color:#334155;border:2px solid #e2e8f0}
+.btn-retry:hover,.btn-next-level:hover,.btn-home:hover,.btn-back-levels:hover{transform:translateY(-3px);box-shadow:0 7px 20px rgba(0,0,0,.18)}
+
+/* ══════════════════════════════════════════
+   STUDENT SCREEN
+══════════════════════════════════════════ */
+.student-screen-wrap{max-width:600px;margin:0 auto}
+.student-screen-header{text-align:center;padding:10px 0 24px}
+.student-screen-header .icon{font-size:3rem;display:block;margin-bottom:8px}
+.student-screen-header h2{font-family:'Fredoka One',sans-serif;font-size:1.9rem;color:#fff}
+.student-screen-header p{color:rgba(255,255,255,.7);font-weight:700;font-size:.95rem;margin-top:5px}
+.student-list{display:grid;gap:10px;margin-bottom:18px}
+.student-item{
+  background:#fff;border-radius:18px;padding:16px 20px;
+  display:flex;align-items:center;gap:14px;cursor:pointer;
+  box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s;
+  border:3px solid transparent;
+}
+.student-item:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.22);border-color:#dc2626}
+.student-item.selected{border-color:var(--ok);background:#f0fdf4}
+.student-avatar{font-size:2.2rem;width:52px;height:52px;background:#f0f4ff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.student-info{flex:1}
+.student-info .s-name{font-family:'Fredoka One',sans-serif;font-size:1.15rem;color:var(--dark)}
+.student-info .s-grade{font-size:.82rem;color:#64748b;font-weight:700}
+.student-info .s-progress{font-size:.8rem;color:var(--ok);font-weight:700;margin-top:2px}
+.student-item .s-arrow{font-size:1.4rem;opacity:.4}
+.btn-add-student,.btn-play-student{
+  width:100%;padding:16px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:1.1rem;
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-add-student{background:rgba(255,255,255,.15);color:#fff;border:2px dashed rgba(255,255,255,.4);margin-top:4px}
+.btn-add-student:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
+.btn-play-student{background:linear-gradient(135deg,var(--ok),#059669);color:#fff;margin-top:14px;display:none}
+.btn-play-student.visible{display:block}
+.btn-play-student:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,185,129,.4)}
+/* ADD STUDENT FORM */
+.add-student-form{background:#fff;border-radius:20px;padding:24px 20px;box-shadow:var(--shadow);margin-bottom:14px;display:none}
+.add-student-form.visible{display:block;animation:fadeIn .3s ease}
+.form-title{font-family:'Fredoka One',sans-serif;font-size:1.2rem;color:var(--dark);margin-bottom:14px;text-align:center}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-weight:800;font-size:.9rem;color:#475569;margin-bottom:5px}
+.form-input{
+  width:100%;padding:12px 16px;border-radius:12px;
+  border:2px solid #e2e8f0;font-family:'Nunito',sans-serif;
+  font-size:1rem;font-weight:700;color:var(--dark);
+  transition:border-color .2s;outline:none;
+}
+.form-input:focus{border-color:#dc2626}
+.avatar-picker{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.avatar-opt{
+  width:48px;height:48px;border-radius:12px;border:3px solid #e2e8f0;
+  background:#f8fafc;font-size:1.6rem;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:border-color .15s,transform .15s;
+}
+.avatar-opt:hover{transform:scale(1.1);border-color:#dc2626}
+.avatar-opt.selected{border-color:#dc2626;background:#eef2ff}
+.form-actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.btn-cancel-form,.btn-save-student{flex:1;padding:14px;border-radius:14px;border:none;cursor:pointer;font-family:'Fredoka One',sans-serif;font-size:1.05rem;transition:transform .14s,box-shadow .14s}
+.btn-cancel-form{background:#f1f5f9;color:#64748b}
+.btn-save-student{background:linear-gradient(135deg,#dc2626,#7c3aed);color:#fff;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.btn-cancel-form:hover,.btn-save-student:hover{transform:translateY(-2px)}
+
+/* ══════════════════════════════════════════
+   PANEL DE EVALUACIÓN
+══════════════════════════════════════════ */
+.panel-header{background:#fff;border-radius:20px;padding:20px 22px;margin-bottom:18px;box-shadow:var(--shadow)}
+.panel-header h2{font-family:'Fredoka One',sans-serif;font-size:1.6rem;color:#dc2626;display:flex;align-items:center;gap:8px}
+.panel-header p{font-size:.88rem;color:#64748b;font-weight:700;margin-top:4px}
+.panel-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.panel-tab{
+  padding:9px 18px;border-radius:50px;border:2px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.1);color:#fff;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;
+  transition:background .18s;
+}
+.panel-tab.active{background:#fff;color:#dc2626;border-color:#fff}
+/* Students table */
+.panel-student-card{
+  background:#fff;border-radius:18px;padding:18px 20px;margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.psc-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;cursor:pointer}
+.psc-avatar{font-size:2rem;width:48px;height:48px;background:#f0f4ff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.psc-name{font-family:'Fredoka One',sans-serif;font-size:1.15rem;color:var(--dark)}
+.psc-grade{font-size:.8rem;color:#64748b;font-weight:700}
+.psc-overall{margin-left:auto;text-align:right}
+.psc-overall .pct{font-family:'Fredoka One',sans-serif;font-size:1.5rem;color:var(--ok)}
+.psc-overall .lbl{font-size:.75rem;color:#94a3b8;font-weight:700}
+.psc-body{display:none}
+.psc-body.open{display:block;animation:fadeIn .3s ease}
+.psc-games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:8px}
+.psc-game-item{
+  border-radius:12px;padding:10px 12px;background:#f8fafc;
+  border-left:4px solid var(--gc,#ccc);
+}
+.psc-game-item .gi-name{font-weight:800;font-size:.82rem;color:var(--dark);margin-bottom:4px}
+.psc-game-item .gi-levels{display:flex;gap:5px;flex-wrap:wrap}
+.psc-game-item .gi-lvl{
+  background:#fff;border-radius:6px;padding:3px 8px;
+  font-size:.75rem;font-weight:800;border:1.5px solid #e2e8f0;
+  display:flex;align-items:center;gap:3px;
+}
+.psc-game-item .gi-lvl.done{border-color:var(--ok);color:var(--ok);background:#f0fdf4}
+.psc-game-item .gi-lvl.partial{border-color:var(--gold);color:#92400e;background:#fffbeb}
+.psc-game-item .gi-lvl.notdone{border-color:#e2e8f0;color:#94a3b8}
+.btn-delete-student{
+  margin-top:10px;padding:8px 16px;border-radius:50px;border:none;
+  background:#fee2e2;color:var(--err);cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:.85rem;
+  transition:background .15s;
+}
+.btn-delete-student:hover{background:#fecaca}
+.btn-print-student{
+  margin-top:10px;margin-left:8px;padding:8px 18px;border-radius:50px;border:none;
+  background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:.85rem;
+  transition:background .15s,transform .15s;
+}
+.btn-print-student:hover{background:linear-gradient(135deg,#bae6fd,#7dd3fc);transform:translateY(-2px)}
+/* ── PRINT OVERLAY (modal previa) ── */
+#print-modal{
+  display:none;position:fixed;inset:0;z-index:10000;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  overflow-y:auto;padding:20px;
+}
+#print-modal.open{display:flex;align-items:flex-start;justify-content:center}
+#print-modal-inner{
+  background:#fff;border-radius:20px;padding:28px 24px;
+  max-width:780px;width:100%;position:relative;
+  box-shadow:0 24px 64px rgba(0,0,0,.4);
+}
+.pm-close{
+  position:absolute;top:14px;right:16px;
+  background:#f1f5f9;border:none;border-radius:50%;
+  width:36px;height:36px;font-size:1.1rem;cursor:pointer;
+  font-weight:900;color:#64748b;transition:background .15s;
+}
+.pm-close:hover{background:#e2e8f0}
+.pm-title{font-family:'Fredoka One',sans-serif;font-size:1.3rem;color:var(--dark);margin-bottom:4px}
+.pm-sub{font-size:.85rem;color:#64748b;font-weight:700;margin-bottom:20px}
+.pm-actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.btn-do-print{
+  flex:1;padding:14px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:1.05rem;
+  background:linear-gradient(135deg,#0369a1,#0ea5e9);color:#fff;
+  transition:transform .14s,box-shadow .14s;
+}
+.btn-do-print:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(3,105,161,.4)}
+.btn-cancel-print{
+  padding:14px 22px;border-radius:50px;border:2px solid #e2e8f0;
+  background:#f8fafc;color:#475569;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;
+}
+/* ── REPORT PREVIEW (inside modal) ── */
+#report-preview{
+  border:1.5px solid #e2e8f0;border-radius:12px;
+  overflow:hidden;font-size:.82rem;
+}
+.rp-header{
+  background:linear-gradient(135deg,#1e3a5f,#2563eb);
+  color:#fff;padding:18px 20px;
+  display:flex;align-items:center;gap:14px;
+}
+.rp-logo{font-size:2.4rem}
+.rp-header-text h1{font-family:'Fredoka One',sans-serif;font-size:1.25rem;margin-bottom:2px}
+.rp-header-text p{font-size:.8rem;opacity:.8}
+.rp-header-right{margin-left:auto;text-align:right;font-size:.78rem;opacity:.85;line-height:1.6}
+.rp-student-band{
+  background:#f0f9ff;border-bottom:2px solid #bae6fd;
+  padding:14px 20px;display:flex;align-items:center;gap:14px;
+}
+.rp-stu-avatar{font-size:2.2rem;width:52px;height:52px;background:#e0f2fe;border-radius:50%;display:flex;align-items:center;justify-content:center;border:3px solid #7dd3fc;flex-shrink:0}
+.rp-stu-info .sn{font-family:'Fredoka One',sans-serif;font-size:1.1rem;color:#0c4a6e}
+.rp-stu-info .sg{font-size:.8rem;color:#0369a1;font-weight:700}
+.rp-summary{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-bottom:1.5px solid #e2e8f0;
+}
+.rp-sum-item{padding:12px 8px;text-align:center;border-right:1px solid #f1f5f9}
+.rp-sum-item:last-child{border-right:none}
+.rp-sum-item .sv{font-family:'Fredoka One',sans-serif;font-size:1.4rem;color:#1e3a5f;display:block}
+.rp-sum-item .sl{font-size:.7rem;color:#64748b;font-weight:700;margin-top:2px}
+.rp-section{padding:14px 20px}
+.rp-section-title{
+  font-family:'Fredoka One',sans-serif;font-size:.95rem;
+  padding:6px 12px;border-radius:8px;color:#fff;
+  display:inline-block;margin-bottom:10px;
+}
+.rp-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.rp-table th{background:#f8fafc;padding:7px 10px;text-align:left;font-weight:800;color:#475569;border-bottom:2px solid #e2e8f0}
+.rp-table td{padding:7px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.rp-table tr:last-child td{border-bottom:none}
+.rp-table tr:hover td{background:#fafafa}
+.td-game{font-weight:800;color:#1e293b;display:flex;align-items:center;gap:5px}
+.td-lvl{text-align:center}
+.td-score{text-align:center;font-weight:800}
+.td-pct{text-align:center}
+.pct-bar{background:#f1f5f9;border-radius:20px;height:8px;width:80px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:5px}
+.pct-fill{height:100%;border-radius:20px}
+.td-stars{text-align:center;font-size:.95rem;letter-spacing:1px}
+.td-date{text-align:center;color:#94a3b8;font-size:.72rem}
+.td-pending{color:#94a3b8;font-size:.72rem;font-style:italic;text-align:center}
+.rp-obs{padding:14px 20px;border-top:1.5px solid #e2e8f0}
+.rp-obs-title{font-family:'Fredoka One',sans-serif;font-size:.9rem;color:#475569;margin-bottom:8px}
+.rp-obs-lines{display:flex;flex-direction:column;gap:8px}
+.rp-obs-line{height:1px;background:#e2e8f0}
+.rp-footer{
+  background:#f8fafc;border-top:1.5px solid #e2e8f0;
+  padding:14px 20px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;
+}
+.rp-sig{text-align:center}
+.rp-sig .sig-line{border-top:1.5px solid #cbd5e1;margin-bottom:5px;height:28px}
+.rp-sig .sig-label{font-size:.72rem;color:#64748b;font-weight:700}
+.rp-badge{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-weight:800;font-size:.72rem;color:#fff;
+}
+.badge-ex{background:#10b981}.badge-bien{background:#f59e0b}
+.badge-bas{background:#fb923c}.badge-rev{background:#ef4444}
+.rp-perf-bar{height:10px;background:linear-gradient(90deg,#ef4444 0%,#fb923c 30%,#f59e0b 60%,#10b981 80%,#059669 100%);border-radius:10px;margin:6px 0;position:relative}
+.rp-perf-marker{position:absolute;top:-4px;width:18px;height:18px;background:#fff;border:3px solid #1e3a5f;border-radius:50%;transform:translateX(-50%)}
+
+/* Summary stats */
+.panel-stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.stat-card{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:var(--shadow)}
+.stat-card .st-num{font-family:'Fredoka One',sans-serif;font-size:2rem;color:#dc2626;display:block}
+.stat-card .st-lbl{font-size:.8rem;color:#64748b;font-weight:700;margin-top:3px}
+/* Empty state */
+.empty-panel{text-align:center;padding:40px 20px;color:rgba(255,255,255,.6)}
+.empty-panel .ep-icon{font-size:3.5rem;display:block;margin-bottom:12px}
+.empty-panel p{font-family:'Fredoka One',sans-serif;font-size:1.1rem}
+/* ── CONFETTI ── */
+#confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;display:none}
+#confetti-wrap.active{display:block}
+.conf-piece{position:absolute;top:-20px;animation:confFall linear forwards;font-size:1.5rem}
+@keyframes confFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+/* Misc */
+.mt-4{margin-top:16px}
+</style>
+  <!-- PWA: instalable en celular -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Colombia">
+  <meta name="theme-color" content="#dc2626">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27512%27%20height%3D%27512%27%20viewBox%3D%270%200%20512%20512%27%3E%3Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27128%27%20fill%3D%27%23dc2626%27/%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2754%25%27%20dominant-baseline%3D%27middle%27%20text-anchor%3D%27middle%27%20font-size%3D%27256%27%3E%F0%9F%97%BA%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Exploradores%20de%20Colombia%22%2C%22short_name%22%3A%22Colombia%22%2C%22description%22%3A%22Ciencias%20Sociales%203%C2%B0%2C%204%C2%B0%20y%205%C2%B0%22%2C%22start_url%22%3A%22./exploradores_colombia_v2.html%22%2C%22scope%22%3A%22./%22%2C%22display%22%3A%22standalone%22%2C%22orientation%22%3A%22portrait-primary%22%2C%22background_color%22%3A%22%231a0500%22%2C%22theme_color%22%3A%22%23dc2626%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A//www.w3.org/2000/svg%2527%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520rx%253D%2527128%2527%2520fill%253D%2527%2523dc2626%2527/%253E%253Ctext%2520x%253D%252750%2525%2527%2520y%253D%252754%2525%2527%2520dominant-baseline%253D%2527middle%2527%2520text-anchor%253D%2527middle%2527%2520font-size%253D%2527256%2527%253E%25F0%259F%2597%25BA%25EF%25B8%258F%253C/text%253E%253C/svg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image/svg%2Bxml%22%2C%22purpose%22%3A%22any%22%7D%2C%7B%22src%22%3A%22data%3Aimage/svg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A//www.w3.org/2000/svg%2527%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520viewBox%253D%25270%25200%2520512%2520512%2527%253E%253Crect%2520width%253D%2527512%2527%2520height%253D%2527512%2527%2520rx%253D%2527128%2527%2520fill%253D%2527%2523dc2626%2527/%253E%253Ctext%2520x%253D%252750%2525%2527%2520y%253D%252754%2525%2527%2520dominant-baseline%253D%2527middle%2527%2520text-anchor%253D%2527middle%2527%2520font-size%253D%2527256%2527%253E%25F0%259F%2597%25BA%25EF%25B8%258F%253C/text%253E%253C/svg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image/svg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%2C%22categories%22%3A%5B%22education%22%5D%2C%22lang%22%3A%22es%22%7D">
+</head>
+<body>
+  <!-- PWA Banner & Modal -->
+  <div id="pwa-bar">
+    <span class="pwa-ico">🗺️</span>
+    <div class="pwa-txt">
+      <div class="pwa-ttl">¡Instala esta app! 📲</div>
+      <div class="pwa-stl">Funciona sin internet · Como app nativa</div>
+    </div>
+    <button class="pwa-ibtn" onclick="pwaInstall()">⬇️ Instalar</button>
+    <button class="pwa-xbtn" onclick="pwaHide()">✕</button>
+  </div>
+  <button id="pwa-fab" title="Instalar en celular" onclick="pwaOpenGuide()">📲</button>
+  <div id="pwa-modal">
+    <div class="pwa-box">
+      <div class="pwa-hdr">
+        <span class="ph-ico">🗺️</span>
+        <h2>Instalar en tu celular</h2>
+        <p>Exploradores de Colombia</p>
+      </div>
+      <div class="pwa-bdy">
+        <div class="pwa-tabs">
+          <button class="pt on" onclick="pwaTab('android',this)">🤖 Android</button>
+          <button class="pt" onclick="pwaTab('ios',this)">🍎 iPhone</button>
+        </div>
+        <div class="ptc on" id="ptc-android">
+          <div class="ps"><div class="psn">1</div><div class="pst">Abre esta página en <b>Google Chrome</b></div></div>
+          <div class="ps"><div class="psn">2</div><div class="pst">Toca el menú <b>⋮</b> arriba a la derecha</div></div>
+          <div class="ps"><div class="psn">3</div><div class="pst">Toca <b>"Agregar a pantalla de inicio"</b></div></div>
+          <div class="ps"><div class="psn">4</div><div class="pst">Confirma tocando <b>"Instalar"</b> ✅</div></div>
+        </div>
+        <div class="ptc" id="ptc-ios">
+          <div class="ps"><div class="psn">1</div><div class="pst">Abre esta página en <b>Safari</b> (no Chrome)</div></div>
+          <div class="ps"><div class="psn">2</div><div class="pst">Toca el botón <b>⬆️ Compartir</b> en la barra inferior</div></div>
+          <div class="ps"><div class="psn">3</div><div class="pst">Toca <b>"Agregar a pantalla de inicio"</b></div></div>
+          <div class="ps"><div class="psn">4</div><div class="pst">Toca <b>"Agregar"</b> arriba a la derecha ✅</div></div>
+        </div>
+        <button class="pcb" onclick="pwaCloseGuide()">✅ ¡Entendido!</button>
+      </div>
+    </div>
+  </div>
+<div class="stars-deco" id="stars"></div>
+<div id="confetti-wrap"></div>
+<div class="app">
+
+  <!-- ═══════════════════════════
+       SCREEN: MAIN MENU
+  ═══════════════════════════ -->
+  <div class="screen active" id="s-menu">
+    <div class="main-header">
+      <span class="logo">🗺️</span>
+      <h1>¡Exploradores de Colombia!</h1>
+      <p>Ciencias Sociales para 3°, 4° y 5° de primaria 🌎</p>
+    </div>
+    <div id="menu-student-bar" style="text-align:center;margin-bottom:14px;display:none">
+      <span id="menu-stu-chip" style="background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:50px;padding:8px 18px;font-family:'Fredoka One',sans-serif;font-size:1rem;display:inline-flex;align-items:center;gap:6px"></span>
+    </div>
+    <div class="sections-grid">
+      <button class="section-card dep" onclick="goSection('dep')">
+        <span class="sec-emoji">🏛️</span>
+        <h2>Departamentos y Capitales</h2>
+        <p>Los 32 departamentos de Colombia y sus capitales</p>
+        <span class="badge">4 juegos ✨</span>
+      </button>
+      <button class="section-card cun" onclick="goSection('cun')">
+        <span class="sec-emoji">🌄</span>
+        <h2>Cundinamarca: Municipios y Provincias</h2>
+        <p>Los municipios y las 15 provincias del departamento</p>
+        <span class="badge">4 juegos ✨</span>
+      </button>
+    </div>
+    <div class="menu-bottom">
+      <button class="btn-change-student" onclick="goStudentPicker(false)">👤 Cambiar estudiante</button>
+      <button class="btn-panel" onclick="showScreen('s-panel');renderPanel()">📊 Ver evaluaciones</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: STUDENT PICKER
+  ═══════════════════════════ -->
+  <div class="screen" id="s-student">
+    <div class="student-screen-wrap">
+      <div id="student-nav" class="nav-bar">
+        <button class="btn-back" id="btn-back-student" onclick="showScreen('s-menu')">← Inicio</button>
+        <span class="nav-title">Seleccionar Estudiante</span>
+      </div>
+      <div class="student-screen-header">
+        <span class="icon">👥</span>
+        <h2>¿Quién va a jugar?</h2>
+        <p>Selecciona un estudiante o crea uno nuevo</p>
+      </div>
+      <div class="add-student-form" id="add-student-form">
+        <div class="form-title">✏️ Nuevo Estudiante</div>
+        <div class="form-row">
+          <label>Nombre completo</label>
+          <input class="form-input" id="input-name" type="text" placeholder="Ej: María García" maxlength="40">
+        </div>
+        <div class="form-row">
+          <label>Grado</label>
+          <select class="form-input" id="input-grade">
+            <option value="3°">3° de Primaria</option>
+            <option value="4°" selected>4° de Primaria</option>
+            <option value="5°">5° de Primaria</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Avatar</label>
+          <div class="avatar-picker" id="avatar-picker">
+            <div class="avatar-opt selected" data-av="👦" onclick="selectAvatar(this)">👦</div>
+            <div class="avatar-opt" data-av="👧" onclick="selectAvatar(this)">👧</div>
+            <div class="avatar-opt" data-av="🧒" onclick="selectAvatar(this)">🧒</div>
+            <div class="avatar-opt" data-av="🦁" onclick="selectAvatar(this)">🦁</div>
+            <div class="avatar-opt" data-av="🐯" onclick="selectAvatar(this)">🐯</div>
+            <div class="avatar-opt" data-av="🦊" onclick="selectAvatar(this)">🦊</div>
+            <div class="avatar-opt" data-av="🐼" onclick="selectAvatar(this)">🐼</div>
+            <div class="avatar-opt" data-av="🦄" onclick="selectAvatar(this)">🦄</div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-cancel-form" onclick="cancelAddForm()">Cancelar</button>
+          <button class="btn-save-student" onclick="saveNewStudent()">✅ Aceptar</button>
+        </div>
+      </div>
+      <div class="student-list" id="student-list"></div>
+      <button class="btn-add-student" onclick="showAddForm()">➕ Agregar nuevo estudiante</button>
+      <button class="btn-play-student" id="btn-play-student" onclick="confirmStudent()">▶️ ¡Jugar! →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: SECTION
+  ═══════════════════════════ -->
+  <div class="screen" id="s-section">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="showScreen('s-menu')">← Inicio</button>
+      <span class="nav-title" id="section-nav-title"></span>
+      <span class="nav-student" id="section-stu-chip" onclick="goStudentPicker(false)"></span>
+    </div>
+    <div class="section-header" id="section-header"></div>
+    <div class="games-grid" id="games-grid"></div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: LEVELS
+  ═══════════════════════════ -->
+  <div class="screen" id="s-levels">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBackToSection()">← Juegos</button>
+      <span class="nav-title" id="levels-nav-title"></span>
+      <span class="nav-student" id="levels-stu-chip" onclick="goStudentPicker(false)"></span>
+    </div>
+    <div class="section-header" id="levels-game-header"></div>
+    <div class="levels-grid" id="levels-grid"></div>
+    <div class="rule-box mt-4" id="levels-rule-box"></div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: PLAY
+  ═══════════════════════════ -->
+  <div class="screen" id="s-play">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="confirmExit()">← Salir</button>
+    </div>
+    <div class="game-header-play">
+      <div class="g-info">
+        <span class="g-icon" id="ph-icon"></span>
+        <div>
+          <div class="g-name" id="ph-name"></div>
+          <div class="g-lvl" id="ph-lvl"></div>
+        </div>
+      </div>
+      <div class="student-chip" id="ph-student">👦 —</div>
+      <div class="score-display">⭐ <span id="ph-score">0</span></div>
+    </div>
+    <div class="progress-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+    <div id="play-area"></div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: RESULTS
+  ═══════════════════════════ -->
+  <div class="screen" id="s-results">
+    <div class="results-card">
+      <span class="trophy" id="res-trophy">🏆</span>
+      <h2 id="res-title">¡Excelente!</h2>
+      <span class="score-big" id="res-score"></span>
+      <div class="results-stars" id="res-stars"></div>
+      <p class="results-msg" id="res-msg"></p>
+      <div id="res-save-msg" style="background:#f0fdf4;border:2px solid var(--ok);border-radius:12px;padding:10px 16px;margin-bottom:18px;font-weight:700;font-size:.9rem;color:#065f46;display:none"></div>
+      <div class="results-btns">
+        <button class="btn-back-levels" onclick="goToLevels()">← Niveles</button>
+        <button class="btn-retry" onclick="retryLevel()">🔄 Repetir</button>
+        <button class="btn-next-level" id="btn-next-lvl" onclick="nextLevel()">➡️ Sig. Nivel</button>
+        <button class="btn-home" onclick="showScreen('s-menu')">🏠 Inicio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════
+       SCREEN: PANEL
+  ═══════════════════════════ -->
+  <div class="screen" id="s-panel">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="showScreen('s-menu')">← Inicio</button>
+      <span class="nav-title">Panel de Evaluación</span>
+    </div>
+    <div class="panel-header">
+      <h2>📊 Evaluaciones</h2>
+      <p>Seguimiento del progreso por estudiante</p>
+    </div>
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="switchPanelTab('overview',this)">Resumen General</button>
+      <button class="panel-tab" onclick="switchPanelTab('students',this)">Por Estudiante</button>
+    </div>
+    <div id="panel-content"></div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════
+     PRINT MODAL (preview antes de imprimir PDF)
+════════════════════════════════════════════════ -->
+<div id="print-modal">
+  <div id="print-modal-inner">
+    <button class="pm-close" onclick="closePrintModal()">✕</button>
+    <div class="pm-title">🖨️ Imprimir Informe de Evaluación</div>
+    <div class="pm-sub">Vista previa del documento. Al imprimir, selecciona <strong>"Guardar como PDF"</strong> en tu impresora.</div>
+    <div id="report-preview"></div>
+    <div class="pm-actions">
+      <button class="btn-do-print" onclick="doPrint()">🖨️ Imprimir / Guardar PDF</button>
+      <button class="btn-cancel-print" onclick="closePrintModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- HIDDEN IFRAME for printing -->
+<iframe id="print-frame" style="display:none"></iframe>
+
+<script>
+const SECTIONS={
+  dep:{title:'Departamentos y Capitales',emoji:'🏛️',desc:'Reconoce los 32 departamentos de Colombia, sus capitales y las regiones naturales',theme:'dep-theme',color:'#dc2626',rule:'📌 Colombia tiene 32 departamentos y el Distrito Capital Bogotá. Cada departamento tiene una ciudad CAPITAL. El país se divide en 6 REGIONES naturales: Andina, Caribe, Pacífica, Orinoquía, Amazónica e Insular.'},
+  cun:{title:'Cundinamarca: Municipios y Provincias',emoji:'🌄',desc:'Conoce los municipios de Cundinamarca y las provincias o regiones en que se organizan',theme:'cun-theme',color:'#16a34a',rule:'📌 Cundinamarca tiene 116 municipios organizados en 15 PROVINCIAS. Está ubicado en la región ANDINA y su capital histórica es Bogotá D.C. Rodea a la ciudad de Bogotá por todos sus lados.'},
+};
+const GAME_LIST={dep:['sc1','sc2','sc3','sc4'],cun:['cu1','cu2','cu3','cu4']};
+const GAMES={
+  sc1:{id:'sc1',section:'dep',title:'¿Cuál es la Capital?',emoji:'🏙️',color:'#dc2626',
+    desc:'Lee el nombre del departamento y elige su ciudad capital correcta',type:'matchOption',
+    rule:'Cada departamento de Colombia tiene una ciudad capital donde se encuentran las autoridades departamentales.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Los departamentos más conocidos. ¡Identifica sus capitales!',qs:[
+        {prompt:'Capital del departamento de ANTIOQUIA 🏔️',opts:['Manizales','Medellín','Pereira'],c:1},
+        {prompt:'Capital del departamento del VALLE DEL CAUCA 🌊',opts:['Pasto','Popayán','Cali'],c:2},
+        {prompt:'Capital del departamento del ATLÁNTICO 🌊',opts:['Cartagena','Santa Marta','Barranquilla'],c:2},
+        {prompt:'Capital del departamento de BOLÍVAR ⚓',opts:['Cartagena','Montería','Sincelejo'],c:0},
+        {prompt:'Capital del departamento de SANTANDER ⛰️',opts:['Cúcuta','Tunja','Bucaramanga'],c:2},
+        {prompt:'Capital del departamento de BOYACÁ 🏛️',opts:['Bucaramanga','Tunja','Sogamoso'],c:1},
+        {prompt:'Capital del departamento de CALDAS ☕',opts:['Armenia','Pereira','Manizales'],c:2},
+        {prompt:'Capital del departamento del META 🌾',opts:['Yopal','Arauca','Villavicencio'],c:2},
+        {prompt:'Capital del departamento del MAGDALENA 🏝️',opts:['Barranquilla','Santa Marta','Valledupar'],c:1},
+        {prompt:'Capital del departamento de CUNDINAMARCA 🗺️',opts:['Tunja','Bogotá D.C.','Villavicencio'],c:1},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Capitales del interior del país. ¡Sigue aprendiendo!',qs:[
+        {prompt:'Capital del departamento del TOLIMA 🌋',opts:['Neiva','Armenia','Ibagué'],c:2},
+        {prompt:'Capital del departamento del HUILA 🪶',opts:['Florencia','Neiva','Pasto'],c:1},
+        {prompt:'Capital del departamento de NARIÑO 🌺',opts:['Popayán','Quibdó','Pasto'],c:2},
+        {prompt:'Capital del departamento del CAUCA 🎭',opts:['Popayán','Pasto','Mocoa'],c:0},
+        {prompt:'Capital del departamento de RISARALDA ☕',opts:['Manizales','Armenia','Pereira'],c:2},
+        {prompt:'Capital del departamento del QUINDÍO ☕',opts:['Pereira','Manizales','Armenia'],c:2},
+        {prompt:'Capital de NORTE DE SANTANDER 🛢️',opts:['Bucaramanga','Valledupar','Cúcuta'],c:2},
+        {prompt:'Capital del departamento de CÓRDOBA 🐄',opts:['Sincelejo','Montería','Valledupar'],c:1},
+        {prompt:'Capital del departamento del CESAR 🎵',opts:['Riohacha','Barranquilla','Valledupar'],c:2},
+        {prompt:'Capital del departamento de LA GUAJIRA 🌵',opts:['Valledupar','Santa Marta','Riohacha'],c:2},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Departamentos de regiones apartadas. ¡Pon a prueba tu conocimiento!',qs:[
+        {prompt:'Capital del departamento del CHOCÓ 🌧️',opts:['Buenaventura','Quibdó','Tumaco'],c:1},
+        {prompt:'Capital del departamento de SUCRE 🌾',opts:['Montería','Sincelejo','Magangué'],c:1},
+        {prompt:'Capital del departamento del CAQUETÁ 🌿',opts:['Mocoa','Leticia','Florencia'],c:2},
+        {prompt:'Capital del departamento del PUTUMAYO 🌊',opts:['Florencia','Mocoa','Leticia'],c:1},
+        {prompt:'Capital del departamento de CASANARE 🐄',opts:['Villavicencio','Arauca','Yopal'],c:2},
+        {prompt:'Capital del departamento de ARAUCA 🌊',opts:['Puerto Carreño','Arauca','Inírida'],c:1},
+        {prompt:'Capital del departamento del AMAZONAS 🌳',opts:['Mitú','Leticia','Inírida'],c:1},
+        {prompt:'Capital del departamento de VAUPÉS 🌊',opts:['Leticia','Puerto Carreño','Mitú'],c:2},
+        {prompt:'Capital del departamento de VICHADA 🌾',opts:['Arauca','Inírida','Puerto Carreño'],c:2},
+        {prompt:'Capital del departamento de GUAINÍA 🌊',opts:['Mitú','Inírida','San José del Guaviare'],c:1},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'¡Nivel experto! Departamentos especiales y datos difíciles.',qs:[
+        {prompt:'Capital del departamento del GUAVIARE 🌿',opts:['Inírida','Mitú','San José del Guaviare'],c:2},
+        {prompt:'Capital del departamento de SAN ANDRÉS 🏝️',opts:['Providencia','San Andrés','El Cove'],c:1},
+        {prompt:'¿Cuántos departamentos tiene Colombia? 🗺️',opts:['28','32','30'],c:1},
+        {prompt:'¿Cuál departamento tiene a MEDELLÍN como capital? 🏔️',opts:['Caldas','Antioquia','Risaralda'],c:1},
+        {prompt:'¿Cuál es la capital del departamento con más café: EJE CAFETERO? (Risaralda)',opts:['Armenia','Manizales','Pereira'],c:2},
+        {prompt:'¿Cuál NO es una capital de departamento colombiano?',opts:['Cúcuta','Buenaventura','Tunja'],c:1},
+        {prompt:'¿Cartagena es capital de qué departamento?',opts:['Sucre','Atlántico','Bolívar'],c:2},
+        {prompt:'¿Cuál es la capital de Colombia y también capital de Cundinamarca?',opts:['Tunja','Medellín','Bogotá D.C.'],c:2},
+        {prompt:'¿Qué ciudad es capital de BOYACÁ, el departamento del Lago de Tota?',opts:['Duitama','Tunja','Sogamoso'],c:1},
+        {prompt:'Ibagué, "la Ciudad Musical de Colombia", es capital del departamento del...',opts:['Huila','Meta','Tolima'],c:2},
+      ]},
+    ]
+  },
+  sc2:{id:'sc2',section:'dep',title:'¿De qué Departamento Soy?',emoji:'🗺️',color:'#b91c1c',
+    desc:'Lee el nombre de la capital y elige a qué departamento pertenece',type:'matchOption',
+    rule:'Conocer la capital de cada departamento nos ayuda a identificar la organización política de Colombia.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Capitales famosas. ¿Sabes en qué departamento están?',qs:[
+        {prompt:'MEDELLÍN es capital del departamento de...',opts:['Caldas','Risaralda','Antioquia'],c:2},
+        {prompt:'CALI es capital del departamento del...',opts:['Cauca','Valle del Cauca','Nariño'],c:1},
+        {prompt:'BARRANQUILLA es capital del departamento del...',opts:['Magdalena','Bolívar','Atlántico'],c:2},
+        {prompt:'CARTAGENA es capital del departamento de...',opts:['Atlántico','Bolívar','Sucre'],c:1},
+        {prompt:'BUCARAMANGA es capital del departamento de...',opts:['Boyacá','Norte de Santander','Santander'],c:2},
+        {prompt:'TUNJA es capital del departamento de...',opts:['Santander','Boyacá','Cundinamarca'],c:1},
+        {prompt:'MANIZALES es capital del departamento de...',opts:['Risaralda','Caldas','Quindío'],c:1},
+        {prompt:'VILLAVICENCIO es capital del departamento del...',opts:['Casanare','Vichada','Meta'],c:2},
+        {prompt:'SANTA MARTA es capital del departamento del...',opts:['Atlántico','César','Magdalena'],c:2},
+        {prompt:'BOGOTÁ D.C. es la capital de Colombia y también del departamento de...',opts:['Boyacá','Cundinamarca','Meta'],c:1},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Capitales del centro y sur del país.',qs:[
+        {prompt:'IBAGUÉ es capital del departamento del...',opts:['Huila','Meta','Tolima'],c:2},
+        {prompt:'NEIVA es capital del departamento del...',opts:['Tolima','Huila','Caquetá'],c:1},
+        {prompt:'PASTO es capital del departamento de...',opts:['Cauca','Nariño','Putumayo'],c:1},
+        {prompt:'POPAYÁN es capital del departamento del...',opts:['Nariño','Valle del Cauca','Cauca'],c:2},
+        {prompt:'PEREIRA es capital del departamento de...',opts:['Caldas','Quindío','Risaralda'],c:2},
+        {prompt:'ARMENIA es capital del departamento del...',opts:['Caldas','Quindío','Risaralda'],c:1},
+        {prompt:'CÚCUTA es capital del departamento de...',opts:['Santander','Norte de Santander','Arauca'],c:1},
+        {prompt:'MONTERÍA es capital del departamento de...',opts:['Sucre','Bolívar','Córdoba'],c:2},
+        {prompt:'VALLEDUPAR es capital del departamento del...',opts:['La Guajira','Atlántico','Cesar'],c:2},
+        {prompt:'RIOHACHA es capital del departamento de...',opts:['Magdalena','La Guajira','Cesar'],c:1},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Capitales de departamentos de regiones selváticas y de frontera.',qs:[
+        {prompt:'QUIBDÓ es capital del departamento del...',opts:['Cauca','Chocó','Nariño'],c:1},
+        {prompt:'SINCELEJO es capital del departamento de...',opts:['Córdoba','Bolívar','Sucre'],c:2},
+        {prompt:'FLORENCIA es capital del departamento del...',opts:['Putumayo','Amazonas','Caquetá'],c:2},
+        {prompt:'MOCOA es capital del departamento del...',opts:['Caquetá','Putumayo','Nariño'],c:1},
+        {prompt:'YOPAL es capital del departamento de...',opts:['Arauca','Meta','Casanare'],c:2},
+        {prompt:'ARAUCA es capital del departamento de...',opts:['Casanare','Vichada','Arauca'],c:2},
+        {prompt:'LETICIA es capital del departamento del...',opts:['Vaupés','Guainía','Amazonas'],c:2},
+        {prompt:'MITÚ es capital del departamento del...',opts:['Guainía','Vaupés','Guaviare'],c:1},
+        {prompt:'PUERTO CARREÑO es capital del departamento del...',opts:['Arauca','Guainía','Vichada'],c:2},
+        {prompt:'INÍRIDA es capital del departamento de...',opts:['Vichada','Vaupés','Guainía'],c:2},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'¡Reto máximo! Capitales poco conocidas y datos expertos.',qs:[
+        {prompt:'SAN JOSÉ DEL GUAVIARE es capital del departamento del...',opts:['Vaupés','Amazonas','Guaviare'],c:2},
+        {prompt:'La ciudad de QUIBDÓ está en la región...',opts:['Andina','Orinoquía','Pacífica'],c:2},
+        {prompt:'¿Cuál departamento tiene la misma capital que su propio nombre?',opts:['Arauca','Vaupés','Bolívar'],c:0},
+        {prompt:'¿En qué departamento queda el Parque Natural Amacayacu, en la Amazonia?',opts:['Vaupés','Caquetá','Amazonas'],c:2},
+        {prompt:'¿Cuál es la capital del único departamento INSULAR de Colombia?',opts:['Cartagena','San Andrés','Providencia'],c:1},
+        {prompt:'¿A qué departamento pertenece la ciudad de BUENAVENTURA, el puerto más grande?',opts:['Chocó','Cauca','Valle del Cauca'],c:2},
+        {prompt:'TUNJA, con temperaturas muy frías, es capital del departamento de...',opts:['Cundinamarca','Boyacá','Nariño'],c:1},
+        {prompt:'La ciudad de IPIALES, frontera con Ecuador, está en el departamento de...',opts:['Cauca','Putumayo','Nariño'],c:2},
+        {prompt:'¿Cuál capital departamental tiene el mismo nombre que el departamento?',opts:['Vaupés','Bolívar','Arauca'],c:2},
+        {prompt:'¿En qué departamento está el municipio de JARDÍN, famoso por su arquitectura?',opts:['Caldas','Antioquia','Risaralda'],c:1},
+      ]},
+    ]
+  },
+  sc3:{id:'sc3',section:'dep',title:'Ubica la Región',emoji:'🌎',color:'#ea580c',
+    desc:'Clasifica cada departamento en la región natural de Colombia donde se ubica',type:'classify4',
+    opts:['🌴 CARIBE','🏔️ ANDINA','🌿 PACÍFICA / AMAZÓNICA','🌾 ORINOQUÍA'],
+    rule:'Colombia tiene 6 regiones: Andina (montañas), Caribe (costa norte), Pacífica (costa oeste), Orinoquía (llanos), Amazónica (selva sur) e Insular (islas).',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Clasifica en: Caribe · Andina · Pacífica/Amazónica · Orinoquía.',
+       cats:['🌴 CARIBE','🏔️ ANDINA','🌿 PACÍFICA / AMAZÓNICA','🌾 ORINOQUÍA'],qs:[
+        {w:'Antioquia 🏔️',e:'🏔️',a:1,prop:'Cordillera de los Andes'},
+        {w:'Atlántico 🌊',e:'🌊',a:0,prop:'Costa Caribe'},
+        {w:'Meta 🌾',e:'🌾',a:3,prop:'Llanos Orientales'},
+        {w:'Bolívar ⚓',e:'⚓',a:0,prop:'Costa Caribe'},
+        {w:'Chocó 🌧️',e:'🌧️',a:2,prop:'Costa Pacífica'},
+        {w:'Boyacá 🏛️',e:'🏛️',a:1,prop:'Cordillera Oriental'},
+        {w:'Arauca 🌊',e:'🌊',a:3,prop:'Llanos Orientales'},
+        {w:'Valle del Cauca 🌊',e:'🌊',a:1,prop:'Cordillera Occidental'},
+        {w:'La Guajira 🌵',e:'🌵',a:0,prop:'Costa Caribe'},
+        {w:'Amazonas 🌳',e:'🌳',a:2,prop:'Región Amazónica'},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Más departamentos. ¡Recuerda la ubicación de cada región!',
+       cats:['🌴 CARIBE','🏔️ ANDINA','🌿 PACÍFICA / AMAZÓNICA','🌾 ORINOQUÍA'],qs:[
+        {w:'Santander ⛰️',e:'⛰️',a:1,prop:'Cordillera Oriental'},
+        {w:'Magdalena 🏝️',e:'🏝️',a:0,prop:'Costa Caribe'},
+        {w:'Casanare 🐄',e:'🐄',a:3,prop:'Llanos Orientales'},
+        {w:'Cauca 🎭',e:'🎭',a:1,prop:'Cordillera Central'},
+        {w:'Caquetá 🌿',e:'🌿',a:2,prop:'Región Amazónica'},
+        {w:'Córdoba 🐄',e:'🐄',a:0,prop:'Costa Caribe'},
+        {w:'Nariño 🌺',e:'🌺',a:1,prop:'Cordillera de los Andes'},
+        {w:'Vichada 🌾',e:'🌾',a:3,prop:'Llanos Orientales'},
+        {w:'Sucre 🌾',e:'🌾',a:0,prop:'Costa Caribe'},
+        {w:'Putumayo 🌊',e:'🌊',a:2,prop:'Piedemonte Amazónico'},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Departamentos del Eje Cafetero y regiones especiales.',
+       cats:['🌴 CARIBE','🏔️ ANDINA','🌿 PACÍFICA / AMAZÓNICA','🌾 ORINOQUÍA'],qs:[
+        {w:'Caldas ☕',e:'☕',a:1,prop:'Eje Cafetero - Región Andina'},
+        {w:'Risaralda ☕',e:'☕',a:1,prop:'Eje Cafetero - Región Andina'},
+        {w:'Quindío ☕',e:'☕',a:1,prop:'Eje Cafetero - Región Andina'},
+        {w:'Guaviare 🌿',e:'🌿',a:2,prop:'Zona de transición Amazónica'},
+        {w:'Vaupés 🌊',e:'🌊',a:2,prop:'Región Amazónica'},
+        {w:'Guainía 🌊',e:'🌊',a:2,prop:'Región Amazónica'},
+        {w:'César 🎵',e:'🎵',a:0,prop:'Costa Caribe interior'},
+        {w:'Cundinamarca 🗺️',e:'🗺️',a:1,prop:'Cordillera Oriental - Sabana de Bogotá'},
+        {w:'Tolima 🌋',e:'🌋',a:1,prop:'Cordillera Central'},
+        {w:'Huila 🪶',e:'🪶',a:1,prop:'Cordillera Central y Oriental'},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Región de los departamentos más difíciles. ¡Nivel experto!',
+       cats:['🌴 CARIBE','🏔️ ANDINA','🌿 PACÍFICA / AMAZÓNICA','🌾 ORINOQUÍA'],qs:[
+        {w:'Norte de Santander 🛢️',e:'🛢️',a:1,prop:'Cordillera Oriental'},
+        {w:'San Andrés 🏝️',e:'🏝️',a:0,prop:'Región Insular (Caribe)'},
+        {w:'Amazonas 🌳',e:'🌳',a:2,prop:'Gran Amazonia'},
+        {w:'Arauca 🌾',e:'🌾',a:3,prop:'Llanos Orientales - Frontera Venezuela'},
+        {w:'Putumayo 🌿',e:'🌿',a:2,prop:'Piedemonte Amazónico'},
+        {w:'Meta 🐊',e:'🐊',a:3,prop:'Llanos Orientales'},
+        {w:'Chocó 🌧️',e:'🌧️',a:2,prop:'Costa Pacífica - más lluvioso del mundo'},
+        {w:'Bolívar ⚓',e:'⚓',a:0,prop:'Costa Caribe'},
+        {w:'Vichada 🌾',e:'🌾',a:3,prop:'Llanos Orientales'},
+        {w:'Guaviare 🌳',e:'🌳',a:2,prop:'Transición Amazónica'},
+      ]},
+    ]
+  },
+  sc4:{id:'sc4',section:'dep',title:'Verdadero o Falso',emoji:'✅',color:'#991b1b',
+    desc:'Decide si cada afirmación sobre los departamentos de Colombia es verdadera o falsa',type:'yesNo',
+    rule:'Conocer los departamentos y capitales de Colombia es fundamental para entender la organización política del país.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Afirmaciones básicas sobre departamentos y capitales.',qs:[
+        {display:'La capital de Antioquia es Medellín.',tilde:true,rule:'✓ Correcto: Medellín es la capital del departamento de Antioquia.'},
+        {display:'Bogotá D.C. es la capital de Colombia.',tilde:true,rule:'✓ Correcto: Bogotá D.C. es la capital de la República de Colombia.'},
+        {display:'Colombia tiene 50 departamentos.',tilde:false,rule:'✗ Falso: Colombia tiene 32 departamentos más el Distrito Capital Bogotá.'},
+        {display:'Barranquilla es la capital del departamento del Atlántico.',tilde:true,rule:'✓ Correcto: Barranquilla es la capital del Atlántico y una de las ciudades más grandes de Colombia.'},
+        {display:'Cartagena es la capital del departamento del Atlántico.',tilde:false,rule:'✗ Falso: Cartagena es la capital del departamento de BOLÍVAR, no del Atlántico.'},
+        {display:'Cali es la capital del departamento del Valle del Cauca.',tilde:true,rule:'✓ Correcto: Cali es la capital del Valle del Cauca y la tercera ciudad más grande de Colombia.'},
+        {display:'Bucaramanga es la capital del departamento de Boyacá.',tilde:false,rule:'✗ Falso: Bucaramanga es la capital de SANTANDER. La capital de Boyacá es TUNJA.'},
+        {display:'Colombia está ubicada en América del Sur.',tilde:true,rule:'✓ Correcto: Colombia está en el norte de América del Sur, con costas en el Pacífico y el Caribe.'},
+        {display:'El departamento del Chocó tiene costa en el Océano Pacífico.',tilde:true,rule:'✓ Correcto: Chocó tiene costas en el Pacífico y es el departamento más lluvioso de Colombia.'},
+        {display:'El departamento de Meta está en la región Caribe.',tilde:false,rule:'✗ Falso: Meta está en la región de la ORINOQUÍA (Llanos Orientales).'},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Afirmaciones sobre regiones y datos geográficos.',qs:[
+        {display:'Villavicencio es la capital del departamento del Meta.',tilde:true,rule:'✓ Correcto: Villavicencio es la capital del Meta, llamada "Puerta al Llano".'},
+        {display:'La región Andina es la más poblada de Colombia.',tilde:true,rule:'✓ Correcto: la región Andina concentra la mayor parte de la población colombiana.'},
+        {display:'Santa Marta es la capital del departamento de Bolívar.',tilde:false,rule:'✗ Falso: Santa Marta es la capital del MAGDALENA. La capital de Bolívar es Cartagena.'},
+        {display:'Colombia tiene costas en el Océano Atlántico y en el Océano Pacífico.',tilde:true,rule:'✓ Correcto: Colombia es el único país de América del Sur con costas en ambos océanos.'},
+        {display:'Pasto es la capital del departamento de Nariño.',tilde:true,rule:'✓ Correcto: Pasto es la capital de Nariño, ubicada en el sur del país.'},
+        {display:'El departamento del Amazonas es el más grande de Colombia.',tilde:true,rule:'✓ Correcto: Amazonas es el departamento más grande, pero el menos poblado.'},
+        {display:'Tunja es la capital de Cundinamarca.',tilde:false,rule:'✗ Falso: Tunja es la capital de BOYACÁ. La capital de Cundinamarca es Bogotá D.C.'},
+        {display:'El Eje Cafetero está formado por los departamentos de Caldas, Risaralda y Quindío.',tilde:true,rule:'✓ Correcto: estos tres departamentos forman el Eje Cafetero, famoso por el café.'},
+        {display:'El departamento del Chocó es el más lluvioso del mundo.',tilde:true,rule:'✓ Correcto: el Chocó tiene una de las tasas de lluvia más altas del planeta.'},
+        {display:'Valledupar es la capital del departamento de La Guajira.',tilde:false,rule:'✗ Falso: Valledupar es la capital del CESAR. La capital de La Guajira es Riohacha.'},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Afirmaciones sobre regiones apartadas y fronteras.',qs:[
+        {display:'Leticia es la capital del departamento del Amazonas.',tilde:true,rule:'✓ Correcto: Leticia está en el extremo sur de Colombia, en la Amazonia.'},
+        {display:'Colombia limita con Venezuela por el oriente.',tilde:true,rule:'✓ Correcto: Colombia limita con Venezuela al este, en los departamentos de Arauca, Vichada y otros.'},
+        {display:'El departamento de San Andrés y Providencia es el único departamento insular.',tilde:true,rule:'✓ Correcto: San Andrés es el único departamento insular de Colombia, en el Caribe.'},
+        {display:'Arauca es capital y nombre del mismo departamento.',tilde:true,rule:'✓ Correcto: la ciudad de Arauca es la capital del departamento de Arauca.'},
+        {display:'La región Amazónica ocupa más de la mitad del territorio colombiano.',tilde:true,rule:'✓ Correcto: la Amazonia y la Orinoquía juntas ocupan más del 50% del territorio nacional.'},
+        {display:'El departamento de Nariño limita con Perú.',tilde:false,rule:'✗ Falso: Nariño limita con ECUADOR. El que limita con Perú es el Amazonas y Putumayo.'},
+        {display:'Quibdó es la capital del departamento del Chocó.',tilde:true,rule:'✓ Correcto: Quibdó es la capital del Chocó, en la región Pacífica.'},
+        {display:'El río Magdalena es el río más importante de Colombia.',tilde:true,rule:'✓ Correcto: el Magdalena es el principal río de Colombia y atraviesa varios departamentos.'},
+        {display:'Boyacá fue escenario de la Batalla de Boyacá en 1819.',tilde:true,rule:'✓ Correcto: en Boyacá se ganó la batalla que selló la independencia de Colombia.'},
+        {display:'El departamento del Valle del Cauca limita con el Océano Pacífico.',tilde:true,rule:'✓ Correcto: Valle del Cauca tiene costa en el Pacífico, donde está Buenaventura.'},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Datos expertos sobre geografía colombiana.',qs:[
+        {display:'Bogotá D.C. es el departamento más poblado de Colombia.',tilde:false,rule:'✗ Falso: Bogotá es un Distrito Capital, no un departamento. El más poblado es Antioquia o Bogotá misma como ciudad.'},
+        {display:'Colombia limita con 5 países.',tilde:false,rule:'✗ Falso: Colombia limita con 5 países: Venezuela, Brasil, Perú, Ecuador y Panamá.'},
+        {display:'El departamento del Amazonas limita con Brasil y Perú.',tilde:true,rule:'✓ Correcto: Amazonas tiene frontera con Brasil (al sur) y Perú (al occidente).'},
+        {display:'La Sierra Nevada de Santa Marta está en el departamento de Magdalena.',tilde:true,rule:'✓ Correcto: la Sierra Nevada toca los departamentos de Magdalena, La Guajira y Cesar.'},
+        {display:'El Nevado del Ruiz está en el departamento de Caldas.',tilde:true,rule:'✓ Correcto: el Nevado del Ruiz está en límites de Caldas y Tolima.'},
+        {display:'Colombia tiene más de 1 millón de km² de territorio.',tilde:true,rule:'✓ Correcto: Colombia tiene aproximadamente 1.141.748 km², el 4° más grande de América del Sur.'},
+        {display:'El departamento de Cundinamarca rodea completamente a Bogotá.',tilde:true,rule:'✓ Correcto: Bogotá D.C. está rodeada por Cundinamarca, aunque es un ente territorial independiente.'},
+        {display:'El río Orinoco forma parte de la frontera con Venezuela.',tilde:false,rule:'✗ Falso: el río fronterizo con Venezuela en esa zona es el Arauca, no el Orinoco (que nace en Venezuela).'},
+        {display:'Barranquilla, Cartagena y Santa Marta son las 3 ciudades principales del Caribe colombiano.',tilde:true,rule:'✓ Correcto: estas tres ciudades son las más importantes de la Costa Caribe colombiana.'},
+        {display:'El departamento de Vichada es el más extenso de Colombia.',tilde:false,rule:'✗ Falso: el más extenso es AMAZONAS, seguido de Vichada. Aunque Vichada sí es muy grande.'},
+      ]},
+    ]
+  },
+  cu1:{id:'cu1',section:'cun',title:'¿A qué Provincia Pertenece?',emoji:'📍',color:'#16a34a',
+    desc:'Lee el nombre del municipio y elige la provincia de Cundinamarca a la que pertenece',type:'matchOption',
+    rule:'Cundinamarca tiene 116 municipios organizados en 15 provincias. Conocer la provincia ayuda a ubicar el municipio en el departamento.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Provincias principales: Sabana Centro, Sabana Occidente y Sumapaz.',qs:[
+        {prompt:'ZIPAQUIRÁ (ciudad de la catedral de sal) 🧂',opts:['Sumapaz','Sabana Centro','Tequendama'],c:1},
+        {prompt:'FUSAGASUGÁ (capital del Sumapaz) 🌸',opts:['Sabana Centro','Tequendama','Sumapaz'],c:2},
+        {prompt:'FACATATIVÁ (la ciudad del occidente de la Sabana) 🌾',opts:['Sabana Occidente','Sabana Centro','Sumapaz'],c:0},
+        {prompt:'CHÍA (ciudad de la luna para los muiscas) 🌙',opts:['Sumapaz','Sabana Occidente','Sabana Centro'],c:2},
+        {prompt:'SILVANIA (municipio del Sumapaz) 🌿',opts:['Sabana Centro','Tequendama','Sumapaz'],c:2},
+        {prompt:'MOSQUERA (municipio industrial de la Sabana) 🏭',opts:['Sabana Centro','Sabana Occidente','Sumapaz'],c:1},
+        {prompt:'CAJICÁ (municipio de la cerámica y la moda) 🎨',opts:['Sabana Occidente','Sumapaz','Sabana Centro'],c:2},
+        {prompt:'FUNZA (municipio de la Sabana Occidente) 🌾',opts:['Sabana Centro','Sabana Occidente','Tequendama'],c:1},
+        {prompt:'ARBELÁEZ (municipio del Sumapaz) 🌺',opts:['Tequendama','Sabana Centro','Sumapaz'],c:2},
+        {prompt:'MADRID (municipio junto a Funza y Mosquera) 🌾',opts:['Sabana Centro','Sumapaz','Sabana Occidente'],c:2},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Provincias de Tequendama, Alto Magdalena y Oriente.',qs:[
+        {prompt:'LA MESA (capital de la provincia de Tequendama) ☕',opts:['Sumapaz','Alto Magdalena','Tequendama'],c:2},
+        {prompt:'GIRARDOT (ciudad caliente del Magdalena) 🌞',opts:['Tequendama','Sumapaz','Alto Magdalena'],c:2},
+        {prompt:'CÁQUEZA (capital de la provincia de Oriente) 🏔️',opts:['Almeidas','Alto Magdalena','Oriente'],c:2},
+        {prompt:'EL COLEGIO (municipio del Tequendama) 🏫',opts:['Oriente','Tequendama','Sumapaz'],c:1},
+        {prompt:'TOCAIMA (municipio del Alto Magdalena) 🌊',opts:['Alto Magdalena','Tequendama','Oriente'],c:0},
+        {prompt:'CHOACHÍ (municipio caliente del Oriente) 🌡️',opts:['Sumapaz','Oriente','Almeidas'],c:1},
+        {prompt:'ANAPOIMA (municipio caliente del Tequendama) 🌴',opts:['Tequendama','Alto Magdalena','Oriente'],c:0},
+        {prompt:'RICAURTE (municipio del Alto Magdalena) 🌊',opts:['Sumapaz','Tequendama','Alto Magdalena'],c:2},
+        {prompt:'FÓMEQUE (municipio del Oriente, conocido por su clima) 🏕️',opts:['Oriente','Sabana Centro','Almeidas'],c:0},
+        {prompt:'AGUA DE DIOS (municipio del Alto Magdalena) ✝️',opts:['Sumapaz','Alto Magdalena','Tequendama'],c:1},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Provincias del norte: Almeidas, Ubaté y Guavio.',qs:[
+        {prompt:'CHOCONTÁ (municipio de la Provincia de Almeidas) 🏛️',opts:['Ubaté','Guavio','Almeidas'],c:2},
+        {prompt:'UBATÉ (capital de la provincia del mismo nombre) 🐄',opts:['Almeidas','Sabana Centro','Ubaté'],c:2},
+        {prompt:'GACHETÁ (capital de la Provincia del Guavio) 🌊',opts:['Oriente','Guavio','Almeidas'],c:1},
+        {prompt:'SUESCA (municipio de la Provincia de Almeidas) 🧗',opts:['Guavio','Ubaté','Almeidas'],c:2},
+        {prompt:'GUACHETÁ (municipio de la Provincia de Ubaté) 🐄',opts:['Almeidas','Sabana Centro','Ubaté'],c:2},
+        {prompt:'SESQUILÉ (municipio cerca al embalse de Tominé) 💧',opts:['Guavio','Ubaté','Almeidas'],c:2},
+        {prompt:'UBALÁ (municipio del Guavio) 🌿',opts:['Ubaté','Guavio','Oriente'],c:1},
+        {prompt:'VILLAPINZÓN (municipio de la Provincia de Almeidas) 🌾',opts:['Ubaté','Almeidas','Sabana Centro'],c:1},
+        {prompt:'LENGUAZAQUE (municipio del norte, provincia de Ubaté) 🐄',opts:['Almeidas','Guavio','Ubaté'],c:2},
+        {prompt:'MEDINA (capital de la provincia del mismo nombre) 🌿',opts:['Guavio','Rionegro','Medina'],c:2},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Provincias del occidente: Rionegro, Gualivá y Bajo Magdalena.',qs:[
+        {prompt:'PACHO (capital de la Provincia de Rionegro) ⛰️',opts:['Gualivá','Bajo Magdalena','Rionegro'],c:2},
+        {prompt:'VILLETA (capital de la Provincia de Gualivá) 🌞',opts:['Rionegro','Bajo Magdalena','Gualivá'],c:2},
+        {prompt:'YACOPÍ (municipio de la Provincia de Rionegro) 🌿',opts:['Gualivá','Bajo Magdalena','Rionegro'],c:2},
+        {prompt:'SASAIMA (municipio de la Provincia de Gualivá) 🌺',opts:['Gualivá','Rionegro','Tequendama'],c:0},
+        {prompt:'ÚTICA (municipio cálido del Bajo Magdalena) 🌡️',opts:['Rionegro','Gualivá','Bajo Magdalena'],c:2},
+        {prompt:'LA VEGA (municipio cafetero de la Gualivá) ☕',opts:['Bajo Magdalena','Gualivá','Rionegro'],c:1},
+        {prompt:'PARATEBUENO (municipio de tierra caliente al sur de Medina) 🌿',opts:['Guavio','Rionegro','Medina'],c:2},
+        {prompt:'VERGARA (municipio del occidente de Cundinamarca) 🌳',opts:['Rionegro','Gualivá','Bajo Magdalena'],c:2},
+        {prompt:'SOACHA (municipio más poblado de Cundinamarca) 🏙️',opts:['Sumapaz','Tequendama','Soacha'],c:2},
+        {prompt:'PUERTO SALGAR (municipio sobre el río Magdalena) 🌊',opts:['Bajo Magdalena','Gualivá','Rionegro'],c:0},
+      ]},
+    ]
+  },
+  cu2:{id:'cu2',section:'cun',title:'Identifica el Municipio',emoji:'🔍',color:'#15803d',
+    desc:'Lee la descripción y elige el nombre correcto del municipio de Cundinamarca',type:'matchOption',
+    rule:'Cada municipio de Cundinamarca tiene características únicas: su historia, su geografía, sus productos o su cultura.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Los municipios más conocidos de Cundinamarca.',qs:[
+        {prompt:'Ciudad famosa por su catedral construida dentro de una mina de sal 🧂',opts:['Nemocón','Zipaquirá','Ubaté'],c:1},
+        {prompt:'Municipio turístico al norte de Bogotá, conocido como "Ciudad de la Luna" por los muiscas 🌙',opts:['Cajicá','Zipaquirá','Chía'],c:2},
+        {prompt:'Ciudad más caliente del departamento, destino de vacaciones sobre el Magdalena ☀️',opts:['Fusagasugá','Girardot','La Mesa'],c:1},
+        {prompt:'Capital de la Provincia del Sumapaz, conocida como "Ciudad Jardín" 🌸',opts:['Silvania','Arbeláez','Fusagasugá'],c:2},
+        {prompt:'Municipio con minas de sal muy antiguas, hermano de Zipaquirá 🧂',opts:['Ubaté','Chocontá','Nemocón'],c:2},
+        {prompt:'Municipio más poblado de Cundinamarca, junto al límite sur de Bogotá 🏙️',opts:['Fusagasugá','Facatativá','Soacha'],c:2},
+        {prompt:'Municipio donde se practica la escalada en roca en sus paredes de piedra 🧗',opts:['Sesquilé','Suesca','Choachí'],c:1},
+        {prompt:'Municipio famoso por los tejidos de fique y el embalse de Tominé 💧',opts:['Guatavita','Sesquilé','Gachancipá'],c:1},
+        {prompt:'Ciudad al occidente de la Sabana, punto de partida hacia el occidente del país 🌾',opts:['Mosquera','Facatativá','Madrid'],c:1},
+        {prompt:'Municipio con la laguna sagrada de los muiscas, donde se arrojaba oro 💛',opts:['Sesquilé','Suesca','Guatavita'],c:2},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Municipios del Tequendama, Oriente y Alto Magdalena.',qs:[
+        {prompt:'Capital de la Provincia del Tequendama, con clima templado y cafetales ☕',opts:['El Colegio','Anapoima','La Mesa'],c:2},
+        {prompt:'Municipio caliente del Tequendama, con árboles de mango 🥭',opts:['Tocaima','Anapoima','La Mesa'],c:1},
+        {prompt:'Municipio del oriente de Cundinamarca, capital de esa provincia 🏔️',opts:['Choachí','Fómeque','Cáqueza'],c:2},
+        {prompt:'Municipio conocido por las pinturas rupestres en el Piedras del Tunjo 🪨',opts:['Facatativá','Suesca','Zipaquirá'],c:0},
+        {prompt:'Municipio famoso por la panela y el clima cálido en el Bajo Magdalena 🌾',opts:['Útica','Villeta','La Vega'],c:1},
+        {prompt:'Municipio de Cundinamarca donde nace el río Bogotá ⛰️',opts:['Villapinzón','Chocontá','Suesca'],c:0},
+        {prompt:'Municipio ganadero y lechero, capital de la Provincia de Ubaté 🐄',opts:['Guachetá','Lenguazaque','Ubaté'],c:2},
+        {prompt:'Municipio cálido del Alto Magdalena, conocido por sus aguas termales y el santuario ✝️',opts:['Girardot','Tocaima','Agua de Dios'],c:2},
+        {prompt:'Municipio del Tequendama famoso por el Salto del mismo nombre 🌊',opts:['El Colegio','Tena','San Antonio del Tequendama'],c:2},
+        {prompt:'Municipio de la Sabana Centro, polo industrial y de flores 🌷',opts:['Sopó','Tocancipá','Cajicá'],c:1},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Municipios del norte y occidente de Cundinamarca.',qs:[
+        {prompt:'Capital de la Provincia del Guavio, a orillas del río del mismo nombre 🌊',opts:['Ubalá','Gachetá','Gachalá'],c:1},
+        {prompt:'Municipio minero de la Provincia de Ubaté, extrae carbón y arcilla 🪨',opts:['Lenguazaque','Ubaté','Guachetá'],c:2},
+        {prompt:'Capital de la Provincia de Rionegro, conocida como "El Balcón de Cundinamarca" ⛰️',opts:['Yacopí','Caparrapí','Pacho'],c:2},
+        {prompt:'Municipio del sur de Cundinamarca, a orillas del río Sumapaz 🌊',opts:['Pandi','Pasca','Cabrera'],c:0},
+        {prompt:'Capital de la Provincia de Gualivá, llamada "La Ciudad de las Acacias" 🌸',opts:['Sasaima','La Vega','Villeta'],c:2},
+        {prompt:'Municipio de la Provincia de Almeidas donde se fabrican artesanías de madera 🪵',opts:['Sesquilé','Chocontá','Manta'],c:2},
+        {prompt:'Municipio del Guavio famoso por la producción de panela y su paisaje selvático 🌿',opts:['Medina','Ubalá','Gachalá'],c:0},
+        {prompt:'Municipio de la Sabana Centro que conserva su arquitectura colonial española 🏛️',opts:['Zipaquirá','Cogua','Nemocón'],c:2},
+        {prompt:'Municipio de piedemonte llanero, en la transición entre Cundinamarca y el Meta 🌿',opts:['Medina','Guayabetal','Paratebueno'],c:2},
+        {prompt:'Municipio del Sumapaz con una importante reserva de agua que surte a Bogotá 💧',opts:['Pasca','Granada','Cabrera'],c:2},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Datos históricos y geográficos avanzados de Cundinamarca.',qs:[
+        {prompt:'Municipio de Cundinamarca que fue sede de la primera Constitución de 1811 🏛️',opts:['Zipaquirá','Funza','San Francisco'],c:1},
+        {prompt:'Municipio donde se conserva el Puente de Boyacá y monumentos de la independencia ⚔️',opts:['Guatavita','Ventaquemada','Chocontá'],c:1},
+        {prompt:'Municipio de la Sabana Centro conocido por la producción de flores para exportar 🌹',opts:['Cogua','Gachancipá','Tocancipá'],c:2},
+        {prompt:'El municipio de SIBATÉ pertenece a la Provincia de...',opts:['Sumapaz','Tequendama','Soacha'],c:2},
+        {prompt:'Municipio de la provincia de Medina, importante por su producción de caucho 🌿',opts:['Paratebueno','Medina','Guayabetal'],c:1},
+        {prompt:'¿Cuántas provincias tiene el departamento de Cundinamarca?',opts:['10','12','15'],c:2},
+        {prompt:'El Municipio de CAJICÁ es famoso por la fabricación de...',opts:['Sal','Ropa y cerámica artesanal','Queso'],c:1},
+        {prompt:'¿Cuál provincia de Cundinamarca tiene como capital a Cáqueza?',opts:['Almeidas','Guavio','Oriente'],c:2},
+        {prompt:'Municipio del Bajo Magdalena conocido por la producción de ganado y caña 🐄',opts:['La Peña','Vergara','La Palma'],c:0},
+        {prompt:'¿Cuántos municipios tiene aproximadamente el departamento de Cundinamarca?',opts:['80','116','200'],c:1},
+      ]},
+    ]
+  },
+  cu3:{id:'cu3',section:'cun',title:'Clasifica por Provincia',emoji:'📦',color:'#166534',
+    desc:'Clasifica cada municipio de Cundinamarca en su provincia correcta',type:'classify4',
+    opts:['🏙️ SABANA CENTRO','🌾 SABANA OCCIDENTE','🌸 SUMAPAZ','☕ TEQUENDAMA'],
+    rule:'Los municipios de Cundinamarca están agrupados en 15 provincias según su ubicación geográfica y características comunes.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Clasifica entre: Sabana Centro · Sabana Occidente · Sumapaz · Tequendama.',
+       cats:['🏙️ SABANA CENTRO','🌾 SABANA OCCIDENTE','🌸 SUMAPAZ','☕ TEQUENDAMA'],qs:[
+        {w:'Zipaquirá 🧂',e:'🧂',a:0,prop:'Famosa por la catedral de sal'},
+        {w:'Funza 🌾',e:'🌾',a:1,prop:'Sabana Occidente'},
+        {w:'Fusagasugá 🌸',e:'🌸',a:2,prop:'Capital del Sumapaz'},
+        {w:'La Mesa ☕',e:'☕',a:3,prop:'Capital de Tequendama'},
+        {w:'Chía 🌙',e:'🌙',a:0,prop:'Ciudad de la Luna'},
+        {w:'Madrid 🌾',e:'🌾',a:1,prop:'Sabana Occidente'},
+        {w:'Silvania 🌿',e:'🌿',a:2,prop:'Sumapaz'},
+        {w:'Anapoima 🌴',e:'🌴',a:3,prop:'Tequendama'},
+        {w:'Cajicá 🎨',e:'🎨',a:0,prop:'Sabana Centro'},
+        {w:'Mosquera 🏭',e:'🏭',a:1,prop:'Sabana Occidente'},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Clasifica entre: Oriente · Alto Magdalena · Almeidas · Guavio.',
+       cats:['🏔️ ORIENTE','🌞 ALTO MAGDALENA','🏛️ ALMEIDAS','🌊 GUAVIO'],qs:[
+        {w:'Cáqueza 🏔️',e:'🏔️',a:0,prop:'Capital de Oriente'},
+        {w:'Girardot 🌞',e:'🌞',a:1,prop:'Ciudad más caliente del dpto.'},
+        {w:'Chocontá 🏛️',e:'🏛️',a:2,prop:'Provincia de Almeidas'},
+        {w:'Gachetá 🌊',e:'🌊',a:3,prop:'Capital de Guavio'},
+        {w:'Choachí 🌡️',e:'🌡️',a:0,prop:'Oriente - clima cálido'},
+        {w:'Tocaima 🏖️',e:'🏖️',a:1,prop:'Alto Magdalena'},
+        {w:'Suesca 🧗',e:'🧗',a:2,prop:'Almeidas - escalada en roca'},
+        {w:'Ubalá 🌿',e:'🌿',a:3,prop:'Guavio'},
+        {w:'Fómeque 🏕️',e:'🏕️',a:0,prop:'Oriente'},
+        {w:'Agua de Dios ✝️',e:'✝️',a:1,prop:'Alto Magdalena'},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Clasifica entre: Rionegro · Gualivá · Ubaté · Soacha.',
+       cats:['⛰️ RIONEGRO','🌸 GUALIVÁ','🐄 UBATÉ','🏙️ SOACHA'],qs:[
+        {w:'Pacho ⛰️',e:'⛰️',a:0,prop:'Capital de Rionegro'},
+        {w:'Villeta 🌸',e:'🌸',a:1,prop:'Capital de Gualivá'},
+        {w:'Ubaté 🐄',e:'🐄',a:2,prop:'Capital de Ubaté'},
+        {w:'Soacha 🏙️',e:'🏙️',a:3,prop:'Municipio más poblado'},
+        {w:'Yacopí 🌿',e:'🌿',a:0,prop:'Rionegro'},
+        {w:'La Vega ☕',e:'☕',a:1,prop:'Gualivá'},
+        {w:'Guachetá 🐄',e:'🐄',a:2,prop:'Ubaté - ganadería y minería'},
+        {w:'Sibaté 🏘️',e:'🏘️',a:3,prop:'Provincia de Soacha'},
+        {w:'Caparrapí 🌾',e:'🌾',a:0,prop:'Rionegro'},
+        {w:'Sasaima 🌺',e:'🌺',a:1,prop:'Gualivá'},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Nivel experto: combina todas las provincias.',
+       cats:['🏔️ ORIENTE / ALMEIDAS','🌞 ALT.MAGDALENA / SOACHA','⛰️ RIONEGRO / GUALIVÁ','🌊 GUAVIO / MEDINA'],qs:[
+        {w:'Villapinzón 🌾',e:'🌾',a:0,prop:'Almeidas - nace río Bogotá'},
+        {w:'Ricaurte 🌊',e:'🌊',a:1,prop:'Alto Magdalena'},
+        {w:'La Palma 🌴',e:'🌴',a:2,prop:'Rionegro'},
+        {w:'Medina 🌿',e:'🌿',a:3,prop:'Provincia de Medina - piedemonte'},
+        {w:'Sesquilé 💧',e:'💧',a:0,prop:'Almeidas - embalse del Tominé'},
+        {w:'Puerto Salgar 🚢',e:'🚢',a:1,prop:'Bajo Magdalena / sobre el río Magdalena'},
+        {w:'Topaipí 🌿',e:'🌿',a:2,prop:'Rionegro'},
+        {w:'Paratebueno 🌿',e:'🌿',a:3,prop:'Medina - piedemonte llanero'},
+        {w:'Manta 🏛️',e:'🏛️',a:0,prop:'Almeidas'},
+        {w:'Nariño 🌊',e:'🌊',a:1,prop:'Alto Magdalena'},
+      ]},
+    ]
+  },
+  cu4:{id:'cu4',section:'cun',title:'Completa el Dato',emoji:'✏️',color:'#14532d',
+    desc:'Elige la opción correcta para completar cada dato sobre Cundinamarca y sus municipios',type:'fillBlank',
+    rule:'Cundinamarca es uno de los departamentos más importantes de Colombia por su historia, geografía y organización en provincias.',
+    levels:[
+      {label:'Nivel 1 ⭐',hint:'Datos básicos de Cundinamarca.',qs:[
+        {before:'Cundinamarca está ubicado en la región',blank:'___',after:'de Colombia.',opts:['Caribe','Andina','Pacífica'],c:1,missing:'región'},
+        {before:'La capital histórica de Cundinamarca es',blank:'___',after:'.',opts:['Tunja','Medellín','Bogotá D.C.'],c:2,missing:'ciudad'},
+        {before:'Cundinamarca tiene',blank:'___',after:'provincias.',opts:['10','15','20'],c:1,missing:'número'},
+        {before:'El municipio más poblado de Cundinamarca es',blank:'___',after:'.',opts:['Fusagasugá','Facatativá','Soacha'],c:2,missing:'municipio'},
+        {before:'La catedral de sal más famosa de Colombia está en',blank:'___',after:'.',opts:['Nemocón','Ubaté','Zipaquirá'],c:2,missing:'municipio'},
+        {before:'Cundinamarca tiene aproximadamente',blank:'___',after:'municipios.',opts:['50','116','200'],c:1,missing:'número'},
+        {before:'El río más importante que nace en Cundinamarca es el río',blank:'___',after:'.',opts:['Meta','Cauca','Bogotá'],c:2,missing:'nombre'},
+        {before:'La Provincia del Sumapaz tiene como capital al municipio de',blank:'___',after:'.',opts:['Silvania','Arbeláez','Fusagasugá'],c:2,missing:'municipio'},
+        {before:'Los municipios de Funza, Madrid y Mosquera pertenecen a la Provincia de',blank:'___',after:'.',opts:['Sabana Centro','Tequendama','Sabana Occidente'],c:2,missing:'provincia'},
+        {before:'La Provincia de Sabana Centro tiene como uno de sus municipios más conocidos a',blank:'___',after:'.',opts:['Soacha','Zipaquirá','Girardot'],c:1,missing:'municipio'},
+      ]},
+      {label:'Nivel 2 ⭐⭐',hint:'Datos sobre provincias y geografía departamental.',qs:[
+        {before:'La Provincia del Tequendama tiene como capital al municipio de',blank:'___',after:'.',opts:['El Colegio','Anapoima','La Mesa'],c:2,missing:'municipio'},
+        {before:'El municipio de Girardot pertenece a la Provincia del',blank:'___',after:'.',opts:['Tequendama','Sumapaz','Alto Magdalena'],c:2,missing:'provincia'},
+        {before:'Cundinamarca rodea por todos sus lados al Distrito Capital de',blank:'___',after:'.',opts:['Medellín','Cali','Bogotá'],c:2,missing:'ciudad'},
+        {before:'El municipio donde nace el río Bogotá se llama',blank:'___',after:'.',opts:['Chocontá','Villapinzón','Suesca'],c:1,missing:'municipio'},
+        {before:'La Provincia de Almeidas tiene como municipio capital a',blank:'___',after:'.',opts:['Sesquilé','Chocontá','Suesca'],c:1,missing:'municipio'},
+        {before:'El municipio de Chía es conocido como la "Ciudad de la',blank:'___',after:'" en lengua muisca.',opts:['Sol','Luna','Estrella'],c:1,missing:'astro'},
+        {before:'La Laguna Sagrada de los Muiscas donde arrojaban oro está en el municipio de',blank:'___',after:'.',opts:['Sesquilé','Guasca','Guatavita'],c:2,missing:'municipio'},
+        {before:'Los municipios de Cajicá, Tocancipá y Gachancipá pertenecen a la Provincia de',blank:'___',after:'.',opts:['Sabana Occidente','Almeidas','Sabana Centro'],c:2,missing:'provincia'},
+        {before:'La Provincia del Guavio tiene como capital al municipio de',blank:'___',after:'.',opts:['Ubalá','Gachalá','Gachetá'],c:2,missing:'municipio'},
+        {before:'El municipio de SIBATÉ pertenece a la Provincia de',blank:'___',after:'.',opts:['Sumapaz','Tequendama','Soacha'],c:2,missing:'provincia'},
+      ]},
+      {label:'Nivel 3 ⭐⭐⭐',hint:'Historia y geografía de Cundinamarca.',qs:[
+        {before:'La Provincia de Rionegro tiene como capital al municipio de',blank:'___',after:'.',opts:['Caparrapí','Yacopí','Pacho'],c:2,missing:'municipio'},
+        {before:'El municipio de Paratebueno está ubicado en la Provincia de',blank:'___',after:'.',opts:['Guavio','Oriente','Medina'],c:2,missing:'provincia'},
+        {before:'El municipio de Suesca es famoso por sus paredes de roca aptas para la',blank:'___',after:'.',opts:['Pesca','Agricultura','Escalada deportiva'],c:2,missing:'actividad'},
+        {before:'La Provincia de Gualivá tiene como capital al municipio de',blank:'___',after:'.',opts:['Sasaima','La Vega','Villeta'],c:2,missing:'municipio'},
+        {before:'La región donde está Cundinamarca se llama región',blank:'___',after:'porque allí están las tres cordilleras.',opts:['Pacífica','Andina','Orinoquía'],c:1,missing:'región'},
+        {before:'Los pueblos indígenas que habitaban la Sabana de Bogotá se llamaban',blank:'___',after:'.',opts:['Aztecas','Incas','Muiscas'],c:2,missing:'pueblo'},
+        {before:'El municipio de Nemocón, como Zipaquirá, es famoso por sus minas de',blank:'___',after:'.',opts:['Carbón','Sal','Oro'],c:1,missing:'mineral'},
+        {before:'La Provincia del Alto Magdalena incluye al municipio más caliente de Cundinamarca:',blank:'___',after:'.',opts:['La Mesa','Fusagasugá','Girardot'],c:2,missing:'municipio'},
+        {before:'El embalse del Tominé, que surte de agua a Bogotá, está en el municipio de',blank:'___',after:'.',opts:['Guasca','Sesquilé','Sopó'],c:1,missing:'municipio'},
+        {before:'Los municipios de la Sabana de Bogotá se caracterizan por su',blank:'___',after:'fría y su actividad agrícola e industrial.',opts:['Temperatura','Costa','Selva'],c:0,missing:'característica'},
+      ]},
+      {label:'Nivel 4 ⭐⭐⭐⭐',hint:'Datos avanzados y expertos sobre Cundinamarca.',qs:[
+        {before:'El nombre "Cundinamarca" proviene de una palabra indígena que significa "País del',blank:'___',after:'".',opts:['Cóndor','Jaguar','Oso'],c:0,missing:'animal'},
+        {before:'El municipio de Facatativá conserva un sitio arqueológico con pinturas rupestres llamado',blank:'___',after:'.',opts:['Piedras del Tunjo','Cerro de Monserrate','Salto del Tequendama'],c:0,missing:'sitio'},
+        {before:'La "Sabana de Bogotá" es un altiplano a más de',blank:'___',after:'metros sobre el nivel del mar.',opts:['1500','2600','4000'],c:1,missing:'altitud'},
+        {before:'El departamento de Cundinamarca está dividido en',blank:'___',after:'municipios en total.',opts:['80','116','200'],c:1,missing:'número'},
+        {before:'El Parque Natural del Sumapaz, el páramo más grande del mundo, queda entre Cundinamarca y el departamento del',blank:'___',after:'.',opts:['Boyacá','Meta','Tolima'],c:1,missing:'departamento'},
+        {before:'La Provincia de Sabana Centro es la más importante en producción de',blank:'___',after:'para exportación.',opts:['Café','Flores','Cacao'],c:1,missing:'producto'},
+        {before:'El municipio de Chocontá es conocido porque allí se realiza la feria más importante de',blank:'___',after:'de la región.',opts:['Flores','Ganado equino','Carbón'],c:1,missing:'producto'},
+        {before:'El río Magdalena forma el límite natural al',blank:'___',after:'de Cundinamarca.',opts:['Norte','Occidente','Sur'],c:1,missing:'lado'},
+        {before:'La Provincia que incluye los municipios de Soacha y Sibaté se llama Provincia de',blank:'___',after:'.',opts:['Tequendama','Sabana Occidente','Soacha'],c:2,missing:'nombre'},
+        {before:'El municipio de Guatavita está relacionado con la leyenda del',blank:'___',after:', de donde viene la búsqueda de oro.',opts:['Cacique Tisquèsusa','Dorado','Infiernito'],c:1,missing:'leyenda'},
+      ]},
+    ]
+  },
+};
+
+
+// ══════════════════════════════════════════
+// ESCALA DE CALIFICACIÓN 0 – 5 (Colombia)
+// ══════════════════════════════════════════
+function pctToGrade(pct){
+  // Escala lineal: 100% = 5.0, 0% = 0.0
+  return (Math.round((pct / 100) * 50) / 10); // 1 decimal
+}
+function gradeLabel(g){
+  if(g>=4.6) return {txt:'Superior 🏆', color:'#059669', bg:'#d1fae5'};
+  if(g>=4.0) return {txt:'Alto ⭐',      color:'#2563eb', bg:'#dbeafe'};
+  if(g>=3.0) return {txt:'Básico 📚',   color:'#d97706', bg:'#fef3c7'};
+  if(g>0)    return {txt:'Bajo 📝',      color:'#dc2626', bg:'#fee2e2'};
+  return               {txt:'Sin nota ⏳', color:'#64748b', bg:'#f1f5f9'};
+}
+function gradeColor(g){
+  if(g>=4.6)return '#059669';
+  if(g>=4.0)return '#2563eb';
+  if(g>=3.0)return '#d97706';
+  if(g>0)   return '#dc2626';
+  return '#94a3b8';
+}
+const DB = {
+  KEY: 'sociales_v1_students',
+  load(){ try{return JSON.parse(localStorage.getItem(this.KEY))||[];}catch(e){return[];} },
+  save(data){ try{localStorage.setItem(this.KEY,JSON.stringify(data));}catch(e){} },
+  addStudent(name,grade,avatar){
+    const all=this.load();
+    const stu={id:'s'+Date.now(),name,grade,avatar,createdAt:new Date().toLocaleDateString('es-CO'),scores:{}};
+    all.push(stu);
+    this.save(all);
+    return stu;
+  },
+  updateScore(stuId,gameId,levelIdx,score,total){
+    const all=this.load();
+    const stu=all.find(s=>s.id===stuId);
+    if(!stu)return;
+    if(!stu.scores)stu.scores={};
+    const key=`${gameId}_${levelIdx}`;
+    const existing=stu.scores[key];
+    stu.scores[key]={score,total,pct:Math.round(score/total*100),stars:getStars(score,total),date:new Date().toLocaleDateString('es-CO')};
+    if(existing && existing.score>score) stu.scores[key]=existing; // keep best
+    else stu.scores[key]={score,total,pct:Math.round(score/total*100),stars:getStars(score,total),date:new Date().toLocaleDateString('es-CO')};
+    this.save(all);
+  },
+  deleteStudent(stuId){
+    const all=this.load().filter(s=>s.id!==stuId);
+    this.save(all);
+  }
+};
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const state = {
+  section:null, gameId:null, levelIdx:0,
+  qIdx:0, score:0, total:0, answered:false,
+  student:null, // current student object
+  afterStudent:null, // what to do after picking student
+};
+
+// ══════════════════════════════════════════
+// STARS BACKGROUND
+// ══════════════════════════════════════════
+(function(){
+  const c=document.getElementById('stars');
+  const COLS=['rgba(239,68,68,','rgba(59,130,246,','rgba(255,255,255,'];
+  for(let i=0;i<50;i++){
+    const s=document.createElement('div');s.className='star-dot';
+    const sz=Math.random()*14+6;
+    const col=COLS[Math.floor(Math.random()*COLS.length)];
+    const op=(Math.random()*0.06+0.04).toFixed(3);
+    s.style.cssText=`width:${sz}px;height:${sz}px;border-radius:50%;background:${col}${op});left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${(Math.random()*7+4).toFixed(1)}s;animation-delay:${(Math.random()*5).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+})();
+
+// ══════════════════════════════════════════
+// SCREEN NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Load student from storage on init
+(function initStudent(){
+  const all=DB.load();
+  if(all.length>0){
+    // auto-select last used (or first)
+    const lastId=localStorage.getItem('esp_last_student');
+    state.student=all.find(s=>s.id===lastId)||all[0];
+    updateStudentUI();
+  }
+})();
+
+function updateStudentUI(){
+  const stu=state.student;
+  const bar=document.getElementById('menu-student-bar');
+  const chip=document.getElementById('menu-stu-chip');
+  if(stu){
+    bar.style.display='block';
+    chip.innerHTML=`${stu.avatar} ${stu.name} &nbsp;(${stu.grade}) ✏️`;
+    ['section-stu-chip','levels-stu-chip'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML=`${stu.avatar} ${stu.name}`;
+    });
+    const phStu=document.getElementById('ph-student');
+    if(phStu) phStu.innerHTML=`${stu.avatar} ${stu.name}`;
+    localStorage.setItem('esp_last_student',stu.id);
+  } else {
+    bar.style.display='none';
+  }
+}
+
+function goSection(sid){
+  if(!state.student){
+    state.afterStudent=()=>goSection(sid);
+    goStudentPicker(true);
+    return;
+  }
+  state.section=sid;
+  renderSection(sid);
+  showScreen('s-section');
+}
+
+function goBackToSection(){
+  state.gameId ? (renderSection(state.section),showScreen('s-section')) : showScreen('s-menu');
+}
+
+function goToLevels(){
+  if(state.gameId){renderLevelSelect(state.gameId);showScreen('s-levels');}
+  else showScreen('s-menu');
+}
+
+function confirmExit(){
+  if(confirm('¿Deseas salir del juego? Perderás el progreso de esta ronda.')){
+    renderLevelSelect(state.gameId);
+    showScreen('s-levels');
+  }
+}
+
+// ══════════════════════════════════════════
+// STUDENT PICKER
+// ══════════════════════════════════════════
+let selectedNewId=null;
+function goStudentPicker(mandatory){
+  document.getElementById('btn-back-student').style.display=mandatory?'none':'';
+  selectedNewId=null;
+  document.getElementById('btn-play-student').classList.remove('visible');
+  document.getElementById('add-student-form').classList.remove('visible');
+  renderStudentList();
+  showScreen('s-student');
+}
+function renderStudentList(){
+  const all=DB.load();
+  const list=document.getElementById('student-list');
+  if(all.length===0){
+    list.innerHTML=`<div style="text-align:center;color:rgba(255,255,255,.6);padding:18px;font-weight:700">No hay estudiantes aún. ¡Crea el primero!</div>`;
+    return;
+  }
+  list.innerHTML=all.map(stu=>{
+    const scores=stu.scores||{};
+    const done=Object.keys(scores).length;
+    const total=32; // 8 games × 4 levels
+    const isSelected=state.student&&stu.id===state.student.id;
+    return `<div class="student-item ${isSelected?'selected':''}" onclick="selectStudent('${stu.id}')">
+      <div class="student-avatar">${stu.avatar}</div>
+      <div class="student-info">
+        <div class="s-name">${stu.name}</div>
+        <div class="s-grade">${stu.grade} · Registro: ${stu.createdAt}</div>
+        <div class="s-progress">✅ ${done}/${total} niveles completados</div>
+      </div>
+      <span class="s-arrow">›</span>
+    </div>`;
+  }).join('');
+}
+function selectStudent(id){
+  selectedNewId=id;
+  document.querySelectorAll('.student-item').forEach(el=>{
+    el.classList.toggle('selected',el.getAttribute('onclick').includes(id));
+  });
+  document.getElementById('btn-play-student').classList.add('visible');
+}
+function confirmStudent(){
+  if(!selectedNewId)return;
+  const all=DB.load();
+  state.student=all.find(s=>s.id===selectedNewId)||null;
+  updateStudentUI();
+  if(state.afterStudent){const fn=state.afterStudent;state.afterStudent=null;fn();}
+  else showScreen('s-menu');
+}
+// Add student form
+let pickedAvatar='👦';
+function showAddForm(){
+  document.getElementById('add-student-form').classList.add('visible');
+  document.getElementById('input-name').focus();
+}
+function cancelAddForm(){document.getElementById('add-student-form').classList.remove('visible')}
+function selectAvatar(el){
+  document.querySelectorAll('.avatar-opt').forEach(a=>a.classList.remove('selected'));
+  el.classList.add('selected');
+  pickedAvatar=el.dataset.av;
+}
+function saveNewStudent(){
+  const name=document.getElementById('input-name').value.trim();
+  const grade=document.getElementById('input-grade').value;
+  if(!name){alert('Ingresa el nombre del estudiante');return;}
+  const stu=DB.addStudent(name,grade,pickedAvatar);
+  document.getElementById('input-name').value='';
+  cancelAddForm();
+  selectedNewId=stu.id;
+  renderStudentList();
+  document.getElementById('btn-play-student').classList.add('visible');
+}
+
+// ══════════════════════════════════════════
+// SECTION + GAME LIST
+// ══════════════════════════════════════════
+function renderSection(sid){
+  const sec=SECTIONS[sid];
+  const stuScores=(state.student&&state.student.scores)||{};
+  document.getElementById('section-nav-title').textContent=sec.title;
+  document.getElementById('section-header').innerHTML=`
+    <span class="sec-emoji-lg">${sec.emoji}</span>
+    <div class="${sec.theme}"><h2>${sec.title}</h2><p>${sec.desc}</p></div>`;
+  document.getElementById('games-grid').innerHTML=GAME_LIST[sid].map(gid=>{
+    const g=GAMES[gid];
+    const levsDone=g.levels.filter((_,i)=>stuScores[`${gid}_${i}`]).length;
+    return `<button class="game-card" style="--c:${g.color}" onclick="goLevelSelect('${gid}')">
+      <span class="g-emoji">${g.emoji}</span>
+      <h3>${g.title}</h3>
+      <p>${g.desc}</p>
+      <div style="margin-top:8px;font-size:.8rem;color:${g.color};font-weight:800">${levsDone}/4 niveles ✓</div>
+    </button>`;
+  }).join('');
+  updateStudentUI();
+}
+
+// ══════════════════════════════════════════
+// LEVEL SELECT
+// ══════════════════════════════════════════
+function goLevelSelect(gid){
+  state.gameId=gid;
+  renderLevelSelect(gid);
+  showScreen('s-levels');
+}
+function renderLevelSelect(gid){
+  const g=GAMES[gid];
+  const sec=SECTIONS[g.section];
+  const stuScores=(state.student&&state.student.scores)||{};
+  state.section=g.section;
+  document.getElementById('levels-nav-title').textContent=g.title;
+  document.getElementById('levels-game-header').innerHTML=`
+    <span class="sec-emoji-lg">${g.emoji}</span>
+    <div class="${sec.theme}"><h2>${g.title}</h2><p>${g.desc}</p></div>`;
+  document.getElementById('levels-grid').innerHTML=g.levels.map((lv,i)=>{
+    const key=`${gid}_${i}`;
+    const rec=stuScores[key];
+    const stars=rec?rec.stars:0;
+    const locked=i>0&&!stuScores[`${gid}_${i-1}`];
+    return `<button class="level-card ${locked?'locked':''}" style="--lc:${g.color}" onclick="selectLevel(${i},${locked})">
+      <span class="lv-num">${i+1}</span>
+      <h3>${lv.label}</h3>
+      <div class="lv-stars">${'⭐'.repeat(stars)}${'☆'.repeat(3-Math.min(stars,3))}</div>
+      <p>${rec?`Mejor: ${rec.score}/${rec.total} · ${rec.date}`:lv.hint}</p>
+    </button>`;
+  }).join('');
+  document.getElementById('levels-rule-box').innerHTML=`<span class="rule-title">💡 Regla clave</span><p>${g.rule}</p>`;
+  updateStudentUI();
+}
+function selectLevel(idx,locked){
+  if(locked){alert('Completa el nivel anterior primero 🔒');return;}
+  state.levelIdx=idx;
+  startGame();
+  showScreen('s-play');
+}
+
+// ══════════════════════════════════════════
+// GAME ENGINE
+// ══════════════════════════════════════════
+function startGame(){
+  const g=GAMES[state.gameId];
+  const lv=g.levels[state.levelIdx];
+  state.qIdx=0;state.score=0;state.answered=false;
+  state.total=lv.qs.length;
+  document.getElementById('ph-icon').textContent=g.emoji;
+  document.getElementById('ph-name').textContent=g.title;
+  document.getElementById('ph-lvl').textContent=lv.label;
+  document.getElementById('ph-score').textContent='0';
+  document.getElementById('progress-bar').style.width='0%';
+  if(state.student) document.getElementById('ph-student').innerHTML=`${state.student.avatar} ${state.student.name}`;
+  renderQuestion();
+}
+
+function getStars(score,total){
+  if(!score)return 0;const p=score/total;
+  return p>=0.9?3:p>=0.7?2:p>=0.5?1:0;
+}
+
+function renderQuestion(){
+  const g=GAMES[state.gameId];
+  const lv=g.levels[state.levelIdx];
+  const q=lv.qs[state.qIdx];
+  state.answered=false;
+  document.getElementById('progress-bar').style.width=((state.qIdx/state.total)*100)+'%';
+  document.getElementById('ph-score').textContent=state.score;
+  const area=document.getElementById('play-area');
+  let html='';
+  switch(g.type){
+    case 'clickPart':html=renderClickPart(q,g);break;
+    case 'matchOption':html=renderMatchOption(q,g);break;
+    case 'classify2':html=renderClassify2(q,g);break;
+    case 'fillBlank':html=renderFillBlank(q,g);break;
+    case 'countSyllables':html=renderCountSyl(q,g);break;
+    case 'classify4':html=renderClassify4(q,g);break;
+    case 'tilde':html=renderTilde(q,g);break;
+    case 'yesNo':html=renderYesNo(q,g);break;
+    case 'countSides':html=renderCountSides(q,g);break;
+  }
+  area.innerHTML=html+'<div id="feedback-area"></div>';
+}
+
+function qBox(instr,content){
+  return `<div class="question-box">
+    <div class="q-instruction">${instr}</div>${content}
+    <div style="text-align:center;margin-top:12px;color:#94a3b8;font-size:.82rem;font-weight:700">
+      Pregunta ${state.qIdx+1} de ${state.total}</div>
+  </div>`;
+}
+function renderClickPart(q,g){
+  return qBox(`🖱️ Haz clic en el <strong style="color:${g.color}">${g.partGoal.toUpperCase()}</strong> de la oración:`,
+    `<div class="sentence-parts">
+      <button class="part-btn part-a" onclick="answerClickPart(0,${q.si})">${q.p[0]}</button>
+      <button class="part-btn part-b" onclick="answerClickPart(1,${q.si})">${q.p[1]}</button>
+    </div>`);
+}
+function answerClickPart(clicked,correct){
+  if(state.answered)return;state.answered=true;
+  const btns=document.querySelectorAll('.part-btn');
+  btns.forEach(b=>b.classList.add('disabled'));
+  btns[clicked].classList.add(clicked===correct?'correct':'wrong');
+  if(clicked!==correct)btns[correct].classList.add('correct');
+  processAnswer(clicked===correct,`La respuesta correcta es: "${btns[correct].textContent}"`);
+}
+function renderMatchOption(q,g){
+  return qBox(`🧩 ¿Cuál opción corresponde?`,
+    `<div style="background:linear-gradient(135deg,${g.color}20,${g.color}10);border:2px solid ${g.color}44;border-radius:16px;padding:16px;margin-bottom:12px;font-size:1.7rem;text-align:center">${q.prompt}</div>
+    <div class="options-grid">${q.opts.map((o,i)=>`<button class="opt-btn" style="--c:${g.color}" onclick="answerOpt(${i},${q.c},this)">${o}</button>`).join('')}</div>`);
+}
+function answerOpt(idx,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(idx===correct?'correct':'wrong');
+  if(idx!==correct)document.querySelectorAll('.opt-btn')[correct].classList.add('correct');
+  const _ag=GAMES[state.gameId],_aq=_ag.levels[state.levelIdx].qs[state.qIdx];
+  processAnswer(idx===correct,_aq.rule||_ag.rule||'');
+}
+function renderClassify2(q,g){
+  // Body mode: uses q.type string and g.cat1/cat2
+  if(g.cat1){
+    const lbl1=g.label1||'Opción 1';
+    const lbl2=g.label2||'Opción 2';
+    const instr=g.instr||'¿Cómo clasificas esto?';
+    const isCorr0=q.type===g.cat1;
+    return qBox(instr,
+      `<div style="background:linear-gradient(135deg,#fef9f0,#fff5e0);border:2px solid #fdba74;border-radius:16px;padding:16px 20px;margin-bottom:14px;text-align:center">
+        <span class="q-sentence" style="font-size:1.25rem">${q.w}</span>
+      </div>
+      <div class="options-grid two-col">
+        <button class="opt-btn big" style="--c:#EF4444;border-color:#EF4444;color:#EF4444" onclick="answerClassify2Body('${g.cat1}','${q.type}',this,${JSON.stringify(q.rule||'').replace(/'/g,'\u0027')})">${lbl1}</button>
+        <button class="opt-btn big" style="--c:#3B82F6;border-color:#3B82F6;color:#3B82F6" onclick="answerClassify2Body('${g.cat2}','${q.type}',this,${JSON.stringify(q.rule||'').replace(/'/g,'\u0027')})">${lbl2}</button>
+      </div>`);
+  }
+  // Original mode: index-based
+  return qBox(`🤔 ¿Cómo se clasifica?`,
+    `<div style="font-size:1rem;font-weight:700;line-height:1.8;margin-bottom:12px;padding:12px;background:#f8fafc;border-radius:12px;text-align:center">
+      ${q.s.replace(q.ph,`<span class="highlight">${q.ph}</span>`)}</div>
+    <div class="options-grid two-col">
+      <button class="opt-btn big" style="--c:#8b5cf6;border-color:#8b5cf6" onclick="answerClassify2(0,${q.a},this)">🔴 Opción A</button>
+      <button class="opt-btn big" style="--c:#e84393;border-color:#e84393" onclick="answerClassify2(1,${q.a},this)">🟢 Opción B</button>
+    </div>`);
+}
+function answerClassify2Body(val,correct,btn,rule){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  const isOk=val===correct;
+  btn.classList.add(isOk?'correct':'wrong');
+  if(!isOk){
+    const g=GAMES[state.gameId];
+    const btns=document.querySelectorAll('.opt-btn');
+    if(correct===g.cat1)btns[0].classList.add('correct');
+    else btns[1].classList.add('correct');
+  }
+  processAnswer(isOk,rule);
+}
+function answerClassify2(idx,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(idx===correct?'correct':'wrong');
+  if(idx!==correct)document.querySelectorAll('.opt-btn')[correct].classList.add('correct');
+  processAnswer(idx===correct);
+}
+function renderFillBlank(q,g){
+  const s=`${q.before} <span style="background:${g.color}33;border:2px dashed ${g.color};border-radius:8px;padding:4px 12px;font-family:'Fredoka One';font-size:1.1rem">${q.blank}</span> ${q.after}`;
+  return qBox(`✏️ Falta el <strong style="color:${g.color}">${q.missing.toUpperCase()}</strong>. ¿Cuál opción completa la oración?`,
+    `<div style="font-size:1rem;font-weight:700;line-height:2;margin-bottom:12px;padding:12px;background:#f8fafc;border-radius:12px;text-align:center">${s}</div>
+    <div class="options-grid">${q.opts.map((o,i)=>`<button class="opt-btn" style="--c:${g.color}" onclick="answerOpt(${i},${q.c},this)">${o}</button>`).join('')}</div>`);
+}
+function renderCountSyl(q,g){
+  return qBox(`🔢 ¿Cuántas sílabas tiene esta palabra?`,
+    `<div style="text-align:center;margin-bottom:14px">
+      <div class="q-word-emoji">${q.e}</div><div class="q-word">${q.w}</div></div>
+    <div class="num-options">${q.opts.map(n=>`<button class="num-btn" onclick="answerNum(${n},${q.c},this)">${n}</button>`).join('')}</div>`);
+}
+const SMAP={sol:'SOL',casa:'ca-sa',mesa:'me-sa',pan:'PAN',perro:'pe-rro',gato:'ga-to',flor:'FLOR',libro:'li-bro',árbol:'ár-bol',niño:'ni-ño',mariposa:'ma-ri-po-sa',elefante:'e-le-fan-te',cocodrilo:'co-co-dri-lo',paraguas:'pa-ra-guas',teléfono:'te-lé-fo-no',escuela:'es-cue-la',zapato:'za-pa-to',muñeca:'mu-ñe-ca',ventana:'ven-ta-na',cohete:'co-he-te',murciélago:'mur-cié-la-go',hipopótamo:'hi-po-pó-ta-mo',canción:'can-ción',corazón:'co-ra-zón',pirámide:'pi-rá-mi-de',helicóptero:'he-li-cóp-te-ro',computadora:'com-pu-ta-do-ra',televisión:'te-le-vi-sión',geografía:'ge-o-gra-fí-a',periódico:'pe-rió-di-co',extraordinario:'ex-tra-or-di-na-rio',supermercado:'su-per-mer-ca-do',acontecimiento:'a-con-te-ci-mien-to',biodiversidad:'bio-di-ver-si-dad',responsabilidad:'res-pon-sa-bi-li-dad',independencia:'in-de-pen-den-cia',comunicación:'co-mu-ni-ca-ción',transformación:'trans-for-ma-ción',investigación:'in-ves-ti-ga-ción',característica:'ca-rac-te-rís-ti-ca'};
+function answerNum(val,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.num-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(val===correct?'correct':'wrong');
+  if(val!==correct)document.querySelectorAll('.num-btn').forEach(b=>{if(parseInt(b.textContent)===correct)b.classList.add('correct');});
+  const q=GAMES[state.gameId].levels[state.levelIdx].qs[state.qIdx];
+  processAnswer(val===correct,`La respuesta correcta es: ${correct}`);
+}
+function renderClickSyllable(q,g){
+  return qBox(`🎵 Haz clic en la <strong style="color:${g.color}">SÍLABA TÓNICA</strong> (la más fuerte):`,
+    `<div style="text-align:center;margin-bottom:14px"><div class="q-word-emoji">${q.e}</div></div>
+    <div class="q-syllables">${q.parts.map((p,i)=>`<button class="syl-btn ${i===q.tonic?'tonic':'normal'}" onclick="answerSyllable(${i},${q.tonic},this)">${p}</button>`).join('')}</div>`);
+}
+function answerSyllable(idx,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.syl-btn').forEach(b=>b.classList.add('disabled'));
+  const ok=idx===correct;
+  btn.style.cssText+=`border-color:${ok?'var(--ok)':'var(--err)'};background:${ok?'#d1fae5':'#fee2e2'};color:${ok?'var(--ok)':'var(--err)'}`;
+  if(!ok){const cb=document.querySelectorAll('.syl-btn')[correct];cb.style.cssText+='border-color:var(--ok);background:#d1fae5;color:var(--ok)';}
+  const q=GAMES[state.gameId].levels[state.levelIdx].qs[state.qIdx];
+  processAnswer(ok,`La opción correcta es la ${correct+1}`);
+}
+function renderClassify4(q,g){
+  const C=['#dc2626','#2563eb','#16a34a','#d97706'];
+  const lv=g.levels[state.levelIdx];
+  const cats=lv.cats||g.opts;
+  const propHtml=q.prop?`<div style="font-size:.78rem;color:#6366f1;margin-top:3px;font-weight:700">${q.prop}</div>`:'';
+  return qBox(`🗺️ ¿A qué categoría pertenece?`,
+    `<div style="text-align:center;margin-bottom:14px">
+      <div class="q-word-emoji">${q.e||'📍'}</div>
+      <div class="q-word">${q.w}</div>
+      ${propHtml}</div>
+    <div class="options-grid four-col">${cats.map((o,i)=>`<button class="opt-btn" style="--c:${C[i]};border-color:${C[i]}" onclick="answerClassify4(${i},${q.a},this)">${o}</button>`).join('')}</div>`);
+}
+function answerClassify4(idx,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(idx===correct?'correct':'wrong');
+  if(idx!==correct)document.querySelectorAll('.opt-btn')[correct].classList.add('correct');
+  const q=GAMES[state.gameId].levels[state.levelIdx].qs[state.qIdx];
+  const _c4g=GAMES[state.gameId];processAnswer(idx===correct,q.prop?`${q.w}: ${q.prop}`:_c4g.rule||'');
+}
+function renderTilde(q,g){
+  const TC={aguda:'#e84393',grave:'#4f46e5',esdrújula:'#10b981',sobreesdrújula:'#f59e0b'};
+  return qBox(`🖊️ ¿Esta palabra lleva <strong style="color:${g.color}">tilde</strong>?`,
+    `<div style="text-align:center;margin:10px 0 18px">
+      <div class="word-no-tilde">${q.display}</div>
+      <span class="type-chip" style="background:${TC[q.type]||'#666'}">${q.type.toUpperCase()}</span></div>
+    <div class="options-grid two-col">
+      <button class="opt-btn big" style="--c:var(--ok);border-color:var(--ok);color:var(--ok)" onclick="answerTilde(true,${q.tilde},this)">✅ SÍ LLEVA</button>
+      <button class="opt-btn big" style="--c:var(--err);border-color:var(--err);color:var(--err)" onclick="answerTilde(false,${q.tilde},this)">❌ NO LLEVA</button>
+    </div>`);
+}
+function answerTilde(val,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(val===correct?'correct':'wrong');
+  if(val!==correct)document.querySelectorAll('.opt-btn')[correct===true?0:1].classList.add('correct');
+  const q=GAMES[state.gameId].levels[state.levelIdx].qs[state.qIdx];
+  const msg=`Forma correcta: <strong>${q.correct}</strong>. ${q.rule}`;
+  processAnswer(val===correct,msg);
+}
+
+// ══════════════════════════════════════════
+// ANSWER PROCESSING
+// ══════════════════════════════════════════
+function processAnswer(correct,extra){
+  if(correct){state.score++;document.getElementById('ph-score').textContent=state.score;celebrate();}
+  document.getElementById('feedback-area').innerHTML=`
+    <div class="feedback-panel ${correct?'ok':'fail'}">
+      <span class="feedback-icon">${correct?'🌟':'💡'}</span>
+      <div class="feedback-text">
+        <span class="fb-title">${correct?'¡Excelente! +1 🎉':'¡Casi! Sigue así 💪'}</span>
+        ${extra?`<span class="fb-rule">${extra}</span>`:''}
+      </div>
+      <button class="btn-next" onclick="advance()">
+        ${state.qIdx+1>=state.total?'Ver resultados →':'Siguiente →'}</button>
+    </div>`;
+}
+function advance(){
+  state.qIdx++;
+  if(state.qIdx>=state.total)showResults();
+  else renderQuestion();
+}
+
+// ══════════════════════════════════════════
+// RESULTS + SAVE
+// ══════════════════════════════════════════
+function showResults(){
+  const g=GAMES[state.gameId];
+  document.getElementById('progress-bar').style.width='100%';
+  const pct=state.score/state.total;
+  const stars=getStars(state.score,state.total);
+  const tier=pct>=0.9?3:pct>=0.7?2:pct>=0.5?1:0;
+  const trophies=['😅','😊','😄','🏆'];
+  const titles=['¡Sigue practicando!','¡Muy bien!','¡Excelente!','¡Perfecto! ¡Eres genio!'];
+  const msgs=[`${state.score}/${state.total} · ¡Inténtalo de nuevo! 💪`,`${state.score}/${state.total} · ¡Buen trabajo! ⭐`,`${state.score}/${state.total} · ¡Fantástico! 🌟`,`${state.score}/${state.total} · ¡Eres increíble! 🎊`];
+  document.getElementById('res-trophy').textContent=trophies[tier];
+  document.getElementById('res-title').textContent=titles[tier];
+  document.getElementById('res-score').textContent=`${state.score} / ${state.total}`;
+  document.getElementById('res-stars').textContent='⭐'.repeat(stars)+'☆'.repeat(3-stars);
+  document.getElementById('res-msg').textContent=msgs[tier];
+  // SAVE to DB
+  const saveMsg=document.getElementById('res-save-msg');
+  if(state.student){
+    DB.updateScore(state.student.id,state.gameId,state.levelIdx,state.score,state.total);
+    // Reload student data
+    const all=DB.load();
+    state.student=all.find(s=>s.id===state.student.id)||state.student;
+    saveMsg.style.display='block';
+    saveMsg.innerHTML=`💾 Resultado guardado para <strong>${state.student.name}</strong> · ${new Date().toLocaleDateString('es-CO')}`;
+  } else { saveMsg.style.display='none'; }
+  const hasNext=state.levelIdx<g.levels.length-1;
+  document.getElementById('btn-next-lvl').style.display=hasNext?'':'none';
+  showScreen('s-results');
+  if(tier>=2)bigCelebrate();
+}
+function retryLevel(){startGame();showScreen('s-play');}
+function nextLevel(){state.levelIdx++;startGame();showScreen('s-play');}
+
+// ══════════════════════════════════════════
+// EVALUATION PANEL
+// ══════════════════════════════════════════
+let panelTab='overview';
+function switchPanelTab(tab,btn){
+  panelTab=tab;
+  document.querySelectorAll('.panel-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPanel();
+}
+function renderPanel(){
+  const all=DB.load();
+  const content=document.getElementById('panel-content');
+  if(panelTab==='overview'){
+    if(all.length===0){
+      content.innerHTML=`<div class="empty-panel"><span class="ep-icon">📭</span><p>No hay estudiantes registrados aún.<br>¡Agrega el primero desde el menú!</p></div>`;
+      return;
+    }
+    // Stats
+    const totalLevels=all.reduce((s,stu)=>s+Object.keys(stu.scores||{}).length,0);
+    const avgPct=all.reduce((s,stu)=>{
+      const sc=Object.values(stu.scores||{});
+      return s+(sc.length?sc.reduce((a,v)=>a+v.pct,0)/sc.length:0);
+    },0)/all.length;
+    content.innerHTML=`
+      <div class="panel-stats-grid">
+        <div class="stat-card"><span class="st-num">${all.length}</span><span class="st-lbl">Estudiantes</span></div>
+        <div class="stat-card"><span class="st-num">${totalLevels}</span><span class="st-lbl">Niveles completados</span></div>
+        <div class="stat-card">
+          <span class="st-num">${(Math.round((Math.round(avgPct)||0)/100*50)/10).toFixed(1)}</span>
+          <span class="st-lbl">Nota media /5</span>
+          <span style="font-size:.72rem;color:#64748b">${Math.round(avgPct)||0}%</span>
+        </div>
+        <div class="stat-card"><span class="st-num">${all.filter(s=>Object.keys(s.scores||{}).length>=8).length}</span><span class="st-lbl">Con 8+ niveles</span></div>
+      </div>
+      <div style="background:#fff;border-radius:18px;padding:16px 18px;box-shadow:var(--shadow)">
+        <div style="font-family:'Fredoka One',sans-serif;font-size:1.1rem;margin-bottom:12px;color:var(--dark)">👥 Ranking de Estudiantes</div>
+        ${all.sort((a,b)=>{
+          const pa=avgStudentPct(a),pb=avgStudentPct(b);return pb-pa;
+        }).map((stu,rank)=>{
+          const pct=avgStudentPct(stu);
+          const done=Object.keys(stu.scores||{}).length;
+          return `<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #f1f5f9">
+            <div style="font-family:'Fredoka One',sans-serif;font-size:1.2rem;color:${rank===0?'#f59e0b':rank===1?'#94a3b8':'#cd7c2b'};width:24px">${rank===0?'🥇':rank===1?'🥈':rank===2?'🥉':`${rank+1}`}</div>
+            <div style="font-size:1.6rem">${stu.avatar}</div>
+            <div style="flex:1"><div style="font-weight:800;font-size:.95rem">${stu.name}</div><div style="font-size:.78rem;color:#64748b">${stu.grade} · ${done}/32 niveles</div></div>
+            <div style="text-align:right">
+              <div style="font-family:'Fredoka One',sans-serif;font-size:1.5rem;color:${gradeColor(pctToGrade(pct))}">${pctToGrade(pct).toFixed(1)}</div>
+              <div style="font-size:.7rem;color:#94a3b8;font-weight:700">${gradeLabel(pctToGrade(pct)).txt}</div>
+              <div style="font-size:.68rem;color:#94a3b8">${pct}%</div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  } else {
+    // Per student detail
+    if(all.length===0){
+      content.innerHTML=`<div class="empty-panel"><span class="ep-icon">📭</span><p>No hay estudiantes registrados aún.</p></div>`;
+      return;
+    }
+    content.innerHTML=all.map(stu=>renderStudentCard(stu)).join('');
+  }
+}
+function avgStudentPct(stu){
+  const dp=sectionPct(stu,'dep'), cp=sectionPct(stu,'cun');
+  if(!dp&&!cp)return 0; if(!dp)return cp; if(!cp)return dp;
+  return Math.round((dp+cp)/2);
+}
+function sectionPct(stu,sid){
+  const gids=GAME_LIST[sid]||[];
+  const recs=gids.flatMap(gid=>GAMES[gid].levels.map((_,i)=>((stu.scores||{})[`${gid}_${i}`])).filter(Boolean));
+  if(!recs.length)return 0;
+  return Math.round(recs.reduce((a,v)=>a+v.pct,0)/recs.length);
+}
+function renderStudentCard(stu){
+  const pct=avgStudentPct(stu);
+  const done=Object.keys(stu.scores||{}).length;
+  const gamesHtml=Object.entries(GAMES).map(([gid,g])=>{
+    const levs=g.levels.map((_,i)=>{
+      const key=`${gid}_${i}`;
+      const rec=(stu.scores||{})[key];
+      if(!rec)return `<span class="gi-lvl notdone">N${i+1} ☆</span>`;
+      const cls=rec.stars>=2?'done':'partial';
+      return `<span class="gi-lvl ${cls}" title="${rec.date}">N${i+1} ${'⭐'.repeat(rec.stars)} ${rec.pct}%</span>`;
+    }).join('');
+    return `<div class="psc-game-item" style="--gc:${g.color}">
+      <div class="gi-name">${g.emoji} ${g.title}</div>
+      <div class="gi-levels">${levs}</div>
+    </div>`;
+  }).join('');
+  return `<div class="panel-student-card">
+    <div class="psc-header" onclick="toggleStudentCard(this)">
+      <div class="psc-avatar">${stu.avatar}</div>
+      <div style="flex:1"><div class="psc-name">${stu.name}</div><div class="psc-grade">${stu.grade} · Registro: ${stu.createdAt} · ${done}/32 niveles</div></div>
+      <div class="psc-overall">
+        <div style="font-family:'Fredoka One',sans-serif;font-size:1.8rem;color:${gradeColor(pctToGrade(pct))}">${pctToGrade(pct).toFixed(1)}</div>
+        <div style="font-size:.72rem;font-weight:800;color:${gradeColor(pctToGrade(pct))}">${gradeLabel(pctToGrade(pct)).txt}</div>
+        <div class="lbl">${pct}% · nota /5</div>
+      </div>
+      <div style="font-size:1.3rem;opacity:.4;margin-left:8px">›</div>
+    </div>
+    <div class="psc-body">
+      <div class="psc-games-grid">${gamesHtml}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0;margin-top:10px">
+        <button class="btn-print-student" style="background:linear-gradient(135deg,#b91c1c,#dc2626)" onclick="openPrintModal('${stu.id}','dep')">🏛️ Informe Departamentos</button>
+        <button class="btn-print-student" style="background:linear-gradient(135deg,#15803d,#16a34a)" onclick="openPrintModal('${stu.id}','cun')">🌄 Informe Cundinamarca</button>
+        <button class="btn-print-student" style="background:linear-gradient(135deg,#065f46,#059669)" onclick="openPrintModal('${stu.id}','all')">📊 Informe Ponderado</button>
+        <button class="btn-delete-student" style="margin-top:0;margin-left:8px" onclick="deleteStudentConfirm('${stu.id}','${stu.name}')">🗑️ Eliminar</button>
+      </div>
+    </div>
+  </div>`;
+}
+function toggleStudentCard(header){
+  const body=header.nextElementSibling;
+  body.classList.toggle('open');
+  header.querySelector('div:last-child').textContent=body.classList.contains('open')?'↓':'›';
+}
+function deleteStudentFromPicker(id,name){
+  if(confirm(`¿Eliminar a ${name} y todos sus resultados?`)){
+    DB.deleteStudent(id);
+    if(state.student&&state.student.id===id){state.student=null;updateStudentUI();}
+    goStudentPicker();
+  }
+}
+function deleteStudentConfirm(id,name){
+  if(confirm(`¿Eliminar a ${name} y todos sus resultados?`)){
+    DB.deleteStudent(id);
+    if(state.student&&state.student.id===id){state.student=null;updateStudentUI();}
+    renderPanel();
+  }
+}
+
+// ══════════════════════════════════════════
+// PRINT / PDF REPORT ENGINE
+// ══════════════════════════════════════════
+let printStudentId = null;
+
+let printSection='all';
+function openPrintModal(stuId,section='all'){
+  printStudentId=stuId; printSection=section;
+  const stu=DB.load().find(s=>s.id===stuId);
+  if(!stu){alert('Estudiante no encontrado');return;}
+  document.getElementById('report-preview').innerHTML=buildReportPreviewHTML(stu,section);
+  const titles={dep:'🏛️ Informe — Departamentos y Capitales',cun:'🌄 Informe — Cundinamarca',all:'📊 Informe Ponderado Completo'};
+  const el=document.getElementById('print-modal-title');
+  if(el)el.textContent=titles[section]||titles.all;
+  document.getElementById('print-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePrintModal(){
+  document.getElementById('print-modal').classList.remove('open');
+  document.body.style.overflow='';
+  printStudentId=null;
+}
+
+function doPrint(){
+  const stu=DB.load().find(s=>s.id===printStudentId);
+  if(!stu)return;
+  const html=buildFullPrintHTML(stu,printSection);
+  const frame = document.getElementById('print-frame');
+  frame.srcdoc = html;
+  frame.onload = () => { frame.contentWindow.focus(); frame.contentWindow.print(); };
+}
+
+/* ── Shared data builder ── */
+function buildReportData(stu,sectionFilter='all'){
+  const scores = stu.scores||{};
+  const sids = sectionFilter==='all' ? ['dep','cun'] : [sectionFilter];
+  const printDate = new Date().toLocaleDateString('es-CO',{year:'numeric',month:'long',day:'numeric'});
+
+  const sections = sids.map(sid=>{
+    const sec = SECTIONS[sid];
+    const games = GAME_LIST[sid].map(gid=>{
+      const g = GAMES[gid];
+      const levels = g.levels.map((_,i)=>{
+        const key=`${gid}_${i}`;
+        const rec=scores[key]||null;
+        return { n:i+1, rec };
+      });
+      return { gid, g, levels };
+    });
+    return { sid, sec, games };
+  });
+
+  const secStats=sids.map(sid=>{
+    const recs=GAME_LIST[sid].flatMap(gid=>GAMES[gid].levels.map((_,i)=>scores[`${gid}_${i}`]).filter(Boolean));
+    return{sid,pct:recs.length?Math.round(recs.reduce((s,r)=>s+r.pct,0)/recs.length):0,done:recs.length,stars:recs.reduce((s,r)=>s+(r.stars||0),0)};
+  });
+  let overallPct,totalDone,totalStars;
+  if(sectionFilter==='all'&&secStats.length===2){
+    overallPct=Math.round((secStats[0].pct+secStats[1].pct)/2);
+    totalDone=secStats[0].done+secStats[1].done;
+    totalStars=secStats[0].stars+secStats[1].stars;
+  }else{
+    overallPct=secStats[0]?.pct||0;totalDone=secStats[0]?.done||0;totalStars=secStats[0]?.stars||0;
+  }
+  const maxStars=sids.length*4*4*3;
+  let perf,perfColor,perfBg;
+  if(overallPct>=90){perf='Excelente 🏆';perfColor='#059669';perfBg='#d1fae5';}
+  else if(overallPct>=70){perf='Muy Bueno ⭐';perfColor='#d97706';perfBg='#fef3c7';}
+  else if(overallPct>=50){perf='Básico 📚';perfColor='#ea580c';perfBg='#ffedd5';}
+  else if(totalDone===0){perf='Sin intentos ⏳';perfColor='#64748b';perfBg='#f1f5f9';}
+  else{perf='En revisión 💪';perfColor='#dc2626';perfBg='#fee2e2';}
+  return{stu,scores,done:totalDone,overallPct,totalStars,maxStars,printDate,sections,secStats,perf,perfColor,perfBg,sectionFilter};
+}
+
+/* ── Preview HTML (shown inside modal) ── */
+function buildReportPreviewHTML(stu,section='all'){
+  const d = buildReportData(stu,section);
+  return buildReportBody(d, true);
+}
+
+/* ── Full print HTML (opened in iframe) ── */
+function buildFullPrintHTML(stu,section='all'){
+  const d = buildReportData(stu,section);
+  return `<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="UTF-8">
+<title>Informe - ${stu.name}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+@page{size:A4;margin:12mm 14mm}
+body{font-family:Arial,sans-serif;color:#1a1a2e;font-size:11px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.rp-header{background:#1e3a5f!important;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px;border-radius:8px 8px 0 0}
+.rp-logo{font-size:2rem}
+.rp-header-text h1{font-size:1.1rem;font-weight:900;margin-bottom:2px}
+.rp-header-text p{font-size:.75rem;opacity:.85}
+.rp-header-right{margin-left:auto;text-align:right;font-size:.72rem;opacity:.85;line-height:1.7}
+.rp-student-band{background:#f0f9ff;border-bottom:2px solid #bae6fd;padding:10px 16px;display:flex;align-items:center;gap:12px}
+.rp-stu-avatar{font-size:2rem;width:46px;height:46px;background:#e0f2fe;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid #7dd3fc;flex-shrink:0}
+.rp-stu-info .sn{font-size:1rem;font-weight:900;color:#0c4a6e}
+.rp-stu-info .sg{font-size:.78rem;color:#0369a1;font-weight:700}
+.rp-summary{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1.5px solid #e2e8f0}
+.rp-sum-item{padding:10px 6px;text-align:center;border-right:1px solid #f1f5f9}
+.rp-sum-item:last-child{border-right:none}
+.rp-sum-item .sv{font-size:1.3rem;font-weight:900;color:#1e3a5f;display:block}
+.rp-sum-item .sl{font-size:.68rem;color:#64748b;font-weight:700;margin-top:1px}
+.rp-section{padding:10px 16px}
+.rp-section-title{font-size:.88rem;font-weight:900;padding:5px 10px;border-radius:6px;color:#fff;display:inline-block;margin-bottom:8px}
+.rp-table{width:100%;border-collapse:collapse;font-size:.75rem}
+.rp-table th{background:#f8fafc;padding:6px 8px;text-align:left;font-weight:800;color:#475569;border-bottom:2px solid #e2e8f0}
+.rp-table td{padding:6px 8px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+.td-game{font-weight:800;color:#1e293b}
+.pct-bar{background:#f1f5f9;border-radius:20px;height:7px;width:70px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:4px}
+.pct-fill{height:100%;border-radius:20px}
+.rp-obs{padding:10px 16px;border-top:1.5px solid #e2e8f0;page-break-inside:avoid}
+.rp-obs-title{font-size:.85rem;font-weight:800;color:#475569;margin-bottom:7px}
+.rp-obs-lines{display:flex;flex-direction:column;gap:9px}
+.rp-obs-line{height:1px;background:#e2e8f0}
+.rp-footer{background:#f8fafc;border-top:1.5px solid #e2e8f0;padding:12px 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;page-break-inside:avoid}
+.rp-sig{text-align:center}
+.rp-sig .sig-line{border-top:1.5px solid #cbd5e1;margin-bottom:4px;height:26px}
+.rp-sig .sig-label{font-size:.68rem;color:#64748b;font-weight:700}
+.rp-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-weight:800;font-size:.75rem;color:#fff}
+.rp-perf-bar{height:9px;background:linear-gradient(90deg,#ef4444 0%,#fb923c 30%,#f59e0b 60%,#10b981 80%,#059669 100%);border-radius:10px;margin:5px 0;position:relative}
+.rp-perf-marker{position:absolute;top:-4px;width:17px;height:17px;background:#fff;border:3px solid #1e3a5f;border-radius:50%;transform:translateX(-50%)}
+.border-wrap{border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden}
+.td-pending{color:#94a3b8;font-style:italic;font-size:.7rem}
+@media print{
+  body{margin:0}
+  .no-print{display:none!important}
+}
+
+/* ══ PWA INSTALL BANNER ══ */
+#pwa-bar{position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#dc2626,#dc2626ee);
+  color:#fff;padding:12px 16px;display:flex;align-items:center;gap:10px;z-index:9999;
+  box-shadow:0 -3px 20px rgba(0,0,0,.3);transform:translateY(110%);
+  transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+#pwa-bar.show{transform:translateY(0)}
+.pwa-ico{font-size:1.8rem;flex-shrink:0}
+.pwa-txt{flex:1}
+.pwa-ttl{font-family:'Fredoka One',sans-serif;font-size:.95rem;font-weight:900}
+.pwa-stl{font-size:.75rem;opacity:.85}
+.pwa-ibtn{background:#fff;color:#dc2626;border:none;border-radius:25px;padding:8px 18px;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;cursor:pointer;font-weight:900;flex-shrink:0}
+.pwa-xbtn{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;opacity:.75;flex-shrink:0}
+#pwa-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;
+  align-items:center;justify-content:center;padding:20px}
+#pwa-modal.open{display:flex}
+.pwa-box{background:#fff;border-radius:22px;max-width:400px;width:100%;overflow:hidden;
+  box-shadow:0 10px 50px rgba(0,0,0,.5)}
+.pwa-hdr{background:linear-gradient(135deg,#dc2626,#dc2626bb);padding:22px 20px;text-align:center;color:#fff}
+.pwa-hdr .ph-ico{font-size:3rem;display:block;margin-bottom:8px}
+.pwa-hdr h2{font-family:'Fredoka One',sans-serif;font-size:1.4rem;margin-bottom:4px}
+.pwa-hdr p{font-size:.82rem;opacity:.9}
+.pwa-bdy{padding:20px}
+.pwa-tabs{display:flex;gap:0;margin-bottom:16px;border-radius:12px;overflow:hidden;border:2px solid #e2e8f0}
+.pt{flex:1;padding:10px;border:none;background:#f8fafc;cursor:pointer;
+  font-family:'Fredoka One',sans-serif;font-size:.9rem;color:#94a3b8;transition:.2s}
+.pt.on{background:#dc2626;color:#fff}
+.ptc{display:none}.ptc.on{display:block}
+.ps{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;
+  padding:10px;border-radius:10px;background:#f8fafc}
+.psn{min-width:26px;height:26px;border-radius:50%;background:#dc2626;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',sans-serif;font-size:.85rem;flex-shrink:0}
+.pst{font-size:.85rem;color:#334155;line-height:1.5}
+.pst b{color:#dc2626}
+.pcb{width:100%;padding:13px;background:#dc2626;color:#fff;border:none;border-radius:12px;
+  font-family:'Fredoka One',sans-serif;font-size:1rem;cursor:pointer;margin-top:8px}
+#pwa-fab{display:none;position:fixed;bottom:80px;right:16px;width:52px;height:52px;
+  border-radius:50%;background:#dc2626;color:#fff;border:none;font-size:1.5rem;
+  cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.35);z-index:998;
+  align-items:center;justify-content:center;transition:.2s}
+#pwa-fab:hover{transform:scale(1.1)}
+#pwa-fab.show{display:flex}
+</style></head><body>
+<div class="border-wrap">
+${buildReportBody(d, false)}
+</div>
+
+  <script>
+  // ══ PWA ══
+  (function(){
+    let _pp=null;
+    window.addEventListener('beforeinstallprompt',e=>{
+      e.preventDefault();_pp=e;
+      setTimeout(()=>document.getElementById('pwa-bar').classList.add('show'),2500);
+    });
+    window.addEventListener('appinstalled',()=>{
+      document.getElementById('pwa-bar').classList.remove('show');_pp=null;
+    });
+    window.pwaInstall=function(){
+      if(_pp){_pp.prompt();_pp.userChoice.then(r=>{if(r.outcome==='accepted')pwaHide();_pp=null;});}
+      else pwaOpenGuide();
+    };
+    window.pwaHide=function(){document.getElementById('pwa-bar').classList.remove('show');};
+    window.pwaOpenGuide=function(){document.getElementById('pwa-modal').classList.add('open');};
+    window.pwaCloseGuide=function(){document.getElementById('pwa-modal').classList.remove('open');};
+    window.pwaTab=function(id,btn){
+      document.querySelectorAll('.pt').forEach(t=>t.classList.remove('on'));
+      document.querySelectorAll('.ptc').forEach(c=>c.classList.remove('on'));
+      btn.classList.add('on');
+      document.getElementById('ptc-'+id).classList.add('on');
+    };
+    // Show FAB after 4s if not installed
+    setTimeout(()=>{
+      const standalone=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+      if(!standalone){
+        const fab=document.getElementById('pwa-fab');
+        if(fab)fab.classList.add('show');
+      }
+    },4000);
+    // Service Worker
+    if('serviceWorker' in navigator){
+      const code="\nconst CACHE='edu-v1';\nself.addEventListener('install',e=>{self.skipWaiting();});\nself.addEventListener('activate',e=>{e.waitUntil(clients.claim());});\nself.addEventListener('fetch',e=>{\n  if(e.request.method!=='GET')return;\n  e.respondWith(\n    caches.open(CACHE).then(cache=>\n      cache.match(e.request).then(cached=>{\n        const net=fetch(e.request).then(res=>{\n          if(res.ok)cache.put(e.request,res.clone());\n          return res;\n        }).catch(()=>cached);\n        return cached||net;\n      })\n    )\n  );\n});\n";
+      try{
+        const blob=new Blob([code],{type:'application/javascript'});
+        const url=URL.createObjectURL(blob);
+        navigator.serviceWorker.register(url).catch(()=>{
+          navigator.serviceWorker.register('./sw.js').catch(()=>{});
+        });
+      }catch(e){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+    }
+  })();</script>
+</body></html>`;
+}
+
+/* ── Core report body builder ── */
+function buildReportBody(d, isPreview){
+  const { stu, done, overallPct, totalStars, maxStars, printDate, sections, secStats, perf, perfColor, perfBg, sectionFilter } = d;
+  const overallGrade = (Math.round(overallPct/100*50)/10).toFixed(1);
+  const overallGradeLabel = overallGrade>=4.6?'Superior':overallGrade>=4.0?'Alto':overallGrade>=3.0?'Básico':overallGrade>0?'Bajo':'Sin nota';
+  const overallGradeColor = overallGrade>=4.6?'#059669':overallGrade>=4.0?'#2563eb':overallGrade>=3.0?'#d97706':overallGrade>0?'#dc2626':'#94a3b8';
+  const overallGradeBg = overallGrade>=4.6?'#d1fae5':overallGrade>=4.0?'#dbeafe':overallGrade>=3.0?'#fef3c7':overallGrade>0?'#fee2e2':'#f1f5f9';
+  const markerLeft = Math.min(overallPct, 97);
+
+  const sectionsHTML = sections.map(({sid, sec, games}) => {
+    const secColor = sid==='dep' ? '#dc2626' : '#16a34a';
+    const rowsHTML = games.map(({g, levels}) => {
+      const gameAvgRecs = levels.filter(l=>l.rec);
+      const gameAvgPct = gameAvgRecs.length
+        ? Math.round(gameAvgRecs.reduce((s,l)=>s+l.rec.pct,0)/gameAvgRecs.length) : null;
+      return levels.map((lv,li) => {
+        const isFirst = li===0;
+        const r = lv.rec;
+        const pctColor = r ? (r.pct>=70?'#10b981':r.pct>=50?'#f59e0b':'#ef4444') : '#e2e8f0';
+        return `<tr>
+          ${isFirst ? `<td class="td-game" rowspan="${levels.length}" style="border-right:2px solid #f1f5f9">
+            <span style="font-size:.95rem">${g.emoji}</span> ${g.title}
+            ${gameAvgPct!==null?`<br><span style="font-size:.68rem;color:${secColor};font-weight:700">${gameAvgPct}% · nota ${(Math.round(gameAvgPct/100*50)/10).toFixed(1)}</span>`:''}
+          </td>` : ''}
+          <td class="td-lvl" style="text-align:center;font-weight:800;color:#64748b">N${lv.n}</td>
+          ${r ? `
+          <td class="td-score" style="text-align:center;font-weight:900;color:#1e3a5f">${r.score}/${r.total}</td>
+          <td class="td-pct">
+            <div class="pct-bar"><div class="pct-fill" style="width:${r.pct}%;background:${pctColor}"></div></div>
+            <span style="font-weight:800;color:${pctColor}">${r.pct}%</span>
+          </td>
+          <td style="text-align:center;font-weight:900;font-size:1rem;color:${pctColor}">${(Math.round(r.pct/100*50)/10).toFixed(1)}</td>
+          <td class="td-stars" style="text-align:center">${'⭐'.repeat(r.stars||0)}${'☆'.repeat(3-(r.stars||0))}</td>
+          <td class="td-date" style="text-align:center;color:#94a3b8;font-size:.7rem">${r.date}</td>
+          ` : `
+          <td colspan="5" class="td-pending" style="text-align:center">— Pendiente —</td>
+          `}
+        </tr>`;
+      }).join('');
+    }).join('');
+    return `
+      <div class="rp-section">
+        <div class="rp-section-title" style="background:${secColor}">${sec.emoji} ${sec.title}</div>
+        <table class="rp-table">
+          <thead><tr>
+            <th style="width:28%">Juego</th>
+            <th style="width:6%;text-align:center">Nivel</th>
+            <th style="width:10%;text-align:center">Puntos</th>
+            <th style="width:16%;text-align:center">Porcentaje</th>
+            <th style="width:10%;text-align:center">Nota/5</th>
+            <th style="width:13%;text-align:center">Estrellas</th>
+            <th style="width:17%;text-align:center">Fecha</th>
+          </tr></thead>
+          <tbody>${rowsHTML}</tbody>
+        </table>
+      </div>`;
+  }).join('');
+
+  return `
+    <div class="rp-header">
+      <div class="rp-logo">🗺️</div>
+      <div class="rp-header-text">
+        <h1>${d.sectionFilter==="dep"?"Informe — Departamentos y Capitales de Colombia":d.sectionFilter==="cun"?"Informe — Cundinamarca: Municipios y Provincias":"Informe Ponderado — Ciencias Sociales"}</h1>
+        <p>${d.sectionFilter==="dep"?"Regiones · Capitales · Geografía de Colombia":d.sectionFilter==="cun"?"Municipios de Cundinamarca · Provincias · Geografía Regional":"Departamentos y Capitales (50%) + Cundinamarca (50%) = Nota Final"}</p>
+      </div>
+      <div class="rp-header-right">
+        Fecha de impresión<br><strong>${printDate}</strong><br>
+        3°, 4° y 5° de Primaria
+      </div>
+    </div>
+    <div class="rp-student-band">
+      <div class="rp-stu-avatar">${stu.avatar}</div>
+      <div class="rp-stu-info">
+        <div class="sn">${stu.name}</div>
+        <div class="sg">${stu.grade} de Primaria · Registro: ${stu.createdAt}</div>
+      </div>
+      <div style="margin-left:auto;text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div style="background:${overallGradeBg};border:2px solid ${overallGradeColor};border-radius:12px;padding:6px 14px;text-align:center">
+          <div style="font-size:2rem;font-weight:900;color:${overallGradeColor};line-height:1">${overallGrade}</div>
+          <div style="font-size:.68rem;font-weight:800;color:${overallGradeColor};letter-spacing:.5px">/ 5.0 — ${overallGradeLabel}</div>
+        </div>
+        <div style="width:130px">
+          <div class="rp-perf-bar">
+            <div class="rp-perf-marker" style="left:${markerLeft}%"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.6rem;color:#94a3b8;margin-top:1px">
+            <span>0.0</span><span>2.5</span><span>5.0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rp-summary">
+      <div class="rp-sum-item" style="background:${overallGradeBg}">
+        <span class="sv" style="color:${overallGradeColor};font-size:1.6rem">${overallGrade}</span>
+        <span style="font-size:.65rem;color:${overallGradeColor};font-weight:800;display:block">/ 5.0</span>
+        <span class="sl" style="color:${overallGradeColor}">${overallGradeLabel}</span>
+      </div>
+      <div class="rp-sum-item">
+        <span class="sv" style="color:${overallGradeColor}">${overallPct}%</span>
+        <span class="sl">${sectionFilter==='all'?'Promedio ponderado':'Promedio sección'}</span>
+      </div>
+      <div class="rp-sum-item">
+        <span class="sv">${done}<span style="font-size:.8rem;color:#94a3b8">/${d.sectionFilter==='all'?32:16}</span></span>
+        <span class="sl">Niveles completados</span>
+      </div>
+      <div class="rp-sum-item">
+        <span class="sv">${totalStars}<span style="font-size:.8rem;color:#94a3b8">/${maxStars}</span></span>
+        <span class="sl">Estrellas</span>
+      </div>
+      <div class="rp-sum-item">
+        <span class="sv" style="background:${perfBg};border-radius:6px;padding:2px 6px;font-size:.85rem">${perf}</span>
+        <span class="sl">Desempeño</span>
+      </div>
+    </div>
+    ${d.sectionFilter==='all'&&d.secStats&&d.secStats.length===2?`
+    <div style="background:#f8fafc;border-bottom:1.5px solid #e2e8f0;padding:8px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:.78rem;font-weight:800;color:#475569;flex-shrink:0">Ponderado (50% + 50%):</div>
+      <div style="display:flex;gap:8px;flex:1;flex-wrap:wrap">
+        ${d.secStats.map(ss=>{const sec=SECTIONS[ss.sid];const col=ss.sid==='dep'?'#dc2626':'#16a34a';const sg=(Math.round(ss.pct/100*50)/10).toFixed(1);const sgl=sg>=4.6?'Superior':sg>=4.0?'Alto':sg>=3.0?'Básico':sg>0?'Bajo':'—';return `<div style="display:flex;align-items:center;gap:5px;background:#fff;border:1.5px solid ${col};border-radius:8px;padding:4px 10px"><span style="font-size:1rem">${sec.emoji}</span><div><div style="font-weight:800;font-size:.72rem;color:${col}">${sec.title}</div><div style="font-size:.68rem;color:#64748b">${ss.done}/16 niveles</div></div><div style="margin-left:6px;text-align:center"><div style="font-weight:900;font-size:1.1rem;color:${col}">${sg}</div><div style="font-size:.6rem;color:${col};font-weight:800">${sgl}</div></div></div>`;}).join('')}
+        <div style="display:flex;align-items:center;gap:6px;background:#f0fdf4;border:2px solid #059669;border-radius:10px;padding:5px 12px;margin-left:auto"><span style="font-size:1.1rem">📊</span><div style="text-align:center"><div style="font-size:.65rem;font-weight:800;color:#059669">NOTA FINAL</div><div style="font-weight:900;font-size:1.4rem;color:#059669;line-height:1">${overallGrade}</div><div style="font-size:.6rem;color:#059669">/ 5.0 · ${overallPct}%</div></div></div>
+      </div>
+    </div>`:''}
+    ${sectionsHTML}
+    <div class="rp-obs">
+      <div class="rp-obs-title">✏️ Observaciones del docente</div>
+      <div class="rp-obs-lines">
+        <div class="rp-obs-line"></div>
+        <div class="rp-obs-line"></div>
+        <div class="rp-obs-line"></div>
+      </div>
+    </div>
+    <div class="rp-footer">
+      <div class="rp-sig"><div class="sig-line"></div><div class="sig-label">Firma del Estudiante</div></div>
+      <div class="rp-sig"><div class="sig-line"></div><div class="sig-label">Firma del Docente</div></div>
+      <div class="rp-sig"><div class="sig-line"></div><div class="sig-label">Fecha / Sello</div></div>
+    </div>`;
+}
+
+
+
+function renderCountSides(q,g){
+  return qBox(`🔢 ${q.q}`,
+    `<div class="num-options">${q.opts.map(n=>`<button class="num-btn" onclick="answerNum(${n},${q.c},this)">${n}</button>`).join('')}</div>`);
+}
+function renderYesNo(q,g){
+  const col=g.color||'#dc2626';
+  return qBox(`🤔 ¿La siguiente afirmación sobre Colombia es <strong style="color:${col}">VERDADERA</strong> o <strong style="color:var(--err)">FALSA</strong>?`,
+    `<div style="background:linear-gradient(135deg,#fef2f2,#fff7ed);border:2px solid #fca5a5;border-radius:16px;padding:18px 20px;margin-bottom:16px;text-align:center">
+      <div style="font-size:1rem;font-weight:800;line-height:1.7;color:#7c2d12">"${q.display}"</div>
+    </div>
+    <div class="options-grid two-col">
+      <button class="opt-btn big" style="--c:var(--ok);border-color:var(--ok);color:var(--ok)" onclick="answerYesNo(true,${q.tilde},this)">✅ VERDADERO</button>
+      <button class="opt-btn big" style="--c:var(--err);border-color:var(--err);color:var(--err)" onclick="answerYesNo(false,${q.tilde},this)">❌ FALSO</button>
+    </div>`);
+}
+function answerYesNo(val,correct,btn){
+  if(state.answered)return;state.answered=true;
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.add('disabled'));
+  btn.classList.add(val===correct?'correct':'wrong');
+  if(val!==correct)document.querySelectorAll('.opt-btn')[correct===true?0:1].classList.add('correct');
+  const g=GAMES[state.gameId];
+  const q=g.levels[state.levelIdx].qs[state.qIdx];
+  processAnswer(val===correct,q.rule);
+}
+const EMOJIS=['⭐','🌟','✨','💫','🎉','🎊','🎈','🏆','👏','🌈','🦋','🌸'];
+function celebrate(){
+  const c=document.getElementById('confetti-wrap');c.classList.add('active');
+  for(let i=0;i<5;i++){
+    const p=document.createElement('div');p.className='conf-piece';
+    p.textContent=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+    p.style.cssText=`left:${Math.random()*100}%;animation-duration:${(Math.random()*.7+.8).toFixed(2)}s;animation-delay:${(Math.random()*.3).toFixed(2)}s`;
+    c.appendChild(p);setTimeout(()=>p.remove(),1600);
+  }
+  setTimeout(()=>c.classList.remove('active'),1700);
+}
+function bigCelebrate(){
+  const c=document.getElementById('confetti-wrap');c.classList.add('active');
+  for(let i=0;i<28;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');p.className='conf-piece';
+      p.textContent=EMOJIS[Math.floor(Math.random()*EMOJIS.length)];
+      p.style.cssText=`left:${Math.random()*100}%;animation-duration:${(Math.random()*1.4+1).toFixed(2)}s;font-size:${(Math.random()*1.5+1).toFixed(1)}rem`;
+      c.appendChild(p);setTimeout(()=>p.remove(),3000);
+    },i*75);
+  }
+  setTimeout(()=>c.classList.remove('active'),3800);
+}
+
+
+</script>
+</body>
+</html>

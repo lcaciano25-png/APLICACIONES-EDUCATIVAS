@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1e3a5f">
+<title>🏫 Apps Educativas</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#0a0020 0%,#0d1b45 50%,#001a2e 100%);min-height:100vh;padding:20px}
+h1{font-family:'Fredoka One',sans-serif;text-align:center;color:#fff;font-size:clamp(1.6rem,5vw,2.4rem);margin-bottom:6px;text-shadow:0 2px 12px rgba(0,0,0,.4)}
+.sub{text-align:center;color:rgba(255,255,255,.7);font-size:.95rem;margin-bottom:28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;max-width:900px;margin:0 auto}
+.card{background:rgba(255,255,255,.1);border-radius:20px;padding:22px 20px;text-decoration:none;display:block;transition:.25s;border:2px solid rgba(255,255,255,.15);position:relative;overflow:hidden}
+.card:hover{transform:translateY(-4px);background:rgba(255,255,255,.18);box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--c)}
+.card-ico{font-size:3rem;display:block;margin-bottom:10px}
+.card-title{font-family:'Fredoka One',sans-serif;font-size:1.3rem;color:#fff;margin-bottom:4px}
+.card-sub{font-size:.82rem;color:rgba(255,255,255,.65);margin-bottom:10px}
+.card-grade{display:inline-block;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:.75rem;color:#fff;font-weight:700}
+.card-arrow{position:absolute;top:50%;right:20px;transform:translateY(-50%);color:rgba(255,255,255,.4);font-size:1.5rem}
+.offline-note{text-align:center;margin-top:28px;background:rgba(255,255,255,.08);border-radius:14px;padding:16px;max-width:500px;margin-left:auto;margin-right:auto}
+.offline-note p{color:rgba(255,255,255,.75);font-size:.85rem;line-height:1.6}
+.offline-note strong{color:#f59e0b}
+footer{text-align:center;color:rgba(255,255,255,.35);font-size:.78rem;margin-top:32px;padding-bottom:20px}
+</style>
+</head>
+<body>
+<h1>🏫 Apps Educativas</h1>
+<p class="sub">Institución Educativa Departamental Agrícola Paratebueno · Cundinamarca</p>
+
+<div class="grid">
+  <a class="card" href="./exploradores_naturaleza.html" style="--c:#16a34a">
+    <span class="card-ico">🌿</span>
+    <div class="card-title">Exploradores de la Naturaleza</div>
+    <div class="card-sub">Plantas, agua, aire, seres vivos y medición</div>
+    <span class="card-grade">Ciencias Naturales · 1° y 2°</span>
+    <span class="card-arrow">›</span>
+  </a>
+  <a class="card" href="./cuerpo_humano_v3.html" style="--c:#dc2626">
+    <span class="card-ico">🩺</span>
+    <div class="card-title">Exploradores del Cuerpo Humano</div>
+    <div class="card-sub">Sistema óseo y muscular</div>
+    <span class="card-grade">Ciencias Naturales · 3°–5°</span>
+    <span class="card-arrow">›</span>
+  </a>
+  <a class="card" href="./exploradores_colombia_v2.html" style="--c:#b45309">
+    <span class="card-ico">🗺️</span>
+    <div class="card-title">Exploradores de Colombia</div>
+    <div class="card-sub">Departamentos, capitales y Cundinamarca</div>
+    <span class="card-grade">Ciencias Sociales · 3°–5°</span>
+    <span class="card-arrow">›</span>
+  </a>
+  <a class="card" href="./aprendo_leer_escribir.html" style="--c:#e84393">
+    <span class="card-ico">📚</span>
+    <div class="card-title">Aprendo a Leer y Escribir</div>
+    <div class="card-sub">Abecedario, sílabas, lectura y oraciones</div>
+    <span class="card-grade">Lengua Castellana · 1° y 2°</span>
+    <span class="card-arrow">›</span>
+  </a>
+  <a class="card" href="./matematicas_primaria.html" style="--c:#6366f1">
+    <span class="card-ico">🔢</span>
+    <div class="card-title">Matemáticas Interactivas</div>
+    <div class="card-sub">Conteo, sumas, restas, figuras y multiplicación</div>
+    <span class="card-grade">Matemáticas · 1° y 2°</span>
+    <span class="card-arrow">›</span>
+  </a>
+</div>
+
+<div class="offline-note">
+  <p>📶 <strong>Funciona sin internet</strong> después de la primera visita.<br>
+  Instala cada app en tu celular desde el botón <strong>📲</strong> dentro de la aplicación.</p>
+</div>
+
+<footer>Desarrollado con ❤️ para los estudiantes de Paratebueno · 2026</footer>
+
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+</script>
+</body>
+</html>
